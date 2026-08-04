@@ -1,0 +1,6 @@
+{
+  "best_val_auc": 0.9706840000000001,
+  "runtime_seconds": 7223.212601423264,
+  "checkpoint": "artifacts/training_seeds/cqt_deit_pm_noisy_seed45/best.pth",
+  "checkpoint_sha256": "df89fe879fb58f0504f95ec9e11e9b935c85b628c2c109c4f91e38bc5c5764a0"
+}

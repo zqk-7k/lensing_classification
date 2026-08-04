@@ -66,7 +66,11 @@ def parse_args():
     parser.add_argument("--manifest-dir", default=str(ROOT / "experiments/reproducibility/manifests/0228_pairs"))
     parser.add_argument("--cache-dir", default=str(ROOT / "artifacts/cqt_cache"))
     parser.add_argument("--training-root", default=str(ROOT / "artifacts/training"),
-                        help="Directory holding cqt_deit_{lens}_noisy_seed42/best.pth.")
+                        help="Directory holding cqt_deit_{lens}_noisy_seed{seed}/best.pth.")
+    parser.add_argument("--seed", type=int, default=42,
+                        help="Training seed identifying the checkpoint directory.")
+    parser.add_argument("--suffix", default="",
+                        help="Extra suffix for the prediction filenames, e.g. _seed43.")
     parser.add_argument("--output-dir", default=str(ROOT / "results/predictions"))
     parser.add_argument("--batch-size", type=int, default=256)
     parser.add_argument("--workers", type=int, default=12)
@@ -88,7 +92,8 @@ def main():
     dataset = CQTPairDataset(frame, image1, image2, unlensed)
     loader = DataLoader(dataset, batch_size=args.batch_size, shuffle=False, num_workers=args.workers,
                         pin_memory=True, persistent_workers=args.workers > 0)
-    checkpoint = Path(args.training_root) / f"cqt_deit_{checkpoint_lower}_noisy_seed42" / "best.pth"
+    checkpoint = (Path(args.training_root) /
+                  f"cqt_deit_{checkpoint_lower}_noisy_seed{args.seed}" / "best.pth")
     device = torch.device(args.device)
     model = build_cqt_deit(num_classes=2, pretrained=False, hidden_dim=512,
                                              dropout_rate=0.5, freeze_backbone=False).to(device)
@@ -110,7 +115,7 @@ def main():
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
     suffix = lower if checkpoint_lower == lower else f"{lower}_checkpoint_{checkpoint_lower}"
-    output_path = output_dir / f"cqt_deit_predictions_0228_{suffix}.csv.gz"
+    output_path = output_dir / f"cqt_deit_predictions_0228_{suffix}{args.suffix}.csv.gz"
     output.to_csv(output_path, index=False, compression="gzip")
     cache_metadata = cache / "cache_metadata.json"
     metadata = {
@@ -122,7 +127,7 @@ def main():
         "prediction_path": str(output_path), "prediction_sha256": sha256(output_path),
         "score_inspected_during_inference": False,
     }
-    (output_dir / f"cqt_deit_predictions_0228_{suffix}.metadata.json").write_text(
+    (output_dir / f"cqt_deit_predictions_0228_{suffix}{args.suffix}.metadata.json").write_text(
         json.dumps(metadata, indent=2), encoding="utf-8")
     print(json.dumps(metadata, indent=2))
 

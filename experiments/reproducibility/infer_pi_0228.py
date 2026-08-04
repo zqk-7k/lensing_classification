@@ -63,6 +63,12 @@ def parse_args():
                         help="Checkpoint lens family; defaults to --lens. Set differently for cross-lens transfer.")
     parser.add_argument("--data-root", default=str(ROOT / "data"))
     parser.add_argument("--manifest-dir", default=str(ROOT / "experiments/reproducibility/manifests/0228_pairs"))
+    parser.add_argument("--training-root", default=str(ROOT / "artifacts/training"),
+                        help="Directory holding pi_resnet_{lens}_noisy_seed{seed}/best.pt.")
+    parser.add_argument("--seed", type=int, default=42,
+                        help="Training seed identifying the checkpoint directory.")
+    parser.add_argument("--suffix", default="",
+                        help="Extra suffix for the prediction filenames, e.g. _seed43.")
     parser.add_argument("--output-dir", default=str(ROOT / "results/predictions"))
     parser.add_argument("--batch-size", type=int, default=256)
     parser.add_argument("--workers", type=int, default=8)
@@ -84,7 +90,8 @@ def main():
     dataset = PairDataset(frame, lensed_1, lensed_2, unlensed)
     loader = DataLoader(dataset, batch_size=args.batch_size, shuffle=False, num_workers=args.workers,
                         pin_memory=True, persistent_workers=args.workers > 0)
-    checkpoint = ROOT / f"artifacts/training/pi_resnet_{checkpoint_lower}_noisy_seed42/best.pt"
+    checkpoint = (Path(args.training_root) /
+                  f"pi_resnet_{checkpoint_lower}_noisy_seed{args.seed}" / "best.pt")
     device = torch.device(args.device)
     model = PIResNet(in_channels=1, d_model=256, width_scale=4.0,
                                             use_snake=False, use_se=True,
@@ -104,7 +111,7 @@ def main():
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
     suffix = lens_lower if checkpoint_lower == lens_lower else f"{lens_lower}_checkpoint_{checkpoint_lower}"
-    output_path = output_dir / f"pi_predictions_0228_{suffix}.csv.gz"
+    output_path = output_dir / f"pi_predictions_0228_{suffix}{args.suffix}.csv.gz"
     output.to_csv(output_path, index=False, compression="gzip")
     metadata = {
         "evaluation_lens": args.lens, "checkpoint_lens": checkpoint_lower.upper(),
@@ -114,7 +121,7 @@ def main():
         "prediction_path": str(output_path), "prediction_sha256": sha256(output_path),
         "score_inspected_during_inference": False,
     }
-    (output_dir / f"pi_predictions_0228_{suffix}.metadata.json").write_text(
+    (output_dir / f"pi_predictions_0228_{suffix}{args.suffix}.metadata.json").write_text(
         json.dumps(metadata, indent=2), encoding="utf-8")
     print(json.dumps(metadata, indent=2))
 
