@@ -26,24 +26,24 @@
       },
       "cqt_deit": {
         "0.001": {
-          "score_threshold": 0.9438525,
-          "logit_threshold": 2.8219886,
+          "score_threshold": 0.9569708,
+          "logit_threshold": 3.1018953,
           "identical_selected_pairs": true,
           "selection_jaccard": 1.0,
-          "score_selected": 779,
-          "logit_selected": 779,
-          "score_unique_values": 100580,
-          "logit_unique_values": 101411
+          "score_selected": 645,
+          "logit_selected": 645,
+          "score_unique_values": 99033,
+          "logit_unique_values": 100841
         },
         "0.0001": {
-          "score_threshold": 0.9561654,
-          "logit_threshold": 3.0825076,
+          "score_threshold": 0.9634211,
+          "logit_threshold": 3.2710198,
           "identical_selected_pairs": true,
           "selection_jaccard": 1.0,
-          "score_selected": 258,
-          "logit_selected": 258,
-          "score_unique_values": 100580,
-          "logit_unique_values": 101411
+          "score_selected": 214,
+          "logit_selected": 214,
+          "score_unique_values": 99033,
+          "logit_unique_values": 100841
         }
       }
     },
@@ -72,24 +72,24 @@
       },
       "cqt_deit": {
         "0.001": {
-          "score_threshold": 0.9609393,
-          "logit_threshold": 3.2027947,
+          "score_threshold": 0.9579664,
+          "logit_threshold": 3.1263429,
           "identical_selected_pairs": true,
           "selection_jaccard": 1.0,
-          "score_selected": 241,
-          "logit_selected": 241,
-          "score_unique_values": 99531,
-          "logit_unique_values": 101050
+          "score_selected": 387,
+          "logit_selected": 387,
+          "score_unique_values": 100213,
+          "logit_unique_values": 101282
         },
         "0.0001": {
-          "score_threshold": 0.96391076,
-          "logit_threshold": 3.2850039,
+          "score_threshold": 0.96494436,
+          "logit_threshold": 3.3151342,
           "identical_selected_pairs": true,
           "selection_jaccard": 1.0,
-          "score_selected": 46,
-          "logit_selected": 46,
-          "score_unique_values": 99531,
-          "logit_unique_values": 101050
+          "score_selected": 85,
+          "logit_selected": 85,
+          "score_unique_values": 100213,
+          "logit_unique_values": 101282
         }
       }
     }

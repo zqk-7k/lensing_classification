@@ -2,14 +2,14 @@
   "evaluation_lens": "PM",
   "checkpoint_lens": "SIS",
   "rows": 202500,
-  "checkpoint": "artifacts/training/cqt_deit_sis_noisy_seed42/best.pth",
-  "checkpoint_sha256": "5c3d775e2991a21ac3331f93986bde9b2e9fe1d6824311c8a312e5f82e847952",
+  "checkpoint": "artifacts/training_v2/cqt_deit_sis_noisy_seed42/best.pth",
+  "checkpoint_sha256": "cbdefe1422edcf1245f9dcf822b2a456f24a8015192897a768b0e4e3a54ea7ef",
   "manifest_sha256": {
     "0228_pm_calibration_pairs.csv.gz": "c5c0f6141a123a565f47507740f5a7566949725b26fc1463fa201374ef28c54c",
     "0228_pm_evaluation_pairs.csv.gz": "c65057f624ae59b435a576f79047b8372a18f05de153b9638e6af327b3c3adfb"
   },
-  "cache_metadata_sha256": "5cfeba0eaaf2f9f4a1e16416c42f9c2f6714a3f9ed2c8348903a277ee18fd371",
-  "prediction_path": "results/predictions/cqt_deit_predictions_0228_pm_checkpoint_sis.csv.gz",
-  "prediction_sha256": "07eb2fa0de3d4bf0e30e327eb48ce964c21787e7cb8ef7beabf6b8f74139d6b9",
+  "cache_metadata_sha256": "f96dc21361422d83a8f5362ca8cccdad92bbb335d4e3ac744e4542b22e07b85f",
+  "prediction_path": "/root/autodl-tmp/wjx_project/classcify-gw-lensing-pairs-main/results/predictions/cqt_deit_predictions_0228_pm_checkpoint_sis.csv.gz",
+  "prediction_sha256": "a99b67a5cdd008df1a830eacf82d2245933f554a04d5ca7075da3669336baebe",
   "score_inspected_during_inference": false
 }
