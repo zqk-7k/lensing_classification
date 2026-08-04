@@ -29,9 +29,10 @@
 - Completed exact McNemar, paired block-AUC, paired fixed-FPP efficiency, selection-function, and SNR/y matching analyses.
 - Completed a 60-trial discrete peak-alignment lens-redshift sanity check.
 
-## Pending
+## Archival release
 
-- Finalize author metadata, software license, and Zenodo deposition/DOI.
+- Built the frozen bundle: 159 hash-verified payload files, 1,906,391,230 bytes, deterministic gzip archive of approximately 1.69 GB.
+- Published the Zenodo deposition under DOI 10.5281/zenodo.21311078 (v1.0) with author metadata and the CC BY 4.0 license recorded.
 
 ## Additional completion analyses
 

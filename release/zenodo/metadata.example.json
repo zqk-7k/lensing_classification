@@ -3,13 +3,14 @@
   "upload_type": "software",
   "description": "Code, frozen model checkpoints, source and pair manifests, per-pair prediction scores, and statistical artifacts for calibrated pair verification of strongly lensed gravitational waves.",
   "creators": [
-    {
-      "name": "REQUIRED_AUTHOR_NAME",
-      "orcid": "REQUIRED_ORCID_IF_AVAILABLE",
-      "affiliation": "REQUIRED_AFFILIATION"
-    }
+    {"name": "Zhang, Fan", "orcid": "0009-0004-3509-7495", "affiliation": "Zhejiang University"},
+    {"name": "Zhang, Qikai", "orcid": "0009-0008-7902-8191", "affiliation": "Zhejiang University"},
+    {"name": "Yang, Qiyuan", "orcid": "0009-0007-6444-2026", "affiliation": "Wuhan University"},
+    {"name": "Huang, Jiaqing", "orcid": "0009-0009-2516-8866", "affiliation": "Jiangsu Sungo Intelligent Technology Research Center Co., Ltd."},
+    {"name": "Yuan, Yong", "orcid": "0009-0002-9540-9230", "affiliation": "Institute of Mechanics, Chinese Academy of Sciences"},
+    {"name": "Fan, Xilong", "orcid": "0000-0002-8174-0128", "affiliation": "Wuhan University"}
   ],
-  "license": "REQUIRED_LICENSE",
+  "license": "cc-by-4.0",
   "keywords": [
     "gravitational-wave lensing",
     "machine learning",
@@ -18,7 +19,7 @@
   ],
   "related_identifiers": [
     {
-      "identifier": "https://github.com/zqk-7k/lensing_classfication",
+      "identifier": "https://github.com/zqk-7k/lensing_classification",
       "relation": "isSupplementTo",
       "resource_type": "software"
     }

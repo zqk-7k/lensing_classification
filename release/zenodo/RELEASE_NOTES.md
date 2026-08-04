@@ -22,6 +22,12 @@ Every manifest payload file is verified by size and SHA-256 before archive creat
 
 The manuscript statement should use these measured values rather than the earlier 89-file/400-MB estimate. Suggested wording:
 
-> A frozen release containing the trained checkpoints, the pinned DeiT initialization weights, the CQT caches, and all derived results (159 manifest payload files; 1.91 GB uncompressed and approximately 1.69 GB as a gzip-compressed archive; hash-verified against the committed manifest) is deposited on Zenodo under DOI `10.5281/zenodo.XXXXXXX`.
+> A frozen release containing the trained checkpoints, the pinned DeiT initialization weights, the CQT caches, and all derived results (159 manifest payload files; 1.91 GB uncompressed and approximately 1.69 GB as a gzip-compressed archive; hash-verified against the committed manifest) is deposited on Zenodo under DOI `10.5281/zenodo.21311078`.
 
-The Zenodo DOI must not be cited until `metadata.example.json` placeholders have been replaced and the deposition has been published.
+## Deposition status
+
+Published on 2026-07-11 as version v1.0 under DOI `10.5281/zenodo.21311078`, licensed
+CC BY 4.0. The record carries the gzip archive, its SHA-256 sidecar, the
+`archive_info.json` record, and the payload file list, so that the complete inventory
+can be checked without downloading the bundle. Author metadata and the license are
+recorded in `metadata.example.json`.
