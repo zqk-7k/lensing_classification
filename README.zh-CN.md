@@ -4,4 +4,6 @@
 
 本项目解决的是“已识别事件之间的配对验证”，不是完整的搜寻流水线、真实噪声检验或 catalog-level FAR 分析。
 
-主要结果、置信区间和物理诊断见 [docs/RESULTS.md](docs/RESULTS.md)，数据与大文件说明见 [docs/ARTIFACTS.md](docs/ARTIFACTS.md)，完整执行顺序见 [experiments/reproducibility/README.md](experiments/reproducibility/README.md)。代码及正式技术文档以英文版本为准。
+主要结果、置信区间和物理诊断见 [docs/RESULTS.md](docs/RESULTS.md)，数据与大文件说明见 [docs/ARTIFACTS.md](docs/ARTIFACTS.md)，基线模型完整配置见 [docs/BASELINE_CONFIG.md](docs/BASELINE_CONFIG.md)，完整执行顺序见 [experiments/reproducibility/README.md](experiments/reproducibility/README.md)。代码及正式技术文档以英文版本为准。
+
+冻结的可复现发布（四个训练权重、固定的 DeiT 初始化权重、五个 CQT 缓存及全部派生结果）已存档于 Zenodo，DOI 为 [10.5281/zenodo.21311078](https://doi.org/10.5281/zenodo.21311078)（v1.0，CC BY 4.0）。引用时请同时标注 Zenodo 记录与所用的仓库 commit。

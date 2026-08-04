@@ -2,7 +2,7 @@
 
 ## Status
 
-The clean 0222 training protocol, independent 0228 calibration/evaluation protocol, four-model inference, core fixed-FPP analysis, selection functions, SNR/y reweighting, lens-redshift sanity check, and minimal E7 type-II diagnostic are complete. Final Zenodo deposition remains pending.
+The clean 0222 training protocol, independent 0228 calibration/evaluation protocol, four-model inference, core fixed-FPP analysis, selection functions, SNR/y reweighting, lens-redshift sanity check, and minimal E7 type-II diagnostic are complete. The frozen Zenodo deposition is published under DOI 10.5281/zenodo.21311078 (v1.0, CC BY 4.0).
 
 ## Data roles
 
@@ -41,7 +41,14 @@ Transfer is strongly asymmetric. On SIS evaluation pairs, the PM-trained checkpo
 
 ## Throughput
 
-On an NVIDIA RTX 5000 Ada Generation with batch size 256, PI-ResNet GPU inference takes 0.728 ms per pair and CQT-DeiT model inference takes 0.218 ms per pair. However, direct PI preprocessing costs only 0.514 ms per pair, whereas serial CQT construction costs 66.0 ms per pair. Approximate serial-stage end-to-end costs are therefore 1.24 ms per pair for PI-ResNet and 66.3 ms for CQT-DeiT, a roughly 53-fold advantage for the direct time-domain pipeline. A 16-thread CQT trial was slower because of library-level thread oversubscription and is excluded from the primary comparison.
+On an NVIDIA RTX 5000 Ada Generation with batch size 256, PI-ResNet GPU inference takes 0.728 ms per pair and CQT-DeiT model inference takes 0.218 ms per pair. The 2D model is therefore the faster of the two per forward pass; the cost difference resides entirely in preprocessing. Direct PI preprocessing costs 0.514 ms per pair, whereas serial CQT construction costs 66.0 ms per pair (both figures cover the two segments of a pair). A 16-thread CQT trial was slower because of library-level thread oversubscription and is excluded from the primary comparison.
+
+Two regimes must be distinguished, and the headline ratio applies to only one of them.
+
+- Cold start, transform recomputed for every pair: end-to-end costs are 1.24 ms per pair for PI-ResNet (about 800 pairs/s) and 66.3 ms for CQT-DeiT, a roughly 53-fold advantage for the direct time-domain pipeline.
+- Amortized over a catalog: in a screen of N events each event enters N-1 pairs, so both pipelines can transform each event once and cache it. Per-event preprocessing costs 0.257 ms (time domain) and 33.019 ms (CQT), and the per-pair cost tends to the forward pass alone. With `c_pair = c_gpu + 2*c_event/(N-1)`, the cached per-pair costs are 0.785 vs 7.555 ms at N=10, 0.733 vs 0.885 ms at N=100, and 0.728 vs 0.284 ms at N=1000.
+
+The ordering therefore crosses over at N = 129.4 events, beyond which the 2D pipeline is the cheaper of the two per pair. The 53-fold figure must not be quoted without stating that it describes a cold-start, no-cache implementation. At catalog scale the two pipelines are comparable in cost, and the case for the time-domain route rests on its calibrated efficiency rather than on speed. Both remain far below the minutes-to-days per pair of Bayesian analyses.
 
 ## Logit tail check
 
@@ -57,4 +64,4 @@ The evidence supports PI-ResNet as a calibrated time-domain pair-ranking statist
 
 ## Reproducibility
 
-All compact code, manifests, per-pair predictions, statistical tables, and hashes are stored in GitHub. Large checkpoints and CQT caches are hash-registered for the Zenodo release.
+All compact code, manifests, per-pair predictions, statistical tables, and hashes are stored in GitHub. Large checkpoints and CQT caches are hash-registered in `release/zenodo/MANIFEST.json` and published in the Zenodo release under DOI 10.5281/zenodo.21311078.

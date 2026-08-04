@@ -16,11 +16,15 @@ The second command hashes the complete payload and updates `MANIFEST.json` and `
 
 The final command verifies every manifest row again and writes a deterministic archive, archive checksum, file list, and archive information record under `release/zenodo/dist/`. The `dist/` directory is intentionally excluded from Git.
 
-Before publishing a Zenodo deposition, the authors must provide:
+## Published deposition
 
-1. Final author names and ORCID identifiers.
-2. A repository/software license.
-3. Zenodo account authorization or an access token.
-4. Final title, author order, affiliations, and related paper identifier.
+Version v1.0 is published under DOI
+[10.5281/zenodo.21311078](https://doi.org/10.5281/zenodo.21311078), licensed CC BY 4.0,
+with author names, ORCID identifiers, affiliations, and the related repository
+identifier recorded in `metadata.example.json`.
 
-Do not publish or cite a DOI while `metadata.example.json` contains `REQUIRED_*` placeholders.
+To cut a new version, rebuild with the three commands above, confirm that
+`MANIFEST.json` and `MANIFEST.sha256` are committed, and deposit as a new version of
+the existing Zenodo record so that the concept DOI continues to resolve to the
+latest release. Do not publish or cite a DOI while `metadata.example.json` contains
+`REQUIRED_*` placeholders.

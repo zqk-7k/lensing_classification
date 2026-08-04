@@ -48,6 +48,7 @@ results/
   benchmarks/          measured throughput
   training/            compact training records (not model weights)
 docs/                   methods, result index, limitations, and audit trail
+  BASELINE_CONFIG.md   complete CQT--DeiT baseline configuration
 release/zenodo/         archival-release manifest tools
 ```
 
@@ -96,6 +97,14 @@ not validate glitches or a catalog-level false-alarm rate. See
 
 ## Citation and archival release
 
-The archival package is prepared under `release/zenodo/`. A DOI and formal citation
-metadata will be added when the associated manuscript record is finalized. Until
-then, cite the repository commit used in your analysis.
+The frozen reproducibility release is published on Zenodo under DOI
+[10.5281/zenodo.21311078](https://doi.org/10.5281/zenodo.21311078) (v1.0, CC BY 4.0).
+It contains the four trained network checkpoints, the pinned DeiT initialization
+weights, the five CQT caches, and all derived result files: 159 hash-verified
+payload files, 1,906,391,230 bytes uncompressed, distributed as a deterministic
+gzip archive of approximately 1.69 GB with a SHA-256 sidecar. Every payload file
+is verified against `release/zenodo/MANIFEST.json` and `MANIFEST.sha256`.
+
+When citing, please cite both the Zenodo record and the repository commit used in
+your analysis. The archival tooling that builds and verifies the bundle is under
+`release/zenodo/`.

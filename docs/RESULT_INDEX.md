@@ -22,3 +22,5 @@
 | Logit tail check | `results/core/logit_tail_check.json` | `analyze_logit_tail.py` |
 | LIGO scope decision | `docs/LIMITATIONS.md` | protocol audit |
 | Artifact storage | `docs/ARTIFACTS.md` | checkpoint/cache registries |
+| Baseline configuration | `docs/BASELINE_CONFIG.md` | `train_cqt_deit.py`, `src/cqt_deit/`, `prepare_cqt_cache_0228.py` |
+| Archival release | `release/zenodo/MANIFEST.json`, DOI 10.5281/zenodo.21311078 | `build_zenodo_manifest.py`, `build_frozen_release.py` |
