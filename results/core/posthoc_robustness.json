@@ -1,0 +1,287 @@
+{
+ "seed": 20260711,
+ "replicates": 10000,
+ "rho_detected": 8.0,
+ "threshold_rule": "k-th largest background score, k = round(target_Pf * N_background)",
+ "note": "Post-hoc secondary diagnostics from released per-pair scores; the locked primary analysis is unchanged.",
+ "families": {
+  "sis": {
+   "threshold_reproduction_maxdiff": 0.0,
+   "nested_bootstrap": {
+    "0.01": {
+     "locked_delta": 0.1468571428571428,
+     "nested_ci": [
+      0.12,
+      0.16800000000000004
+     ],
+     "nested_median": 0.14514285714285713,
+     "frac_replicates_le_zero": 0.0
+    },
+    "0.001": {
+     "locked_delta": 0.1582857142857143,
+     "nested_ci": [
+      0.09485714285714286,
+      0.21371428571428575
+     ],
+     "nested_median": 0.15885714285714292,
+     "frac_replicates_le_zero": 0.0001
+    },
+    "0.0001": {
+     "locked_delta": -0.039999999999999994,
+     "nested_ci": [
+      -0.11485714285714285,
+      0.06285714285714286
+     ],
+     "nested_median": -0.03428571428571428,
+     "frac_replicates_le_zero": 0.7888
+    }
+   },
+   "detected_event_recalibration": {
+    "frac_cal_bg": 0.97936,
+    "frac_ev_bg": 0.97961,
+    "frac_pos": 0.9891428571428571,
+    "n_pos": 1731,
+    "n_ev_bg": 97961,
+    "0.01": {
+     "pi_resnet": {
+      "threshold": 0.1610766519056267,
+      "efficiency": 0.8232235701906413,
+      "ci": [
+       0.8143435511856565,
+       0.8332395653010194
+      ],
+      "achieved_pf": 0.009636487990118516
+     },
+     "cqt_deit": {
+      "threshold": 0.8935509,
+      "efficiency": 0.6701328711727326,
+      "ci": [
+       0.6464821222606689,
+       0.6938678003922509
+      ],
+      "achieved_pf": 0.010014189320239687
+     },
+     "delta_eff": 0.15309069901790873,
+     "delta_ci": [
+      0.1283218461045271,
+      0.17579329892010004
+     ]
+    },
+    "0.001": {
+     "pi_resnet": {
+      "threshold": 0.9982718488635904,
+      "efficiency": 0.5378393991912189,
+      "ci": [
+       0.5139049826187717,
+       0.5645905420991926
+      ],
+      "achieved_pf": 0.0008472759567583018
+     },
+     "cqt_deit": {
+      "threshold": 0.9439994,
+      "efficiency": 0.37897169266320047,
+      "ci": [
+       0.35953757225433525,
+       0.3966515111930128
+      ],
+      "achieved_pf": 0.0011943528547074856
+     },
+     "delta_eff": 0.15886770652801846,
+     "delta_ci": [
+      0.13533834586466165,
+      0.18297748802807196
+     ]
+    },
+    "0.0001": {
+     "pi_resnet": {
+      "threshold": 0.9999962979827796,
+      "efficiency": 0.10283073367995378,
+      "ci": [
+       0.08738425925925926,
+       0.11785095320623917
+      ],
+      "achieved_pf": 4.0832576229315746e-05
+     },
+     "cqt_deit": {
+      "threshold": 0.9561654,
+      "efficiency": 0.14326978625072212,
+      "ci": [
+       0.13121387283236993,
+       0.15552995391705068
+      ],
+      "achieved_pf": 0.00010208144057328937
+     },
+     "delta_eff": -0.04043905257076834,
+     "delta_ci": [
+      -0.061601347667597874,
+      -0.017301038062283752
+     ]
+    }
+   }
+  },
+  "pm": {
+   "threshold_reproduction_maxdiff": 0.0,
+   "nested_bootstrap": {
+    "0.01": {
+     "locked_delta": 0.3182857142857143,
+     "nested_ci": [
+      0.26971428571428574,
+      0.3657142857142857
+     ],
+     "nested_median": 0.31771428571428567,
+     "frac_replicates_le_zero": 0.0
+    },
+    "0.001": {
+     "locked_delta": 0.13485714285714284,
+     "nested_ci": [
+      0.008557142857142862,
+      0.25658571428571414
+     ],
+     "nested_median": 0.14,
+     "frac_replicates_le_zero": 0.0137
+    },
+    "0.0001": {
+     "locked_delta": 0.00914285714285714,
+     "nested_ci": [
+      -0.00457142857142857,
+      0.06057142857142857
+     ],
+     "nested_median": 0.011999999999999999,
+     "frac_replicates_le_zero": 0.087
+    }
+   },
+   "detected_event_recalibration": {
+    "frac_cal_bg": 0.97171,
+    "frac_ev_bg": 0.96825,
+    "frac_pos": 0.976,
+    "n_pos": 1708,
+    "n_ev_bg": 96825,
+    "0.01": {
+     "pi_resnet": {
+      "threshold": 0.9465870154073008,
+      "efficiency": 0.7734192037470726,
+      "ci": [
+       0.750438289152522,
+       0.7957622130665097
+      ],
+      "achieved_pf": 0.009419054996127033
+     },
+     "cqt_deit": {
+      "threshold": 0.951109,
+      "efficiency": 0.4519906323185012,
+      "ci": [
+       0.43376318874560377,
+       0.4673730919914126
+      ],
+      "achieved_pf": 0.008293312677510973
+     },
+     "delta_eff": 0.32142857142857145,
+     "delta_ci": [
+      0.2930934416715032,
+      0.3527679623085984
+     ]
+    },
+    "0.001": {
+     "pi_resnet": {
+      "threshold": 0.9999238780695252,
+      "efficiency": 0.22833723653395785,
+      "ci": [
+       0.21135831381733022,
+       0.24721080446271285
+      ],
+      "achieved_pf": 0.000630002581977795
+     },
+     "cqt_deit": {
+      "threshold": 0.96097285,
+      "efficiency": 0.0936768149882904,
+      "ci": [
+       0.08098591549295775,
+       0.10560093348891482
+      ],
+      "achieved_pf": 0.0008159049832171443
+     },
+     "delta_eff": 0.13466042154566743,
+     "delta_ci": [
+      0.11678329242824136,
+      0.15140845070422537
+     ]
+    },
+    "0.0001": {
+     "pi_resnet": {
+      "threshold": 0.9999999730573668,
+      "efficiency": 0.02810304449648712,
+      "ci": [
+       0.01929824561403509,
+       0.0393885949441505
+      ],
+      "achieved_pf": 0.00016524657887942163
+     },
+     "cqt_deit": {
+      "threshold": 0.96391076,
+      "efficiency": 0.01873536299765808,
+      "ci": [
+       0.011737089201877934,
+       0.02568593111500292
+      ],
+      "achieved_pf": 0.00014459075651949394
+     },
+     "delta_eff": 0.00936768149882904,
+     "delta_ci": [
+      -0.0017584994138335266,
+      0.021764705882352936
+     ]
+    }
+   }
+  }
+ },
+ "amortized_cost": {
+  "source": "results/benchmarks/throughput/throughput.json",
+  "hardware": {
+   "gpu": "NVIDIA RTX 5000 Ada Generation",
+   "cpu_threads": 16
+  },
+  "measured_ms_per_pair": {
+   "preprocess_pi": 0.514001731062308,
+   "preprocess_cqt_including_transform": 66.0380389817874,
+   "forward_pi": 0.7278919826785568,
+   "forward_cqt": 0.21764343480754178
+  },
+  "derived_ms_per_event": {
+   "pi": 0.257000865531154,
+   "cqt_deit": 33.0190194908937
+  },
+  "coldstart_ms_per_pair": {
+   "pi": 1.2418937137408648,
+   "cqt_deit": 66.25568241659494
+  },
+  "note": "Preprocessing figures cover the two segments of a pair and are halved to per-event; with caching each event is preprocessed once and reused across the N-1 pairs it enters.",
+  "coldstart_ratio_cqt_over_pi": 53.35052563960392,
+  "cached": {
+   "10": {
+    "pairs": 45,
+    "pi_ms_per_pair": 0.7850032861299243,
+    "cqt_ms_per_pair": 7.555203321672808,
+    "ratio_cqt_over_pi": 9.624422540853367
+   },
+   "100": {
+    "pairs": 4950,
+    "pi_ms_per_pair": 0.7330839193559539,
+    "cqt_ms_per_pair": 0.884694333613475,
+    "ratio_cqt_over_pi": 1.2068118127467828
+   },
+   "1000": {
+    "pairs": 499500,
+    "pi_ms_per_pair": 0.7284064989258664,
+    "cqt_ms_per_pair": 0.2837475779324541,
+    "ratio_cqt_over_pi": 0.38954564292174515
+   },
+   "10000": {
+    "pairs": 49995000,
+    "pi_ms_per_pair": 0.7279433879921944,
+    "cqt_ms_per_pair": 0.22424789915215498,
+    "ratio_cqt_over_pi": 0.30805678415552773
+   }
+  },
+  "crossover_n_events": 129.41592107242764
+ }
+}
