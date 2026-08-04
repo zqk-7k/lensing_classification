@@ -1,0 +1,6 @@
+{
+  "best_val_auc": 0.988564,
+  "runtime_seconds": 6169.710308790207,
+  "checkpoint": "artifacts/training_seeds/pi_resnet_pm_noisy_seed44/best.pt",
+  "checkpoint_sha256": "92af87f8d8aa15a1451275e8d3341c78c7a5a99b7a257040ffb3e8bdefebb5ec"
+}

@@ -104,7 +104,7 @@ def render(args):
     return out_path
 
 
-def build_family(data_root: Path, out_root: Path, lens: str, seed: int, workers: int):
+def build_family(data_root: Path, out_root: Path, lens: str, seed: int, workers: int, suffix: str = ""):
     split = np.load(SPLIT, allow_pickle=False)
     plan = build_pair_plan(split, lens, seed)
 
@@ -152,7 +152,7 @@ def build_family(data_root: Path, out_root: Path, lens: str, seed: int, workers:
     frame = pd.DataFrame.from_records(records)
     frame.to_csv(image_root / "pair_manifest.csv", index=False)
     OUTDIR.mkdir(parents=True, exist_ok=True)
-    frame.to_csv(OUTDIR / f"cqt_training_pairs_v2_manifest_{lens.lower()}.csv.gz",
+    frame.to_csv(OUTDIR / f"cqt_training_pairs_v2_manifest_{lens.lower()}{suffix}.csv.gz",
                  index=False, compression={"method": "gzip", "mtime": 0})
 
     # ---------------- the audit that the original set failed ----------------
@@ -200,18 +200,22 @@ def main():
     parser.add_argument("--data-root", default=os.environ.get("GW_DATA_ROOT", str(ROOT / "data")))
     parser.add_argument("--out-root", required=True)
     parser.add_argument("--seed", type=int, default=cfg.SEED)
+    parser.add_argument("--lens", choices=["SIS", "PM"], action="append",
+                        help="Restrict to one family; repeatable. Default: both.")
+    parser.add_argument("--audit-suffix", default="",
+                        help="Suffix for the audit/manifest filenames, e.g. _seed43.")
     parser.add_argument("--workers", type=int, default=min(48, os.cpu_count() or 8))
     args = parser.parse_args()
 
     report = {"seed": args.seed, "hard_probability": HARD_P,
               "negative_rule": "mirrors PairDataset._build_fixed_pairs, restricted to each split",
               "families": {}}
-    for lens in ("SIS", "PM"):
+    for lens in (args.lens or ["SIS", "PM"]):
         report["families"][lens] = build_family(Path(args.data_root), Path(args.out_root),
-                                                lens, args.seed, args.workers)
+                                                lens, args.seed, args.workers, args.audit_suffix)
 
     OUTDIR.mkdir(parents=True, exist_ok=True)
-    with (OUTDIR / "cqt_training_pairs_v2_audit.json").open("w", encoding="utf-8") as handle:
+    with (OUTDIR / f"cqt_training_pairs_v2_audit{args.audit_suffix}.json").open("w", encoding="utf-8") as handle:
         json.dump(report, handle, indent=2)
 
     print("\n============ REBUILT CQT TRAINING PAIR SET ============")

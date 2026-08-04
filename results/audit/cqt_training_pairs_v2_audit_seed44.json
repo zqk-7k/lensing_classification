@@ -1,0 +1,27 @@
+{
+  "seed": 44,
+  "hard_probability": 0.7,
+  "negative_rule": "mirrors PairDataset._build_fixed_pairs, restricted to each split",
+  "families": {
+    "PM": {
+      "lens": "PM",
+      "seed": 44,
+      "n_images": 5000,
+      "n_positive": 2500,
+      "n_negative": 2500,
+      "negative_type_counts": {
+        "hard": 1736,
+        "easy": 764
+      },
+      "hard_fraction": 0.6944,
+      "train_val_lensed_sources_disjoint_both_sides": true,
+      "n_lensed_sources_crossing_split": 0,
+      "train_val_unlensed_disjoint": true,
+      "n_unlensed_crossing_split": 0,
+      "train_unlensed_outside_declared_pool": 0,
+      "val_unlensed_outside_declared_pool": 0,
+      "image_root": "${GW_CQT_V2_ROOT}/dataset_images_PM_noisy_cqt",
+      "PASS": true
+    }
+  }
+}

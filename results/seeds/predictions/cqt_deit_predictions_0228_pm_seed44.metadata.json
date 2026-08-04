@@ -1,0 +1,15 @@
+{
+  "evaluation_lens": "PM",
+  "checkpoint_lens": "PM",
+  "rows": 202500,
+  "checkpoint": "artifacts/training_seeds/cqt_deit_pm_noisy_seed44/best.pth",
+  "checkpoint_sha256": "370062602c76bed6fbaa15f164ae15467f3d54b3ac8b494745ec03326e24477b",
+  "manifest_sha256": {
+    "0228_pm_calibration_pairs.csv.gz": "c5c0f6141a123a565f47507740f5a7566949725b26fc1463fa201374ef28c54c",
+    "0228_pm_evaluation_pairs.csv.gz": "c65057f624ae59b435a576f79047b8372a18f05de153b9638e6af327b3c3adfb"
+  },
+  "cache_metadata_sha256": "f96dc21361422d83a8f5362ca8cccdad92bbb335d4e3ac744e4542b22e07b85f",
+  "prediction_path": "results/seeds/predictions/cqt_deit_predictions_0228_pm_seed44.csv.gz",
+  "prediction_sha256": "b9f25d8c67c33de3aaf3bf896bd658d79ec76d8d83fc34562df3661f3fe9c04d",
+  "score_inspected_during_inference": false
+}
