@@ -42,6 +42,7 @@ experiments/
   reproducibility/     locked split, inference, statistics, and figure scripts
 results/
   core/                primary tables, figures, and unified predictions
+  figures/manuscript/  manuscript figure set, regenerable from released scores
   predictions/         model-specific per-pair scores
   transfer/            cross-lens-family transfer results
   diagnostics/         controlled physical/model diagnostics

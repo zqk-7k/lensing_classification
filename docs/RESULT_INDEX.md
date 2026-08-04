@@ -23,4 +23,9 @@
 | LIGO scope decision | `docs/LIMITATIONS.md` | protocol audit |
 | Artifact storage | `docs/ARTIFACTS.md` | checkpoint/cache registries |
 | Baseline configuration | `docs/BASELINE_CONFIG.md` | `train_cqt_deit.py`, `src/cqt_deit/`, `prepare_cqt_cache_0228.py` |
+| Post-hoc subset/jackknife | `results/core/posthoc_diagnostics.json` | `posthoc_diagnostics.py` |
+| Threshold-inclusive bootstrap | `results/core/posthoc_robustness.json` | `analyze_posthoc_robustness.py` |
+| Detected-event recalibration | `results/core/posthoc_robustness.json` | `analyze_posthoc_robustness.py` |
+| Amortized catalog-scale cost | `results/core/posthoc_robustness.json` | `analyze_posthoc_robustness.py` |
+| Manuscript figures | `results/figures/manuscript/` | `make_figure1.py`, `make_figures_v22.py`, `regen_selection.py`, `regen_snr_matched.py` |
 | Archival release | `release/zenodo/MANIFEST.json`, DOI 10.5281/zenodo.21311078 | `build_zenodo_manifest.py`, `build_frozen_release.py` |
