@@ -34,10 +34,14 @@ Output: results/core/posthoc_robustness.json
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from thresholds import kth_threshold  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
 CORE = ROOT / "results" / "core"
@@ -49,12 +53,6 @@ TARGETS = [(1e-2, "0.01"), (1e-3, "0.001"), (1e-4, "0.0001")]
 MODELS = ["pi", "cqt_deit"]
 MODEL_NAMES = {"pi": "pi_resnet", "cqt_deit": "cqt_deit"}
 RHO_DETECTED = 8.0
-
-
-def kth_threshold(scores, target):
-    """Locked-protocol convention: k-th largest score, k = round(target * N)."""
-    k = max(1, int(round(target * len(scores))))
-    return np.partition(scores, -k)[-k]
 
 
 def block_arrays(frame, blocks, column):
