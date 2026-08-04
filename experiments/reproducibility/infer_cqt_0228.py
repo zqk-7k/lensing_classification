@@ -65,6 +65,8 @@ def parse_args():
                         help="Checkpoint lens family; defaults to --lens. Set differently for cross-lens transfer.")
     parser.add_argument("--manifest-dir", default=str(ROOT / "experiments/reproducibility/manifests/0228_pairs"))
     parser.add_argument("--cache-dir", default=str(ROOT / "artifacts/cqt_cache"))
+    parser.add_argument("--training-root", default=str(ROOT / "artifacts/training"),
+                        help="Directory holding cqt_deit_{lens}_noisy_seed42/best.pth.")
     parser.add_argument("--output-dir", default=str(ROOT / "results/predictions"))
     parser.add_argument("--batch-size", type=int, default=256)
     parser.add_argument("--workers", type=int, default=12)
@@ -86,7 +88,7 @@ def main():
     dataset = CQTPairDataset(frame, image1, image2, unlensed)
     loader = DataLoader(dataset, batch_size=args.batch_size, shuffle=False, num_workers=args.workers,
                         pin_memory=True, persistent_workers=args.workers > 0)
-    checkpoint = ROOT / f"artifacts/training/cqt_deit_{checkpoint_lower}_noisy_seed42/best.pth"
+    checkpoint = Path(args.training_root) / f"cqt_deit_{checkpoint_lower}_noisy_seed42" / "best.pth"
     device = torch.device(args.device)
     model = build_cqt_deit(num_classes=2, pretrained=False, hidden_dim=512,
                                              dropout_rate=0.5, freeze_backbone=False).to(device)
