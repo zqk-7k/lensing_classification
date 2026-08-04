@@ -23,12 +23,16 @@ import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
 from matplotlib.patches import FancyBboxPatch, FancyArrowPatch
 
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 BASE = str(ROOT / "results" / "core")
 OUT = str(ROOT / "results" / "figures" / "manuscript")
 Path(OUT).mkdir(parents=True, exist_ok=True)
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from thresholds import kth_threshold  # noqa: E402
 
 C_PI, C_BG, C_ACC = "#1f6fb2", "#8a8f98", "#c0392b"
 C_BOX, C_BOXE = "#eef2f7", "#9fb3c8"
@@ -52,7 +56,7 @@ def to_logit(s):
 # the corresponding upper-tail quantile of the calibration logits directly.
 lg_thr = {}
 for t, s in THR.items():
-    lg_thr[t] = np.quantile(cal_bg.pi_logit, 1 - t) if s >= 1.0 else np.log(s / (1 - s))
+    lg_thr[t] = kth_threshold(cal_bg.pi_logit, t) if s >= 1.0 else np.log(s / (1 - s))
 
 fig = plt.figure(figsize=(13.2, 7.4))
 gs = GridSpec(3, 3, height_ratios=[0.80, 0.52, 1.55], hspace=0.55, wspace=0.28,
@@ -143,7 +147,7 @@ axc.grid(alpha=0.2)
 # (d) efficiency at the operating points
 axd = fig.add_subplot(gs[2, 1])
 grid = np.geomspace(1e-4, 1e-2, 40)
-curve = [(ev_pos.pi_score >= np.quantile(cal_bg.pi_score, 1 - t)).mean() for t in grid]
+curve = [(ev_pos.pi_score >= kth_threshold(cal_bg.pi_score, t)).mean() for t in grid]
 axd.plot(grid, curve, color=C_PI, lw=2.0)
 for t in [1e-2, 1e-3, 1e-4]:
     axd.plot(t, EFF[t], "o", ms=8, mfc="white", mec=C_ACC, mew=1.9, zorder=5)

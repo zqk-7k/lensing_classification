@@ -12,6 +12,7 @@ Outputs (PDF+PNG) into FIGDIR:
                                  (right axis) vs target FPP, normal axis (1e-4 left).
 Also prints Appendix numbers (detected-pair subset, jackknife) from posthoc_diagnostics.json.
 """
+import sys
 import json, numpy as np, pandas as pd, matplotlib.pyplot as plt
 
 from pathlib import Path
@@ -20,8 +21,10 @@ ROOT = Path(__file__).resolve().parents[2]
 BASE = str(ROOT / "results" / "core")
 FIGDIR = str(ROOT / "results" / "figures" / "manuscript")
 Path(FIGDIR).mkdir(parents=True, exist_ok=True)
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from thresholds import kth_threshold  # noqa: E402
 
-SEED, REPS = 20260711, 2000
+SEED, REPS = 20260711, 10000
 C_PI, C_CQT, C_Y = "#1f6fb2", "#c0392b", "#c0392b"
 
 core = json.load(open(f"{BASE}/core_results.json"))
@@ -89,17 +92,21 @@ for ax, fam, title in zip(axes, ["sis", "pm"], ["SIS", "PM"]):
     pos = df[(df.calibration_or_evaluation == "evaluation") & (df.label == 1)]
     blocks = np.sort(pos.source_block_id.unique())
     pos_by_block = {b: pos[pos.source_block_id == b] for b in blocks}
+    # numpy views per block: 10,000 replicates x 25 grid points is far too slow with pd.concat
+    score_by_block = [pos_by_block[b].pi_score.to_numpy() for b in blocks]
+    y_by_block = [pos_by_block[b].y.to_numpy() for b in blocks]
     draws = rng.integers(0, len(blocks), size=(REPS, len(blocks)))
     E, Elo, Ehi, Y, Ylo, Yhi = ([] for _ in range(6))
     for t in fpp_grid:
-        thr = np.quantile(cal.pi_score, 1 - t)
+        thr = kth_threshold(cal.pi_score, t)
         surv = pos[pos.pi_score >= thr]
         E.append(len(surv) / len(pos)); Y.append(surv.y.median())
         er, yr = [], []
         for d in draws:
-            rows = pd.concat([pos_by_block[blocks[i]] for i in d])
-            s = rows[rows.pi_score >= thr]
-            er.append(len(s) / len(rows)); yr.append(s.y.median() if len(s) else np.nan)
+            s = np.concatenate([score_by_block[i] for i in d])
+            yy = np.concatenate([y_by_block[i] for i in d])
+            keep = s >= thr
+            er.append(keep.mean()); yr.append(np.median(yy[keep]) if keep.any() else np.nan)
         Elo.append(np.percentile(er, 2.5)); Ehi.append(np.percentile(er, 97.5))
         Ylo.append(np.nanpercentile(yr, 2.5)); Yhi.append(np.nanpercentile(yr, 97.5))
     ax.set_xscale("log")                                   # normal orientation: 1e-4 left
@@ -119,7 +126,7 @@ for ax, fam, title in zip(axes, ["sis", "pm"], ["SIS", "PM"]):
     med_all = pos.y.median()
     caps = {}
     for t in [1e-2, 1e-3, 1e-4]:
-        thr = np.quantile(cal.pi_score, 1 - t); s = pos[pos.pi_score >= thr]
+        thr = kth_threshold(cal.pi_score, t); s = pos[pos.pi_score >= thr]
         caps[t] = (s.y.median(), s.rho_min.median())
     capnum[fam] = (med_all, pos.rho_min.median(), caps)
 fig.tight_layout(); save(fig, "fpp_selection_shift")
