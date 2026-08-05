@@ -19,9 +19,11 @@ The frozen release contains PI-ResNet and CQT-DeiT (SEMD-inspired) checkpoints f
 
 PI-ResNet evaluation AUC is 0.98877 for SIS and 0.98522 for PM, compared with 0.97670 and 0.96124 for CQT-DeiT. The paired block-AUC differences are 0.01207 (95% CI 0.00948--0.01421) and 0.02398 (0.02050--0.02713).
 
-At the primary target FPP of 1e-3, PI-ResNet efficiency is 0.5354 (0.5097--0.5629) for SIS and 0.2274 (0.2109--0.2457) for PM. CQT-DeiT reaches 0.3771 (0.3589--0.3949) and 0.0926 (0.0817--0.1040). The paired PI-minus-CQT efficiency gains are 0.1583 (0.1366--0.1811) and 0.1349 (0.1171--0.1514).
+At the primary target FPP of 1e-3, PI-ResNet efficiency is 0.5354 (0.5097--0.5629) for SIS and 0.2274 (0.2109--0.2457) for PM. CQT-DeiT reaches 0.3274 (0.3011--0.3514) and 0.1726 (0.1611--0.1841). The paired PI-minus-CQT efficiency gains are 0.2080 (0.1771--0.2394) and 0.0549 (0.0311--0.0794).
 
-The ordering is not uniform at target FPP 1e-4. For SIS, PI-ResNet is lower by 0.0400 (CI -0.0606 to -0.0166). For PM, the 0.0091 difference is not significant (CI -0.0017 to 0.0211). Accordingly, 1e-3 is the preregistered primary operating point and 1e-4 is interpreted as a tail diagnostic.
+These baseline values follow the retraining on the corrected, split-respecting 0222 pair set (see `docs/CQT_PAIR_PROVENANCE.md`). PI-ResNet is unchanged. The threshold-inclusive intervals separate the two families: SIS is [+0.103,+0.287] with 3e-4 of replicates at or below zero, PM is [-0.080,+0.180] with 26 percent, so the PM advantage at the primary operating point is not established once calibration error is propagated.
+
+The ordering is not uniform at target FPP 1e-4. For SIS, PI-ResNet is lower by 0.0140 (CI -0.0371 to 0.0131). For PM it is lower by 0.0103 (CI -0.0200 to 0.0043). Both intervals include zero, so the two statistics are indistinguishable in the extreme tail. Accordingly, 1e-3 is the preregistered primary operating point and 1e-4 is interpreted as a tail diagnostic.
 
 ## Selection effects
 
@@ -29,7 +31,7 @@ Scores and efficiencies depend strongly on weaker-image SNR. Efficiency decrease
 
 ## SNR/y matching
 
-Common-support reweighting reduces, but does not remove, the SIS-PM efficiency gap. For PI-ResNet the common-support gap changes from about 0.310 before weighting to 0.220 after weighting. The matched residual gap is 0.2201 with 95% CI [0.1922, 0.2489]. For CQT-DeiT it is 0.2294 [0.2064, 0.2520]. Effective sample sizes are approximately 1,156 for SIS and 1,468 for PM; maximum weights are 7.35 and 4.59, respectively. SNR/y therefore explains a substantial fraction, not all, of the lens-family gap.
+Common-support reweighting reduces, but does not remove, the SIS-PM efficiency gap. For PI-ResNet the common-support gap changes from about 0.310 before weighting to 0.220 after weighting. The matched residual gap is 0.2201 with 95% CI [0.1922, 0.2489]. For CQT-DeiT it is 0.1122 [0.0787, 0.1462], half the PI-ResNet value, so the residual is not a pipeline-independent quantity. Effective sample sizes are approximately 1,156 for SIS and 1,468 for PM; maximum weights are 7.35 and 4.59, respectively. SNR/y therefore explains a substantial fraction, not all, of the lens-family gap.
 
 ## E7 controlled type-II diagnostic
 
@@ -37,7 +39,7 @@ The pre-specified 500-source physical/no-Morse comparison is a null result. SIS 
 
 ## Cross-lens transfer
 
-Transfer is strongly asymmetric. On SIS evaluation pairs, the PM-trained checkpoint reduces efficiency at target FPP 1e-3 from 0.535 to 0.221 for PI-ResNet (change -0.315, CI -0.345 to -0.287) and from 0.377 to 0.170 for CQT-DeiT (-0.207, CI -0.223 to -0.191). On PM evaluation pairs, the SIS-trained checkpoint increases efficiency from 0.227 to 0.398 for PI-ResNet (+0.170, CI 0.155 to 0.187) and from 0.093 to 0.314 for CQT-DeiT (+0.221, CI 0.202 to 0.240). This does not support a symmetric robustness claim; it suggests that the SIS training distribution produces a more transferable low-FPP rule under the present priors.
+Transfer is strongly asymmetric. On PM evaluation pairs both architectures improve under the SIS-trained checkpoint: 0.227 to 0.398 for PI-ResNet (+0.170) and 0.173 to 0.281 for CQT-DeiT (+0.108). On SIS evaluation pairs the PM-trained PI-ResNet loses more than half its efficiency (0.535 to 0.221, -0.315) while the baseline is barely affected (0.327 to 0.298, -0.029). The direction shared by both pipelines is therefore the PM one: training on the brighter SIS positives yields a better PM rule than training on PM itself.
 
 ## Throughput
 
@@ -60,7 +62,11 @@ Across 60 deterministic delay interventions, the maximum classifier-input differ
 
 ## Supported conclusion
 
-The evidence supports PI-ResNet as a calibrated time-domain pair-ranking statistic with materially higher efficiency than the CQT-DeiT baseline at the primary 1e-3 per-pair FPP. It does not support uniform superiority at 1e-4, real-noise robustness, catalog-level FAR claims, complete SNR explanation of the SIS-PM gap, or measurable Morse-phase sensitivity in the minimal E7 probe.
+The evidence supports PI-ResNet as a calibrated time-domain pair-ranking statistic with materially higher efficiency than the CQT-DeiT baseline at the primary 1e-3 per-pair FPP for SIS, and at 1e-2 for both families. It does not support the PM advantage at 1e-3 once calibration error is propagated, any difference at 1e-4, real-noise robustness, catalog-level FAR claims, complete SNR explanation of the SIS-PM gap, or measurable Morse-phase sensitivity in the minimal E7 probe.
+
+## Training-instance variability
+
+Five instances per architecture and family, varying only the seed. On SIS the paired 1e-3 difference spans +20.8 to +27.6 pp (mean +22.9, sd 2.7); on PM it spans +5.5 to +25.9 pp (mean +18.5, sd 8.9). The archived seed-42 instance is the smallest of the five for both families, so the locked analysis is conservative. Instance reproducibility degrades sharply with the lower effective SNR of the PM population. Score-averaged five-instance ensembles reach +15.4 pp [+11.9,+19.4] on SIS and +18.0 pp [+11.1,+23.2] on PM at 1e-3, both excluding zero; at 1e-4 the ensembles are indistinguishable on both families. See `results/seeds/`.
 
 ## Reproducibility
 
