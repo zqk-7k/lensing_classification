@@ -60,7 +60,10 @@ print(f"[snr_dist] unlensed frac >=8 = {(unl>=8).mean():.4f}, n_unl={len(unl)}")
 # ------------- Figure: fixed_fpp_efficiency_bars (Table 4 as bars) -------------
 FPPS = ["0.0001", "0.001", "0.01"]                                     # strict on the LEFT
 LBL = [r"$10^{-4}$", r"$10^{-3}$", r"$10^{-2}$"]
-DELTA = {"sis": ["$-4.0$", "$+15.8$", "$+14.7$"], "pm": ["$+0.9$", "$+13.5$", "$+31.8$"]}
+# read the paired differences from the locked analysis rather than hard-coding them,
+# so the annotations cannot go stale when the analysis is rerun
+DELTA = {fam: [f"${100 * core['results'][fam]['paired']['efficiency_difference'][f]['point']:+.1f}$"
+               for f in FPPS] for fam in ("sis", "pm")}
 fig, axes = plt.subplots(1, 2, figsize=(10.6, 4.1), sharey=True)
 for ax, fam, title in zip(axes, ["sis", "pm"], ["SIS", "PM"]):
     x = np.arange(3); w = 0.34

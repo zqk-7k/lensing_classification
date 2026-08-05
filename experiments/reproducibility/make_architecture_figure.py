@@ -32,6 +32,9 @@ ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "results" / "figures" / "manuscript"
 OUT.mkdir(parents=True, exist_ok=True)
 
+FS = 1.0   # keep text and box geometry in proportion; legibility is bought
+           # by giving panel (a) the full page width instead of two thirds
+
 C_STEM = "#dbe7f3"
 C_STAGE = "#c7dcef"
 C_BLOCK = "#eef3f8"
@@ -62,8 +65,8 @@ def arrow(ax, x0, y0, x1, y1, lw=1.25, style="-|>", color=C_ARROW, ls="-"):
                                  shrinkA=0, shrinkB=0))
 
 
-def draw_pipeline(ax):
-    ax.axis("off"); ax.set_xlim(0, 100); ax.set_ylim(0, 46)
+def draw_encoder(ax):
+    ax.axis("off"); ax.set_xlim(0, 100); ax.set_ylim(21.5, 45.5)
 
     # ---- Siamese inputs -------------------------------------------------
     ax.text(0.5, 43.6, "(a)", fontsize=11, weight="bold", va="center")
@@ -99,9 +102,12 @@ def draw_pipeline(ax):
     box(ax, 89.0, 25.4, 9.5, 12.4, "global\navg-pool\n$\\oplus$\nmax-pool", fc=C_POOL, fs=7.9)
     arrow(ax, 87.5, 31.6, 89.0, 31.6)
 
-    # ---- fusion and head ------------------------------------------------
-    ax.text(0.5, 17.6, "(b)", fontsize=11, weight="bold", va="center")
-    ax.text(4.6, 17.6, "Pairwise-interaction layer and scoring head",
+
+
+def draw_head(ax):
+    ax.axis("off"); ax.set_xlim(0, 100); ax.set_ylim(0, 22)
+    ax.text(0.5, 19.6, "(b)", fontsize=11, weight="bold", va="center")
+    ax.text(4.6, 19.6, "Pairwise-interaction layer and scoring head",
             fontsize=9.6, weight="bold", va="center")
 
     box(ax, 20.0, 5.4, 24.0, 8.6,
@@ -116,10 +122,10 @@ def draw_pipeline(ax):
     arrow(ax, 74.0, 9.7, 80.0, 9.7)
 
     # embeddings feed down into the fusion box
-    ax.plot([93.75, 93.75], [25.4, 20.4], color=C_ARROW, lw=1.25, zorder=1)
-    ax.plot([93.75, 32.0], [20.4, 20.4], color=C_ARROW, lw=1.25, zorder=1)
-    arrow(ax, 32.0, 20.4, 32.0, 14.0)
-    ax.text(63.0, 21.2, "branch embeddings $\\mathbf{f}_1,\\mathbf{f}_2$  (2048-d each)",
+    ax.plot([93.75, 93.75], [21.0, 17.0], color=C_ARROW, lw=1.25, zorder=1)
+    ax.plot([93.75, 32.0], [17.0, 17.0], color=C_ARROW, lw=1.25, zorder=1)
+    arrow(ax, 32.0, 17.0, 32.0, 14.0)
+    ax.text(63.0, 17.8, "branch embeddings $\\mathbf{f}_1,\\mathbf{f}_2$  (2048-d each)",
             ha="center", fontsize=8.0, color=C_NOTE)
 
     ax.text(89.25, 4.6, "a ranking statistic, not a calibrated probability;\n"
@@ -127,8 +133,10 @@ def draw_pipeline(ax):
             ha="center", va="top", fontsize=7.2, style="italic", color=C_NOTE, linespacing=1.5)
 
 
+
+
 def draw_residual_block(ax):
-    ax.axis("off"); ax.set_xlim(0, 40); ax.set_ylim(0, 46)
+    ax.axis("off"); ax.set_xlim(0, 40); ax.set_ylim(-3.2, 45.5)
     ax.text(0.5, 43.6, "(c)", fontsize=11, weight="bold", va="center")
     ax.text(4.6, 43.6, "Residual block", fontsize=9.6, weight="bold", va="center")
 
@@ -157,7 +165,7 @@ def draw_residual_block(ax):
     ax.text(4.6, 27.0, "identity", rotation=90, ha="center", va="center",
             fontsize=7.8, color=C_NOTE, style="italic")
 
-    ax.text(20.0, 0.6, "SE:  GAP$\\rightarrow$Linear $C{\\to}C/4\\rightarrow$ReLU\n"
+    ax.text(20.0, -2.8, "SE:  GAP$\\rightarrow$Linear $C{\\to}C/4\\rightarrow$ReLU\n"
                        "$\\rightarrow$Linear $C/4{\\to}C\\rightarrow$Sigmoid$\\rightarrow$scale",
             ha="center", va="bottom", fontsize=7.2, color=C_NOTE, linespacing=1.5)
 
@@ -171,11 +179,13 @@ def main():
     assert total == 32_807_937, f"parameter count drifted: {total}"
     print(f"trainable parameters: {total:,}")
 
-    fig = plt.figure(figsize=(13.0, 5.4))
-    gs = fig.add_gridspec(1, 2, width_ratios=[100, 40], wspace=0.04,
+    fig = plt.figure(figsize=(9.4, 5.2))
+    gs = fig.add_gridspec(2, 2, height_ratios=[24, 24], width_ratios=[100, 42],
+                          hspace=0.06, wspace=0.05,
                           left=0.012, right=0.988, top=0.985, bottom=0.015)
-    draw_pipeline(fig.add_subplot(gs[0, 0]))
-    draw_residual_block(fig.add_subplot(gs[0, 1]))
+    draw_encoder(fig.add_subplot(gs[0, :]))
+    draw_head(fig.add_subplot(gs[1, 0]))
+    draw_residual_block(fig.add_subplot(gs[1, 1]))
     fig.savefig(OUT / "fig_architecture.pdf")
     fig.savefig(OUT / "fig_architecture.png", dpi=300)
     plt.close(fig)
