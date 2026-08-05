@@ -1,0 +1,61 @@
+{
+  "sis_reference_delay_days": {
+    "z_S": 0.6,
+    "sigma_v_km_s": 200.0,
+    "y": 0.15,
+    "z_L": 0.3,
+    "delay_days": 6.309151609348826
+  },
+  "cosmology": {
+    "name": "FlatLambdaCDM",
+    "H0_km_s_Mpc": 67.66,
+    "Om0": 0.30966
+  },
+  "impact_parameter_prior": [
+    0.01,
+    0.3
+  ],
+  "magnification": {
+    "median_amplitude_ratio_type_I": 1.4087396263481406,
+    "median_amplitude_ratio_type_II": 1.4067464044334526,
+    "max_relative_deviation_from_sqrt2": 0.023047302141178228,
+    "median_magnification_ratio_sis_over_pm": 1.9845473348434988
+  },
+  "delay_shape": {
+    "SIS_zs0.3_range": [
+      0.17666609193437832,
+      1.001561098517496
+    ],
+    "SIS_zs0.6_range": [
+      0.16266862666157703,
+      1.0072111326397135
+    ],
+    "SIS_zs1.0_range": [
+      0.14626657287075456,
+      1.0217709232244467
+    ],
+    "SIS_peak_fraction": [
+      0.4808270676691729,
+      0.4582706766917293,
+      0.4289473684210526
+    ],
+    "PM_zs0.3_range": [
+      0.8826086956521739,
+      1.117391304347826
+    ],
+    "PM_zs0.6_range": [
+      0.7923076923076923,
+      1.2076923076923076
+    ],
+    "PM_zs1.0_range": [
+      0.7000000000000001,
+      1.3
+    ],
+    "PM_peak_fraction": [
+      0.95,
+      0.95,
+      0.95
+    ]
+  },
+  "note": "Purely analytic figures; no trained network or simulated catalog is used."
+}
