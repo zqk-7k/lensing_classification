@@ -2,7 +2,7 @@
 
 ## Status
 
-The clean 0222 training protocol, independent 0228 calibration/evaluation protocol, four-model inference, core fixed-FPP analysis, selection functions, SNR/y reweighting, lens-redshift sanity check, and minimal E7 type-II diagnostic are complete. The frozen Zenodo deposition is archived under the concept DOI 10.5281/zenodo.21311077 (v2.1 built and verified; deposition pending account authorization).
+The clean 0222 training protocol, independent 0228 calibration/evaluation protocol, four-model inference, core fixed-FPP analysis, selection functions, SNR/y reweighting, lens-redshift sanity check, and minimal E7 type-II diagnostic are complete. The frozen Zenodo deposition is archived under the concept DOI 10.5281/zenodo.21311077 (v2.1.1 built and verified; deposition pending account authorization).
 
 ## Data roles
 
