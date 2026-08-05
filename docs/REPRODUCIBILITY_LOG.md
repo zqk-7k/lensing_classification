@@ -34,7 +34,9 @@
 - Built and published the v1.0 bundle: 159 payload files, 1,906,391,230 bytes, under DOI 10.5281/zenodo.21311078.
 - Audited the CQT training pair provenance, found the split failure, rebuilt the pair set, retrained the baseline, and regenerated every derived result.
 - Added twenty training instances, four extra seeds per architecture per lens family, for the instance-variability study.
-- Rebuilt the v2.0 bundle: 389 hash-verified payload files, 2,944,413,943 bytes, deterministic gzip archive of 2,653,949,331 bytes, SHA-256 1d31b666a8e060e264a5314b9682202cde6bd8fd907478d681c722f21c4cf8d2. Deposition pending account authorization; the concept DOI 10.5281/zenodo.21311077 is the citable identifier.
+- Decomposed the threshold-inclusive interval into calibration and evaluation components, and computed it per training instance rather than for the archived instance alone.
+- Added generating code for the two analytic lensing figures, closing the last figure-provenance gap.
+- Rebuilt the v2.1 bundle at tag apjs-resubmission-v2.1: 395 hash-verified payload files, 2,944,952,330 bytes, deterministic gzip archive of 2,654,423,871 bytes, SHA-256 fa659e633281032f64d3d7e04b5d67b2ec90ed229ef7b9f7624219013ab83c97. Deposition pending account authorization; the concept DOI 10.5281/zenodo.21311077 is the citable identifier.
 
 ## Additional completion analyses
 

@@ -14,18 +14,19 @@ The CQT caches are derived intermediates for the 0228 holdout catalog. Raw 0222/
 
 Every manifest payload file is verified by size and SHA-256 before archive creation. The final archive has a separate SHA-256 sidecar and an `archive_info.json` record in `release/zenodo/dist/`.
 
-## Measured release size, v2.0
+## Measured release size, v2.1
 
-- Manifest payload: 389 files, 2,944,413,943 bytes (2.74 GiB).
-- Archive members: 397 files, including eight release-control files.
-- Deterministic gzip archive: 2,653,949,331 bytes (2.47 GiB),
-  SHA-256 `1d31b666a8e060e264a5314b9682202cde6bd8fd907478d681c722f21c4cf8d2`.
+- Manifest payload: 395 files, 2,944,952,330 bytes (2.74 GiB).
+- Archive members: 403 files, including eight release-control files.
+- Deterministic gzip archive: 2,654,423,871 bytes (2.47 GiB),
+  SHA-256 `fa659e633281032f64d3d7e04b5d67b2ec90ed229ef7b9f7624219013ab83c97`.
+- Built at tag `apjs-resubmission-v2.1`.
 
 The manuscript statement should use these measured values. Suggested wording:
 
 > A frozen release containing the trained checkpoints, the pinned DeiT initialization
 > weights, the CQT caches, the twenty additional training instances, and all derived
-> results (389 manifest payload files; 2.94 GB uncompressed and 2.65 GB as a
+> results (395 manifest payload files; 2.94 GB uncompressed and 2.65 GB as a
 > gzip-compressed archive; hash-verified against the committed manifest) is deposited on
 > Zenodo under the concept DOI `10.5281/zenodo.21311077`, which always resolves to the
 > latest version.
@@ -50,7 +51,7 @@ CC BY 4.0. The concept DOI `10.5281/zenodo.21311077` always resolves to the late
 version and is the one the manuscript cites, so the text does not have to change when a
 new version is deposited.
 
-Version v2.0 is built and verified in `release/zenodo/dist/` but **not yet deposited**:
+Version v2.1 is built and verified in `release/zenodo/dist/` but **not yet deposited**:
 publishing requires an authenticated Zenodo account. To deposit it, open the existing
 record, choose "New version", upload the four files from `dist/`, apply the metadata in
 `metadata.example.json`, and publish. The record's related identifier for the GitHub
