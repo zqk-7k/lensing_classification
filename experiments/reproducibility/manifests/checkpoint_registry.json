@@ -1,36 +1,165 @@
 {
-  "protocol_status": "frozen_before_0228_evaluation",
-  "training_catalog": "0222",
-  "held_out_catalog": "0228",
-  "git_commit": "4c168578d4e027a9a3b8d3482abd324bba13fdeb",
-  "shared_training_split_sha256": "f871af69d4aac09b9d05488b0370bbbfe001a73229df575b5b96cd97f8b37f52",
-  "selection_metric": "validation_auc",
-  "checkpoints": {
-    "pi_resnet_sis_noisy": {
-      "path": "artifacts/training/pi_resnet_sis_noisy_seed42/best.pt",
-      "sha256": "03caed7614bf971139804fc9beb1a2c89d48b936c1534ec706ce59ca2934deea",
-      "best_epoch": 275,
-      "validation_auc": 0.988624
-    },
-    "pi_resnet_pm_noisy": {
-      "path": "artifacts/training/pi_resnet_pm_noisy_seed42/best.pt",
-      "sha256": "ad892fb711568f4244ecfda7f8f93e9d511f9eb92b26a6974ca356a68a6d08c1",
-      "best_epoch": 184,
-      "validation_auc": 0.985332
-    },
-    "cqt_deit_sis_noisy": {
-      "path": "artifacts/training/cqt_deit_sis_noisy_seed42/best.pth",
-      "sha256": "5c3d775e2991a21ac3331f93986bde9b2e9fe1d6824311c8a312e5f82e847952",
-      "best_epoch": 52,
-      "validation_auc": 0.980088,
-      "pretrained_weights_sha256": "b40b3cf7d94a9cf8c7902e696de6aada1203d6eef58fe70c231f443426f845b3"
-    },
-    "cqt_deit_pm_noisy": {
-      "path": "artifacts/training/cqt_deit_pm_noisy_seed42/best.pth",
-      "sha256": "82f3d394542d84be10e49392dbe86f20618e81cfe6bd16b045be290ea30da270",
-      "best_epoch": 85,
-      "validation_auc": 0.965068,
-      "pretrained_weights_sha256": "b40b3cf7d94a9cf8c7902e696de6aada1203d6eef58fe70c231f443426f845b3"
-    }
+ "protocol_status": "frozen_before_0228_evaluation",
+ "training_catalog": "0222",
+ "held_out_catalog": "0228",
+ "git_commit": "4c168578d4e027a9a3b8d3482abd324bba13fdeb",
+ "shared_training_split_sha256": "f871af69d4aac09b9d05488b0370bbbfe001a73229df575b5b96cd97f8b37f52",
+ "selection_metric": "validation_auc",
+ "checkpoints": {
+  "pi_resnet_sis_noisy": {
+   "path": "artifacts/training/pi_resnet_sis_noisy_seed42/best.pt",
+   "sha256": "03caed7614bf971139804fc9beb1a2c89d48b936c1534ec706ce59ca2934deea",
+   "best_epoch": 275,
+   "validation_auc": 0.988624
+  },
+  "pi_resnet_pm_noisy": {
+   "path": "artifacts/training/pi_resnet_pm_noisy_seed42/best.pt",
+   "sha256": "ad892fb711568f4244ecfda7f8f93e9d511f9eb92b26a6974ca356a68a6d08c1",
+   "best_epoch": 184,
+   "validation_auc": 0.985332
+  },
+  "cqt_deit_sis_noisy": {
+   "path": "artifacts/training_v2/cqt_deit_sis_noisy_seed42/best.pth",
+   "sha256": "cbdefe1422edcf1245f9dcf822b2a456f24a8015192897a768b0e4e3a54ea7ef",
+   "best_epoch": 56,
+   "validation_auc": 0.978828,
+   "pretrained_weights_sha256": "b40b3cf7d94a9cf8c7902e696de6aada1203d6eef58fe70c231f443426f845b3",
+   "training_pairs": "rebuilt split-respecting 0222 set; see docs/CQT_PAIR_PROVENANCE.md"
+  },
+  "cqt_deit_pm_noisy": {
+   "path": "artifacts/training_v2/cqt_deit_pm_noisy_seed42/best.pth",
+   "sha256": "9e8e29a9c8def1756dd9e8d897e52ab3f29fd4bd97caeb2902cae39b83618e19",
+   "best_epoch": 63,
+   "validation_auc": 0.968992,
+   "pretrained_weights_sha256": "b40b3cf7d94a9cf8c7902e696de6aada1203d6eef58fe70c231f443426f845b3",
+   "training_pairs": "rebuilt split-respecting 0222 set; see docs/CQT_PAIR_PROVENANCE.md"
   }
+ },
+ "instance_variability_checkpoints": {
+  "cqt_deit_pm_noisy_seed43": {
+   "path": "artifacts/training_seeds/cqt_deit_pm_noisy_seed43/best.pth",
+   "sha256": "6f6a7a09a39fbe042e88d6f1aea60f307dffbc63de39c00afe8613bf5df2f03e",
+   "seed": 43,
+   "best_epoch": 85,
+   "validation_auc": 0.965552
+  },
+  "cqt_deit_pm_noisy_seed44": {
+   "path": "artifacts/training_seeds/cqt_deit_pm_noisy_seed44/best.pth",
+   "sha256": "370062602c76bed6fbaa15f164ae15467f3d54b3ac8b494745ec03326e24477b",
+   "seed": 44,
+   "best_epoch": 70,
+   "validation_auc": 0.969864
+  },
+  "cqt_deit_pm_noisy_seed45": {
+   "path": "artifacts/training_seeds/cqt_deit_pm_noisy_seed45/best.pth",
+   "sha256": "df89fe879fb58f0504f95ec9e11e9b935c85b628c2c109c4f91e38bc5c5764a0",
+   "seed": 45,
+   "best_epoch": 78,
+   "validation_auc": 0.970684
+  },
+  "cqt_deit_pm_noisy_seed46": {
+   "path": "artifacts/training_seeds/cqt_deit_pm_noisy_seed46/best.pth",
+   "sha256": "56d2b8c89bc7871d3aab839f9f1bbdfb05f6dd5b44bca96a20602e64cc0b999f",
+   "seed": 46,
+   "best_epoch": 137,
+   "validation_auc": 0.9602
+  },
+  "cqt_deit_sis_noisy_seed43": {
+   "path": "artifacts/training_seeds/cqt_deit_sis_noisy_seed43/best.pth",
+   "sha256": "394a82e89d799ff86f898f019149f5477eafac41a26091e6e58a45ca41338c7c",
+   "seed": 43,
+   "best_epoch": 75,
+   "validation_auc": 0.977136
+  },
+  "cqt_deit_sis_noisy_seed44": {
+   "path": "artifacts/training_seeds/cqt_deit_sis_noisy_seed44/best.pth",
+   "sha256": "32693b44b246d72fa51110c1410aaf8c1f14cbd1719522ee9c6631a821de9897",
+   "seed": 44,
+   "best_epoch": 55,
+   "validation_auc": 0.977364
+  },
+  "cqt_deit_sis_noisy_seed45": {
+   "path": "artifacts/training_seeds/cqt_deit_sis_noisy_seed45/best.pth",
+   "sha256": "10b8efc10b33110e21ed52a93c733415d1257b82c842f7294172a7433c28a8f1",
+   "seed": 45,
+   "best_epoch": 41,
+   "validation_auc": 0.977124
+  },
+  "cqt_deit_sis_noisy_seed46": {
+   "path": "artifacts/training_seeds/cqt_deit_sis_noisy_seed46/best.pth",
+   "sha256": "b31ef9239a3ed48b17af454203d05b4bf648ee979cffaa5021b4f0897ed866ec",
+   "seed": 46,
+   "best_epoch": 87,
+   "validation_auc": 0.983316
+  },
+  "pi_resnet_pm_noisy_seed43": {
+   "path": "artifacts/training_seeds/pi_resnet_pm_noisy_seed43/best.pt",
+   "sha256": "74396c6d0865ca6494b666efaa25de55b7ebc980e92bc01b83033269753d6c41",
+   "seed": 43,
+   "best_epoch": 162,
+   "validation_auc": 0.9831
+  },
+  "pi_resnet_pm_noisy_seed44": {
+   "path": "artifacts/training_seeds/pi_resnet_pm_noisy_seed44/best.pt",
+   "sha256": "92af87f8d8aa15a1451275e8d3341c78c7a5a99b7a257040ffb3e8bdefebb5ec",
+   "seed": 44,
+   "best_epoch": 218,
+   "validation_auc": 0.988564
+  },
+  "pi_resnet_pm_noisy_seed45": {
+   "path": "artifacts/training_seeds/pi_resnet_pm_noisy_seed45/best.pt",
+   "sha256": "c683f694bcaf0cf7c1f576b022376429ea9bb0f339a362128a3c5fcb48ad793f",
+   "seed": 45,
+   "best_epoch": 110,
+   "validation_auc": 0.990132
+  },
+  "pi_resnet_pm_noisy_seed46": {
+   "path": "artifacts/training_seeds/pi_resnet_pm_noisy_seed46/best.pt",
+   "sha256": "9c6a757249b7a6f4f800526a19ce5fdeba4d029471614023e8260a0988df2d4d",
+   "seed": 46,
+   "best_epoch": 101,
+   "validation_auc": 0.987644
+  },
+  "pi_resnet_sis_noisy_seed43": {
+   "path": "artifacts/training_seeds/pi_resnet_sis_noisy_seed43/best.pt",
+   "sha256": "36a9970798e3f6b40648f2d037e904f65d7d333fcbb68b399b568ebc312767a0",
+   "seed": 43,
+   "best_epoch": 161,
+   "validation_auc": 0.995568
+  },
+  "pi_resnet_sis_noisy_seed44": {
+   "path": "artifacts/training_seeds/pi_resnet_sis_noisy_seed44/best.pt",
+   "sha256": "369e490f1aa5833d8f6914139f7fa76df169ac5f63d368a0d6e9b32a33fc0723",
+   "seed": 44,
+   "best_epoch": 264,
+   "validation_auc": 0.992204
+  },
+  "pi_resnet_sis_noisy_seed45": {
+   "path": "artifacts/training_seeds/pi_resnet_sis_noisy_seed45/best.pt",
+   "sha256": "572e03c05773791c645c5fa4a96766c5ca55ebbe373db642c4d2e5b26c4820f3",
+   "seed": 45,
+   "best_epoch": 226,
+   "validation_auc": 0.993036
+  },
+  "pi_resnet_sis_noisy_seed46": {
+   "path": "artifacts/training_seeds/pi_resnet_sis_noisy_seed46/best.pt",
+   "sha256": "cd66fbb1e5f6427e07d6abfa508c16b8eafd0eb2e3e53392e0fcd98455e7faf5",
+   "seed": 46,
+   "best_epoch": 137,
+   "validation_auc": 0.994508
+  }
+ },
+ "instance_variability_note": "Secondary instances for the variability study of the manuscript; the locked analysis uses the seed-42 checkpoints above only.",
+ "superseded": {
+  "cqt_deit_sis_noisy_pre_audit": {
+   "path": "artifacts/training/cqt_deit_sis_noisy_seed42/best.pth",
+   "sha256": "5c3d775e2991a21ac3331f93986bde9b2e9fe1d6824311c8a312e5f82e847952",
+   "reason": "trained on pair images whose negatives crossed the train/validation split"
+  },
+  "cqt_deit_pm_noisy_pre_audit": {
+   "path": "artifacts/training/cqt_deit_pm_noisy_seed42/best.pth",
+   "sha256": "82f3d394542d84be10e49392dbe86f20618e81cfe6bd16b045be290ea30da270",
+   "reason": "trained on pair images whose negatives crossed the train/validation split"
+  }
+ }
 }

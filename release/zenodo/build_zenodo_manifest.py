@@ -19,7 +19,8 @@ PATTERNS = [
     "docs/*.md",
     "experiments/reproducibility/manifests/**/*",
     "results/**/*",
-    "artifacts/training/*_noisy_seed42/best.*",
+    "artifacts/training_v2/*_noisy_seed42/best.*",
+    "artifacts/training_seeds/*_noisy_seed*/best.*",
     "artifacts/pretrained/deit_tiny_distilled_patch16_224-b40b3cf7.pth",
     "artifacts/preprocessing/cqt_cache_0228/*.npy",
 ]

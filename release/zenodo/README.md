@@ -18,10 +18,11 @@ The final command verifies every manifest row again and writes a deterministic a
 
 ## Published deposition
 
-Version v1.0 is published under DOI
-[10.5281/zenodo.21311078](https://doi.org/10.5281/zenodo.21311078), licensed CC BY 4.0,
-with author names, ORCID identifiers, affiliations, and the related repository
-identifier recorded in `metadata.example.json`.
+Version v1.0 is published under DOI 10.5281/zenodo.21311078. Version v2.0 is built and
+verified in `dist/` but not yet deposited. Cite the concept DOI
+[10.5281/zenodo.21311077](https://doi.org/10.5281/zenodo.21311077), which always
+resolves to the latest version. Author names, ORCID identifiers, affiliations, and the
+related repository identifier are in `metadata.example.json`.
 
 To cut a new version, rebuild with the three commands above, confirm that
 `MANIFEST.json` and `MANIFEST.sha256` are committed, and deposit as a new version of

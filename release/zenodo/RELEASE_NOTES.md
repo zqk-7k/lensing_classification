@@ -14,20 +14,45 @@ The CQT caches are derived intermediates for the 0228 holdout catalog. Raw 0222/
 
 Every manifest payload file is verified by size and SHA-256 before archive creation. The final archive has a separate SHA-256 sidecar and an `archive_info.json` record in `release/zenodo/dist/`.
 
-## Measured release size
+## Measured release size, v2.0
 
-- Manifest payload: 159 files, 1,906,391,230 bytes (1.775 GiB).
-- Archive members: 167 files, including eight release-control files.
-- Deterministic gzip archive: approximately 1.69 GB.
+- Manifest payload: 389 files, 2,944,413,943 bytes (2.74 GiB).
+- Archive members: 397 files, including eight release-control files.
+- Deterministic gzip archive: 2,653,949,331 bytes (2.47 GiB),
+  SHA-256 `1d31b666a8e060e264a5314b9682202cde6bd8fd907478d681c722f21c4cf8d2`.
 
-The manuscript statement should use these measured values rather than the earlier 89-file/400-MB estimate. Suggested wording:
+The manuscript statement should use these measured values. Suggested wording:
 
-> A frozen release containing the trained checkpoints, the pinned DeiT initialization weights, the CQT caches, and all derived results (159 manifest payload files; 1.91 GB uncompressed and approximately 1.69 GB as a gzip-compressed archive; hash-verified against the committed manifest) is deposited on Zenodo under DOI `10.5281/zenodo.21311078`.
+> A frozen release containing the trained checkpoints, the pinned DeiT initialization
+> weights, the CQT caches, the twenty additional training instances, and all derived
+> results (389 manifest payload files; 2.94 GB uncompressed and 2.65 GB as a
+> gzip-compressed archive; hash-verified against the committed manifest) is deposited on
+> Zenodo under the concept DOI `10.5281/zenodo.21311077`, which always resolves to the
+> latest version.
+
+## What changed from v1.0
+
+- The CQT--DeiT checkpoints are retrained on the rebuilt, split-respecting 0222 pair set
+  (see `docs/CQT_PAIR_PROVENANCE.md`). The superseded checkpoints are recorded under
+  `superseded` in the checkpoint registry and are not shipped.
+- Sixteen additional checkpoints, four seeds per architecture per lens family, are
+  included for the instance-variability study, together with their per-pair 0228
+  predictions and training records.
+- The provenance audit, the recovered manifests of the original pair set, and the
+  rebuilt pair manifests are included.
+- All derived results are regenerated: core analysis, post-hoc robustness, transfer,
+  SNR matching, logit tail, and the manuscript figure set.
 
 ## Deposition status
 
-Published on 2026-07-11 as version v1.0 under DOI `10.5281/zenodo.21311078`, licensed
-CC BY 4.0. The record carries the gzip archive, its SHA-256 sidecar, the
-`archive_info.json` record, and the payload file list, so that the complete inventory
-can be checked without downloading the bundle. Author metadata and the license are
-recorded in `metadata.example.json`.
+Version v1.0 was published on 2026-07-11 under DOI `10.5281/zenodo.21311078`, licensed
+CC BY 4.0. The concept DOI `10.5281/zenodo.21311077` always resolves to the latest
+version and is the one the manuscript cites, so the text does not have to change when a
+new version is deposited.
+
+Version v2.0 is built and verified in `release/zenodo/dist/` but **not yet deposited**:
+publishing requires an authenticated Zenodo account. To deposit it, open the existing
+record, choose "New version", upload the four files from `dist/`, apply the metadata in
+`metadata.example.json`, and publish. The record's related identifier for the GitHub
+repository must also be corrected to `lensing_classification`; the v1.0 record still
+carries the old misspelling.
