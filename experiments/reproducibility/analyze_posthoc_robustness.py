@@ -26,8 +26,9 @@ points in `results/core/core_results.json`.
     bootstrap is run three ways -- resampling the evaluation blocks only (the locked
     convention), the calibration blocks only, and both -- so the contribution of the
     finite calibration partition can be separated from that of the finite evaluation
-    partition. Reported as standard deviations and as the calibration share
-    sd_cal^2 / sd_both^2.
+    partition. Reported as standard deviations and as the ratio sd_cal^2 / sd_both^2. This is a
+    one-factor-at-a-time diagnostic, not an additive decomposition: the two effects
+    interact nonlinearly and their variances do not sum to the joint variance.
 
 (D) Amortized catalog-scale cost. The measured per-pair timings of
     `results/benchmarks/throughput/throughput.json` are re-expressed under
@@ -212,8 +213,10 @@ def main():
                 "sd_both": float(draws["both"].std(ddof=1)),
                 "calibration_variance_share": float(draws["calibration_only"].var(ddof=1)
                                                     / draws["both"].var(ddof=1)),
-                "note": "Shares need not sum to one: the two components are not independent, "
-                        "so the residual is the interaction between them.",
+                "note": "One-factor-at-a-time variance ratios, not an additive decomposition: "
+                        "threshold recalibration and evaluation efficiency interact "
+                        "nonlinearly, so the calibration-only and evaluation-only variances "
+                        "do not sum to the joint variance.",
             }
         family_out["variance_decomposition"] = decomposition
 
