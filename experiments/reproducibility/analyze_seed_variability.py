@@ -19,6 +19,7 @@ from thresholds import kth_threshold
 import argparse
 
 SEEDS = [42, 43, 44, 45, 46]
+MODELS = ["pi", "cqt_deit"]
 TARGETS = [(1e-2, "1e-2"), (1e-3, "1e-3"), (1e-4, "1e-4")]
 
 # seed 42 lives in the main prediction dir; 43-46 in results/seeds/predictions
@@ -70,6 +71,33 @@ for name in ("1e-2", "1e-3", "1e-4"):
           f"CQT {100*c.mean():.1f}+-{100*c.std(ddof=1):.1f}  "
           f"差 {100*d.mean():+.1f}+-{100*d.std(ddof=1):.1f}  范围[{100*d.min():+.1f},{100*d.max():+.1f}]")
 
+# per-instance threshold-inclusive intervals, so that statements about which
+# operating points are resolved can be made for every instance, not only seed 42
+print("\n=== per-instance threshold-inclusive intervals (10,000 replicates) ===")
+cb_ids = idx.loc[cal_mask, "source_block_id"].to_numpy()
+ucb = np.unique(cb_ids)
+per_seed_ci = {}
+for s in SEEDS:
+    calA = {m: [aligned[(m, s)][cal_mask.values][cb_ids == b] for b in ucb] for m in MODELS}
+    posA = {m: [aligned[(m, s)][pos_mask.values][blocks == b] for b in ub] for m in MODELS}
+    rng = np.random.default_rng(20260711)
+    rows = {}
+    for t_, name in TARGETS:
+        d = []
+        for _ in range(10000):
+            cd = rng.integers(0, len(ucb), size=len(ucb)); ed = rng.integers(0, len(ub), size=len(ub))
+            thr = {m: kth_threshold(np.concatenate([calA[m][i] for i in cd]), t_) for m in MODELS}
+            pp = {m: np.concatenate([posA[m][i] for i in ed]) for m in MODELS}
+            d.append((pp["pi"] >= thr["pi"]).mean() - (pp["cqt_deit"] >= thr["cqt_deit"]).mean())
+        d = np.array(d); lo, hi = np.percentile(d, [2.5, 97.5])
+        rows[name] = {"ci": [float(lo), float(hi)], "frac_le_zero": float((d <= 0).mean())}
+    per_seed_ci[s] = rows
+    print(f"  seed {s}: " + "  ".join(
+        f"@{n} [{100*rows[n]['ci'][0]:+.1f},{100*rows[n]['ci'][1]:+.1f}]" for n in ("1e-2", "1e-3", "1e-4")))
+for name in ("1e-2", "1e-3", "1e-4"):
+    resolved = [s for s in SEEDS if per_seed_ci[s][name]["ci"][0] * per_seed_ci[s][name]["ci"][1] > 0]
+    print(f"  @{name}: {len(resolved)}/{len(SEEDS)} instances resolve a difference  {resolved}")
+
 print("\n=== 5 种子集成 (分数平均) ===")
 ens_pi = np.mean([aligned[("pi", s)] for s in SEEDS], axis=0)
 ens_cq = np.mean([aligned[("cqt_deit", s)] for s in SEEDS], axis=0)
@@ -103,6 +131,7 @@ report = {
     "per_seed": {str(s): {n: {"pi": per[s][n][0], "cqt_deit": per[s][n][1], "delta": per[s][n][2]}
                           for n in ("1e-2", "1e-3", "1e-4")} for s in SEEDS},
     "ensemble": {n: {"pi": r[n][0], "cqt_deit": r[n][1], "delta": r[n][2]} for n in ("1e-2", "1e-3", "1e-4")},
+    "per_seed_threshold_inclusive": {str(s): per_seed_ci[s] for s in SEEDS},
     "note": "Post-hoc instance-variability study. The locked primary analysis uses seed 42 only.",
 }
 import pathlib as _p

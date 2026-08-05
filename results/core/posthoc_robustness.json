@@ -36,6 +36,29 @@
      "frac_replicates_le_zero": 0.6536
     }
    },
+   "variance_decomposition": {
+    "0.01": {
+     "sd_evaluation_only": 0.012442857041846549,
+     "sd_calibration_only": 0.007101698906634326,
+     "sd_both": 0.013992478358227634,
+     "calibration_variance_share": 0.25759369161375273,
+     "note": "Shares need not sum to one: the two components are not independent, so the residual is the interaction between them."
+    },
+    "0.001": {
+     "sd_evaluation_only": 0.015988472171426592,
+     "sd_calibration_only": 0.045083070870340615,
+     "sd_both": 0.047978106338495335,
+     "calibration_variance_share": 0.8829594846409041,
+     "note": "Shares need not sum to one: the two components are not independent, so the residual is the interaction between them."
+    },
+    "0.0001": {
+     "sd_evaluation_only": 0.012855110412509117,
+     "sd_calibration_only": 0.03902325791710669,
+     "sd_both": 0.04131572509163869,
+     "calibration_variance_share": 0.8921056513580121,
+     "note": "Shares need not sum to one: the two components are not independent, so the residual is the interaction between them."
+    }
+   },
    "detected_event_recalibration": {
     "frac_cal_bg": 0.97936,
     "frac_ev_bg": 0.97961,
@@ -148,6 +171,29 @@
      ],
      "nested_median": -0.00971428571428571,
      "frac_replicates_le_zero": 0.7439
+    }
+   },
+   "variance_decomposition": {
+    "0.01": {
+     "sd_evaluation_only": 0.01305176823720283,
+     "sd_calibration_only": 0.00960131707793279,
+     "sd_both": 0.01606979157945365,
+     "calibration_variance_share": 0.35697774042998975,
+     "note": "Shares need not sum to one: the two components are not independent, so the residual is the interaction between them."
+    },
+    "0.001": {
+     "sd_evaluation_only": 0.012186583000977249,
+     "sd_calibration_only": 0.07196681574660539,
+     "sd_both": 0.0726597889726813,
+     "calibration_variance_share": 0.9810164958418741,
+     "note": "Shares need not sum to one: the two components are not independent, so the residual is the interaction between them."
+    },
+    "0.0001": {
+     "sd_evaluation_only": 0.006416900263739264,
+     "sd_calibration_only": 0.018978437679583612,
+     "sd_both": 0.019243215860824274,
+     "calibration_variance_share": 0.9726702056953023,
+     "note": "Shares need not sum to one: the two components are not independent, so the residual is the interaction between them."
     }
    },
    "detected_event_recalibration": {

@@ -22,7 +22,14 @@ points in `results/core/core_results.json`.
     filtered calibration background, and efficiency, achieved P_f, and the paired
     difference are recomputed for both networks.
 
-(C) Amortized catalog-scale cost. The measured per-pair timings of
+(C) Variance decomposition of the threshold-inclusive interval. The same block
+    bootstrap is run three ways -- resampling the evaluation blocks only (the locked
+    convention), the calibration blocks only, and both -- so the contribution of the
+    finite calibration partition can be separated from that of the finite evaluation
+    partition. Reported as standard deviations and as the calibration share
+    sd_cal^2 / sd_both^2.
+
+(D) Amortized catalog-scale cost. The measured per-pair timings of
     `results/benchmarks/throughput/throughput.json` are re-expressed under
     caching, in which each event is preprocessed once and reused across the N-1
     pairs it enters. Inputs are read from the measurement file rather than
@@ -174,7 +181,43 @@ def main():
             }
         family_out["nested_bootstrap"] = nested
 
-        # ---------- (B) fully detected-event recalibration ----------
+        # ---------- (B) variance decomposition of the nested interval ----------
+        decomposition = {}
+        for target, key in TARGETS:
+            draws = {}
+            for name, (do_cal, do_ev) in (("evaluation_only", (False, True)),
+                                          ("calibration_only", (True, False)),
+                                          ("both", (True, True))):
+                rng_d = np.random.default_rng(SEED)
+                values = []
+                base_thr = {m: kth_threshold(np.concatenate(cal_by_block[m]), target) for m in MODELS}
+                base_pos = {m: np.concatenate(pos_by_block[m]) for m in MODELS}
+                for _ in range(REPS):
+                    if do_cal:
+                        cal_draw = rng_d.integers(0, len(cal_blocks), size=len(cal_blocks))
+                        thr = {m: kth_threshold(np.concatenate([cal_by_block[m][i] for i in cal_draw]),
+                                                target) for m in MODELS}
+                    else:
+                        thr = base_thr
+                    if do_ev:
+                        ev_draw = rng_d.integers(0, len(ev_blocks), size=len(ev_blocks))
+                        pos = {m: np.concatenate([pos_by_block[m][i] for i in ev_draw]) for m in MODELS}
+                    else:
+                        pos = base_pos
+                    values.append((pos["pi"] >= thr["pi"]).mean() - (pos["cqt_deit"] >= thr["cqt_deit"]).mean())
+                draws[name] = np.asarray(values)
+            decomposition[key] = {
+                "sd_evaluation_only": float(draws["evaluation_only"].std(ddof=1)),
+                "sd_calibration_only": float(draws["calibration_only"].std(ddof=1)),
+                "sd_both": float(draws["both"].std(ddof=1)),
+                "calibration_variance_share": float(draws["calibration_only"].var(ddof=1)
+                                                    / draws["both"].var(ddof=1)),
+                "note": "Shares need not sum to one: the two components are not independent, "
+                        "so the residual is the interaction between them.",
+            }
+        family_out["variance_decomposition"] = decomposition
+
+        # ---------- (C) fully detected-event recalibration ----------
         detected = lambda d: d[(d.rho_1 >= RHO_DETECTED) & (d.rho_2 >= RHO_DETECTED)]
         cal_det, ev_bg_det, ev_pos_det = detected(cal_bg), detected(ev_bg), detected(ev_pos)
         pos_det_by_block = {m: block_arrays(ev_pos_det, ev_blocks, f"{m}_score") for m in MODELS}
@@ -228,7 +271,15 @@ def main():
                   f"nested CI [{100 * lo:+.1f},{100 * hi:+.1f}] | "
                   f"P(d<=0)={entry['frac_replicates_le_zero']:.4f}  {flag}")
 
-    print("\n=== (B) fully detected-event, both networks ===")
+    print("\n=== (B) variance decomposition of the threshold-inclusive interval ===")
+    for fam in ("sis", "pm"):
+        for _, key in TARGETS:
+            d = result["families"][fam]["variance_decomposition"][key]
+            print(f"  {fam} {key}: sd eval-only {100 * d['sd_evaluation_only']:.2f} pp | "
+                  f"calib-only {100 * d['sd_calibration_only']:.2f} | both {100 * d['sd_both']:.2f} | "
+                  f"calibration share {100 * d['calibration_variance_share']:.0f}%")
+
+    print("\n=== (C) fully detected-event, both networks ===")
     for fam in ("sis", "pm"):
         entry = result["families"][fam]["detected_event_recalibration"]
         print(f"  {fam}: cal bg {100 * entry['frac_cal_bg']:.1f}%, "
@@ -245,7 +296,7 @@ def main():
                   f"d {100 * row['delta_eff']:+.1f} "
                   f"[{100 * row['delta_ci'][0]:+.1f},{100 * row['delta_ci'][1]:+.1f}]")
 
-    print("\n=== (C) amortized catalog-scale cost (ms per pair) ===")
+    print("\n=== (D) amortized catalog-scale cost (ms per pair) ===")
     cost = result["amortized_cost"]
     print(f"  cold start: PI {cost['coldstart_ms_per_pair']['pi']:.3f} | "
           f"CQT {cost['coldstart_ms_per_pair']['cqt_deit']:.3f} | "

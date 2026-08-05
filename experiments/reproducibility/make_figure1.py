@@ -103,7 +103,7 @@ for x0, x1 in [(17.0, 20.0), (36.5, 39.5), (56.5, 59.5), (77.0, 80.5)]:
 axb = fig.add_subplot(gs[1, :]); axb.axis("off")
 axb.set_xlim(0, 100); axb.set_ylim(0, 10)
 axb.text(0.5, 8.6, "(b)", fontsize=11, weight="bold")
-axb.text(3.6, 8.6, "Blind evaluation protocol", fontsize=10.2, weight="bold", va="center")
+axb.text(3.6, 8.6, "Locked evaluation protocol", fontsize=10.2, weight="bold", va="center")
 axb.text(30.5, 8.6, "— archived and version-tagged before the evaluation catalog was unblinded",
          fontsize=8.6, style="italic", color="#4a5260", va="center")
 
