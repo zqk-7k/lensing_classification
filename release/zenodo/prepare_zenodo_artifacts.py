@@ -21,13 +21,14 @@ CHECKPOINT_SOURCES = {
         "artifacts/training/pi_resnet_pm_noisy_seed42/best.pt",
         "runs/apjs_resubmission_final_v1/pi_resnet_pm_noisy_seed42/best.pt",
     ),
+    # retrained on the split-respecting pair set; see docs/CQT_PAIR_PROVENANCE.md
     "cqt_deit_sis_noisy": (
-        "artifacts/training/cqt_deit_sis_noisy_seed42/best.pth",
-        "runs/apjs_resubmission_final_v1/cqt_deit_sis_noisy_seed42/best.pth",
+        "artifacts/training_v2/cqt_deit_sis_noisy_seed42/best.pth",
+        "artifacts/training_v2/cqt_deit_sis_noisy_seed42/best.pth",
     ),
     "cqt_deit_pm_noisy": (
-        "artifacts/training/cqt_deit_pm_noisy_seed42/best.pth",
-        "runs/apjs_resubmission_final_v1/cqt_deit_pm_noisy_seed42/best.pth",
+        "artifacts/training_v2/cqt_deit_pm_noisy_seed42/best.pth",
+        "artifacts/training_v2/cqt_deit_pm_noisy_seed42/best.pth",
     ),
 }
 

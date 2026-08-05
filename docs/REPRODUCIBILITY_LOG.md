@@ -31,8 +31,10 @@
 
 ## Archival release
 
-- Built the frozen bundle: 159 hash-verified payload files, 1,906,391,230 bytes, deterministic gzip archive of approximately 1.69 GB.
-- Published the Zenodo deposition under DOI 10.5281/zenodo.21311078 (v1.0) with author metadata and the CC BY 4.0 license recorded.
+- Built and published the v1.0 bundle: 159 payload files, 1,906,391,230 bytes, under DOI 10.5281/zenodo.21311078.
+- Audited the CQT training pair provenance, found the split failure, rebuilt the pair set, retrained the baseline, and regenerated every derived result.
+- Added twenty training instances, four extra seeds per architecture per lens family, for the instance-variability study.
+- Rebuilt the v2.0 bundle: 389 hash-verified payload files, 2,944,413,943 bytes, deterministic gzip archive of 2,653,949,331 bytes, SHA-256 1d31b666a8e060e264a5314b9682202cde6bd8fd907478d681c722f21c4cf8d2. Deposition pending account authorization; the concept DOI 10.5281/zenodo.21311077 is the citable identifier.
 
 ## Additional completion analyses
 

@@ -123,13 +123,20 @@ runs themselves predate the locked protocol and are not part of the frozen relea
 
 | Run | Best validation AUC | Runtime (s) | Checkpoint SHA-256 |
 |---|---|---|---|
-| `cqt_deit_sis_noisy_seed42` | 0.980088 | 2341.6 | `5c3d775e2991a21ac3331f93986bde9b2e9fe1d6824311c8a312e5f82e847952` |
-| `cqt_deit_pm_noisy_seed42` | 0.965068 | 2285.9 | `82f3d394542d84be10e49392dbe86f20618e81cfe6bd16b045be290ea30da270` |
+| `cqt_deit_sis_noisy_seed42` | 0.978828 | 2400.0 | `cbdefe1422edcf1245f9dcf822b2a456f24a8015192897a768b0e4e3a54ea7ef` |
+| `cqt_deit_pm_noisy_seed42` | 0.968992 | 2396.7 | `9e8e29a9c8def1756dd9e8d897e52ab3f29fd4bd97caeb2902cae39b83618e19` |
+
+These are the runs on the rebuilt, split-respecting pair set, under
+`artifacts/training_v2/`. The superseded pre-audit runs reached 0.980088 and 0.965068
+on a validation set that shared sources with training through the second pair member;
+they are recorded under `superseded` in the checkpoint registry and are not shipped.
+Four further seeds per family are under `artifacts/training_seeds/` for the
+instance-variability study.
 
 Both runs were executed at commit `4c168578d4e027a9a3b8d3482abd324bba13fdeb` under
 Python 3.12.12, PyTorch 2.5.1+cu124, CUDA 12.4, on an NVIDIA RTX 5000 Ada Generation.
 The checkpoints are distributed in the Zenodo bundle
-(DOI 10.5281/zenodo.21311078) and registered in
+(concept DOI 10.5281/zenodo.21311077) and registered in
 `experiments/reproducibility/manifests/checkpoint_registry.json`.
 
 ## Reproduction

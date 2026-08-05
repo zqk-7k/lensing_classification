@@ -2,7 +2,7 @@
 
 ## Status
 
-The clean 0222 training protocol, independent 0228 calibration/evaluation protocol, four-model inference, core fixed-FPP analysis, selection functions, SNR/y reweighting, lens-redshift sanity check, and minimal E7 type-II diagnostic are complete. The frozen Zenodo deposition is published under DOI 10.5281/zenodo.21311078 (v1.0, CC BY 4.0).
+The clean 0222 training protocol, independent 0228 calibration/evaluation protocol, four-model inference, core fixed-FPP analysis, selection functions, SNR/y reweighting, lens-redshift sanity check, and minimal E7 type-II diagnostic are complete. The frozen Zenodo deposition is archived under the concept DOI 10.5281/zenodo.21311077 (v2.0 built and verified; deposition pending account authorization).
 
 ## Data roles
 
@@ -70,4 +70,4 @@ Five instances per architecture and family, varying only the seed. On SIS the pa
 
 ## Reproducibility
 
-All compact code, manifests, per-pair predictions, statistical tables, and hashes are stored in GitHub. Large checkpoints and CQT caches are hash-registered in `release/zenodo/MANIFEST.json` and published in the Zenodo release under DOI 10.5281/zenodo.21311078.
+All compact code, manifests, per-pair predictions, statistical tables, and hashes are stored in GitHub. Large checkpoints and CQT caches are hash-registered in `release/zenodo/MANIFEST.json` and published in the Zenodo release under the concept DOI 10.5281/zenodo.21311077.

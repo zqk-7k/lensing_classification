@@ -28,4 +28,4 @@
 | Detected-event recalibration | `results/core/posthoc_robustness.json` | `analyze_posthoc_robustness.py` |
 | Amortized catalog-scale cost | `results/core/posthoc_robustness.json` | `analyze_posthoc_robustness.py` |
 | Manuscript figures | `results/figures/manuscript/` | `make_figure1.py`, `make_figures_v22.py`, `regen_selection.py`, `regen_snr_matched.py` |
-| Archival release | `release/zenodo/MANIFEST.json`, DOI 10.5281/zenodo.21311078 | `build_zenodo_manifest.py`, `build_frozen_release.py` |
+| Archival release | `release/zenodo/MANIFEST.json`, concept DOI 10.5281/zenodo.21311077 | `build_zenodo_manifest.py`, `build_frozen_release.py` |
