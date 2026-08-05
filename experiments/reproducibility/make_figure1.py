@@ -92,7 +92,7 @@ box(axa, 20.0, 2.4, 16.5, 4.4, "Two images\n$\\sqrt{|\\mu_\\pm|}$, $\\Delta t_d$
 box(axa, 39.5, 2.4, 17.0, 4.4, "ET-D noise, whitening,\npeak alignment, 2 s input")
 box(axa, 59.5, 4.7, 17.5, 2.6, "PI-ResNet (1D)", fc="#e3eef8")
 box(axa, 59.5, 1.4, 17.5, 2.6, "CQT--DeiT (2D baseline)", fc="#f8e6e4")
-axa.text(68.25, 0.35, "identical pairs, identical splits", fontsize=7.8,
+axa.text(68.25, 0.35, "shared source-level splits; identical evaluation manifests", fontsize=7.0,
          ha="center", style="italic", color="#4a5260")
 box(axa, 80.5, 2.4, 18.0, 4.4, "pair score\n$s(d_1,d_2)$", fc="#eef2f7", weight="bold")
 
@@ -104,7 +104,7 @@ axb = fig.add_subplot(gs[1, :]); axb.axis("off")
 axb.set_xlim(0, 100); axb.set_ylim(0, 10)
 axb.text(0.5, 8.6, "(b)", fontsize=11, weight="bold")
 axb.text(3.6, 8.6, "Blind evaluation protocol", fontsize=10.2, weight="bold", va="center")
-axb.text(30.5, 8.6, "— archived and version-tagged before any evaluation score was computed",
+axb.text(30.5, 8.6, "— archived and version-tagged before the evaluation catalog was unblinded",
          fontsize=8.6, style="italic", color="#4a5260", va="center")
 
 box(axb, 1.5, 0.6, 27.0, 6.2, "training / validation split\n$\\Rightarrow$ network weights",
