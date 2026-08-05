@@ -3,8 +3,8 @@
   "hard_probability": 0.7,
   "negative_rule": "mirrors PairDataset._build_fixed_pairs, restricted to each split",
   "families": {
-    "PM": {
-      "lens": "PM",
+    "SIS": {
+      "lens": "SIS",
       "seed": 46,
       "n_images": 5000,
       "n_positive": 2500,
@@ -20,7 +20,7 @@
       "n_unlensed_crossing_split": 0,
       "train_unlensed_outside_declared_pool": 0,
       "val_unlensed_outside_declared_pool": 0,
-      "image_root": "${GW_CQT_V2_ROOT}/dataset_images_PM_noisy_cqt",
+      "image_root": "${GW_CQT_V2_ROOT}/dataset_images_SIS_noisy_cqt",
       "PASS": true
     }
   }

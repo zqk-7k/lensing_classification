@@ -1,0 +1,14 @@
+{
+  "evaluation_lens": "SIS",
+  "checkpoint_lens": "SIS",
+  "rows": 202500,
+  "checkpoint": "artifacts/training_seeds/pi_resnet_sis_noisy_seed45/best.pt",
+  "checkpoint_sha256": "572e03c05773791c645c5fa4a96766c5ca55ebbe373db642c4d2e5b26c4820f3",
+  "manifest_sha256": {
+    "0228_sis_calibration_pairs.csv.gz": "682a9bfd4024f372968bc63b1b911568ab999dd93fdea7250bb326ecf6284d5f",
+    "0228_sis_evaluation_pairs.csv.gz": "5ee897f3e1b0fb93377858ec8682b67670122b50a539f975bbc4eb16912f1869"
+  },
+  "prediction_path": "results/seeds/predictions/pi_predictions_0228_sis_seed45.csv.gz",
+  "prediction_sha256": "dadc5ceb141ea65ed816df2791899e897edee0df38d42d45b6775a20ec4d5922",
+  "score_inspected_during_inference": false
+}
