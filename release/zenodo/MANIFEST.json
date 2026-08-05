@@ -4,7 +4,7 @@
     {
       "path": "README.md",
       "bytes": 5162,
-      "sha256": "89c1cc4721b99a54c3e426c4d338b162b11c3b4c996330e489557730f30eace6"
+      "sha256": "407636a4447f018ca4ffd9a8fcc71a84596bb86f7965f11582edc45f0b423d76"
     },
     {
       "path": "README.zh-CN.md",
@@ -134,7 +134,7 @@
     {
       "path": "docs/ARTIFACTS.md",
       "bytes": 2322,
-      "sha256": "7ef9177f05559f990a2e0cdf0583a0f9a5c740d55edba3b3b4d3e6c403662f87"
+      "sha256": "2b9b87d3cc2d51bc5ea89ae48b7b775c0d16c7b3e147df8efb59995e7989d2e4"
     },
     {
       "path": "docs/BASELINE_CONFIG.md",
@@ -163,13 +163,13 @@
     },
     {
       "path": "docs/REPRODUCIBILITY_LOG.md",
-      "bytes": 3279,
-      "sha256": "b3bba0fa1a01f827ccc1043c8785a0c2db6d27186718caa541e95692b74484e0"
+      "bytes": 3584,
+      "sha256": "5905697e8bfefe8f6f8b8cc864fe702a39b7c3684dfc22dea701ac287c5e2181"
     },
     {
       "path": "docs/RESULTS.md",
       "bytes": 8401,
-      "sha256": "44c34ebf98fd7acf7bd834ebdf2e39444a38df4c9d42905473f7a75ef06d6f0d"
+      "sha256": "b95c466328f24f391db221e3bc9f674cc41c4441e825a4cc65bdcfa63fbbc535"
     },
     {
       "path": "docs/RESULT_INDEX.md",
@@ -198,8 +198,8 @@
     },
     {
       "path": "experiments/reproducibility/analyze_posthoc_robustness.py",
-      "bytes": 15736,
-      "sha256": "fa5d95ce1e83a86be9f0bcf567bbf80c2edc7661fbfb2999cbf096f16a526114"
+      "bytes": 16059,
+      "sha256": "a43ae4d2d380f6e02fb85f8060ae2f1f13e4f9e066e5fd339ff2c1bfc2fbc9d0"
     },
     {
       "path": "experiments/reproducibility/analyze_seed_variability.py",
@@ -392,6 +392,11 @@
       "sha256": "1448182433ec708b607d6c9a186016fb5f124ef7fc5f6bb4ffa1f000d4cddebd"
     },
     {
+      "path": "experiments/reproducibility/verify_manuscript_figures.py",
+      "bytes": 4765,
+      "sha256": "ec553713e42eaaaedd3d4a5d8660b007190b2b33d7b0414fd3f0f77c4b06da15"
+    },
+    {
       "path": "experiments/reproducibility/zl_invariance_sanity.py",
       "bytes": 4193,
       "sha256": "ef5b4d7b32217b3fc9412144c26a5ad818f48068bbd109fe8683afd9658e272b"
@@ -504,7 +509,7 @@
     {
       "path": "results/core/SHA256SUMS",
       "bytes": 1318,
-      "sha256": "4afa4927c3848a6f0659e1b15eded22cfc1680ec3fd8994fa453c29731c18cb0"
+      "sha256": "32847aaacb509c20f14ccefe33b669b00655ee9c2f480d529085ef85e102a854"
     },
     {
       "path": "results/core/core_results.json",
@@ -578,8 +583,8 @@
     },
     {
       "path": "results/core/posthoc_robustness.json",
-      "bytes": 9335,
-      "sha256": "88b5894a9b4c03ed0754773a6b087174d0a6738683d560e0203596a8d8b32819"
+      "bytes": 10007,
+      "sha256": "457cfb1088d9d3d121077def9c7f55dbe95045075d06f7bd274676b2a398623a"
     },
     {
       "path": "results/core/posthoc_robustness.sha256",
@@ -1977,6 +1982,6 @@
       "sha256": "a3f98e5162fb77c9a79c6dbf1513848e387e4477af9a7a0699aa9275636800fe"
     }
   ],
-  "file_count": 395,
-  "total_bytes": 2944952330
+  "file_count": 396,
+  "total_bytes": 2944958395
 }

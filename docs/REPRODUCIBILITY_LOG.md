@@ -36,7 +36,8 @@
 - Added twenty training instances, four extra seeds per architecture per lens family, for the instance-variability study.
 - Decomposed the threshold-inclusive interval into calibration and evaluation components, and computed it per training instance rather than for the archived instance alone.
 - Added generating code for the two analytic lensing figures, closing the last figure-provenance gap.
-- Rebuilt the v2.1 bundle at tag apjs-resubmission-v2.1: 395 hash-verified payload files, 2,944,952,330 bytes, deterministic gzip archive of 2,654,423,871 bytes, SHA-256 fa659e633281032f64d3d7e04b5d67b2ec90ed229ef7b9f7624219013ab83c97. Deposition pending account authorization; the concept DOI 10.5281/zenodo.21311077 is the citable identifier.
+- Added a figure-provenance gate that blocks a manuscript build carrying any figure other than the released one, after external review found the same stale-figure error twice.
+- Rebuilt the v2.1.1 bundle at tag apjs-resubmission-v2.1.1: 396 hash-verified payload files, 2,944,958,395 bytes, deterministic gzip archive of 2,654,425,064 bytes, SHA-256 604ea06bd7263042418440a6a8eed9c8659d2991ec3c10b6be8ef21b618ffbf2. Deposition pending account authorization; the concept DOI 10.5281/zenodo.21311077 is the citable identifier.
 
 ## Additional completion analyses
 
