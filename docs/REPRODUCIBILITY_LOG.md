@@ -39,7 +39,8 @@
 - Added a figure-provenance gate that blocks a manuscript build carrying any figure other than the released one, after external review found the same stale-figure error twice.
 - Released the S/N-stratified efficiencies with intervals, closing the last analysis quoted in the text without a generating script.
 - Regenerated and committed the manifest before tagging, so that the tag and the archive built from it describe the same payload; the previous tag carried a manifest one revision behind the archive.
-- Rebuilt the v2.2 bundle at tag apjs-resubmission-v2.2: 399 hash-verified payload files, 2,944,973,191 bytes, deterministic gzip archive of 2,654,429,247 bytes, SHA-256 6abaff9f7745e664e77820f93231d7627f26399aee3b2525f3dac30ae2f64a38. Deposition pending account authorization; the concept DOI 10.5281/zenodo.21311077 is the citable identifier.
+- Separated the payload facts from the archive facts, after repeated tags carried documentation describing a bundle other than the one built from them: version, payload count and payload bytes are recorded inside the tagged payload, while the compressed size and the archive SHA-256 are recorded only outside it, since a file inside an archive cannot state that archive's own checksum.
+- Rebuilt the bundle at tag apjs-resubmission-v2.2.1: 399 hash-verified payload files, 2,944,973,191 bytes. The compressed size and checksum are in release/zenodo/dist/ and on the Zenodo record; the concept DOI 10.5281/zenodo.21311077 is the citable identifier.
 
 ## Additional completion analyses
 
