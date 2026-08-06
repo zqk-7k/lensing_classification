@@ -70,12 +70,14 @@ def main() -> int:
     args = parser.parse_args()
 
     global CANONICAL, REGISTRY
-    if args.canonical_dir:
-        CANONICAL = Path(args.canonical_dir)
     if args.registry:
         REGISTRY = Path(args.registry)
-    elif args.canonical_dir:
-        REGISTRY = CANONICAL / "SHA256SUMS"
+    if args.canonical_dir:
+        CANONICAL = Path(args.canonical_dir)
+    elif args.registry:
+        # a shipped registry implies the figures beside it are the canonical ones, so
+        # hash comparison alone is meaningful and no separate source directory is needed
+        CANONICAL = REGISTRY.parent
 
     figures = Path(args.figures)
     if not figures.is_dir():
@@ -86,7 +88,9 @@ def main() -> int:
     for path in sorted(figures.iterdir()):
         if not path.is_file() or path.suffix.lower() not in {".pdf", ".png"}:
             continue
-        source = EXTRA_SOURCES.get(path.name, CANONICAL)
+        # a shipped registry is self-contained: everything in it is checked by hash,
+        # and the per-stage source directories of the repository layout do not apply
+        source = CANONICAL if args.registry else EXTRA_SOURCES.get(path.name, CANONICAL)
         if path.name not in registry and source is CANONICAL:
             unregistered.append(path.name)
             continue
@@ -99,7 +103,7 @@ def main() -> int:
             else:
                 stale.append(path.name)
             continue
-        if not canonical.is_file():
+        if canonical.resolve() != path.resolve() and not canonical.is_file():
             missing.append(path.name)
         elif digest(path) == registry[path.name]:
             ok.append(path.name)
