@@ -55,6 +55,26 @@ def md5(path: Path) -> str:
     return value.hexdigest()
 
 
+def resolve_latest(concept: str, auth: dict):
+    """Find the newest published deposition of a concept record.
+
+    /api/records/<conceptrecid> answers 410 rather than redirecting, so resolve through
+    the account's own depositions, which carry conceptrecid, and fall back to the record
+    endpoint only if that finds nothing.
+    """
+    listed = requests.get(f"{BASE}/deposit/depositions", **auth,
+                          params={"size": 100}, timeout=60)
+    if listed.ok:
+        mine = [d for d in listed.json()
+                if str(d.get("conceptrecid")) == str(concept) and d.get("submitted")]
+        if mine:
+            return max(int(d["id"]) for d in mine), True
+    direct = requests.get(f"{BASE}/records/{concept}", timeout=60)
+    if direct.ok:
+        return int(direct.json()["id"]), False
+    return None, False
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--dry-run", action="store_true",
@@ -92,24 +112,26 @@ def main() -> int:
               f"{' (valid)' if response.ok else ' -- token rejected'}")
         if not response.ok:
             return 1
-        owned = {str(x.get("id")) for x in response.json()}
-        print(f"depositions on this account: {len(owned)}")
-        target = requests.get(f"{BASE}/records/{args.concept}", timeout=60)
-        latest_id = str(target.json()["id"]) if target.ok else "?"
+        print(f"depositions on this account: {len(response.json())}")
+        latest_id, owned = resolve_latest(args.concept, auth)
         print(f"latest version of the concept record: {latest_id}")
-        if latest_id in owned:
+        if latest_id and owned:
             print("ownership      : this account owns the record -- ready to deposit")
-        else:
+        elif latest_id:
             print("ownership      : this account does NOT own the record.")
-            print("                 A token from the owning account is required; the")
-            print("                 owner is visible under 'owners' on the public record.")
+            print("                 A token from the owning account is required.")
+            return 1
+        else:
+            print("ownership      : could not resolve the concept record")
             return 1
         print("\ndry run only, nothing was created")
         return 0
 
-    latest = requests.get(f"{BASE}/records/{args.concept}", **auth, timeout=60)
-    latest.raise_for_status()
-    latest_id = latest.json()["id"]
+    latest_id, owned = resolve_latest(args.concept, auth)
+    if not latest_id:
+        sys.exit("could not resolve the concept record")
+    if not owned:
+        sys.exit("this account does not own the record; use the owning account's token")
     print(f"latest version : {latest_id}")
 
     new = requests.post(f"{BASE}/deposit/depositions/{latest_id}/actions/newversion",
