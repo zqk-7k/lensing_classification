@@ -33,6 +33,7 @@ import hashlib
 import json
 import os
 import sys
+import time
 from pathlib import Path
 
 try:
@@ -80,6 +81,10 @@ def main() -> int:
     parser.add_argument("--dry-run", action="store_true",
                         help="check the token, the files and the metadata, then stop")
     parser.add_argument("--concept", default=CONCEPT_RECID)
+    parser.add_argument("--draft", help="resume into an existing unpublished draft "
+                                        "instead of opening a new version")
+    parser.add_argument("--attempts", type=int, default=5,
+                        help="upload attempts per file before giving up")
     args = parser.parse_args()
 
     token = os.environ.get("ZENODO_TOKEN")
@@ -127,36 +132,64 @@ def main() -> int:
         print("\ndry run only, nothing was created")
         return 0
 
-    latest_id, owned = resolve_latest(args.concept, auth)
-    if not latest_id:
-        sys.exit("could not resolve the concept record")
-    if not owned:
-        sys.exit("this account does not own the record; use the owning account's token")
-    print(f"latest version : {latest_id}")
-
-    new = requests.post(f"{BASE}/deposit/depositions/{latest_id}/actions/newversion",
-                        **auth, timeout=120)
-    new.raise_for_status()
-    draft_url = new.json()["links"]["latest_draft"]
-    draft = requests.get(draft_url, **auth, timeout=60).json()
+    if args.draft:
+        draft = requests.get(f"{BASE}/deposit/depositions/{args.draft}", **auth, timeout=60)
+        draft.raise_for_status()
+        draft = draft.json()
+        if draft.get("submitted"):
+            sys.exit(f"deposition {args.draft} is published; refusing to modify it")
+        print(f"resuming draft : {args.draft}")
+    else:
+        latest_id, owned = resolve_latest(args.concept, auth)
+        if not latest_id:
+            sys.exit("could not resolve the concept record")
+        if not owned:
+            sys.exit("this account does not own the record; use the owning account's token")
+        print(f"latest version : {latest_id}")
+        new = requests.post(f"{BASE}/deposit/depositions/{latest_id}/actions/newversion",
+                            **auth, timeout=120)
+        new.raise_for_status()
+        draft = requests.get(new.json()["links"]["latest_draft"], **auth, timeout=60).json()
     draft_id, bucket = draft["id"], draft["links"]["bucket"]
     print(f"draft          : {draft_id}")
 
-    for existing in draft.get("files", []):
+    wanted = {p.name for p in files}
+    for existing in [f for f in draft.get("files", []) if f["filename"] not in wanted]:
         requests.delete(f"{BASE}/deposit/depositions/{draft_id}/files/{existing['id']}",
                         **auth, timeout=120).raise_for_status()
         print(f"  removed inherited {existing['filename']}")
 
+    present = {f.get("filename"): f.get("checksum", "").removeprefix("md5:")
+               for f in requests.get(f"{BASE}/deposit/depositions/{draft_id}",
+                                     **auth, timeout=60).json().get("files", [])}
     for path in files:
-        with path.open("rb") as handle:
-            up = requests.put(f"{bucket}/{path.name}", data=handle, **auth, timeout=None)
-        up.raise_for_status()
-        remote = up.json().get("checksum", "").removeprefix("md5:")
         local = md5(path)
-        state = "ok" if remote == local else f"MISMATCH remote={remote} local={local}"
-        print(f"  uploaded {path.name:52} {state}")
-        if remote != local:
-            return 1
+        if present.get(path.name) == local:
+            print(f"  present  {path.name:52} ok (skipped)")
+            continue
+        # a 2.6 GB upload over a long link fails on transient 5xx often enough that one
+        # attempt is not a policy; retry, and re-check the checksum every time
+        for attempt in range(1, args.attempts + 1):
+            try:
+                with path.open("rb") as handle:
+                    up = requests.put(f"{bucket}/{path.name}", data=handle, **auth, timeout=None)
+                if up.status_code >= 500:
+                    raise requests.HTTPError(f"HTTP {up.status_code}")
+                up.raise_for_status()
+                remote = up.json().get("checksum", "").removeprefix("md5:")
+                if remote != local:
+                    raise requests.HTTPError(f"checksum mismatch remote={remote}")
+                print(f"  uploaded {path.name:52} ok"
+                      f"{'' if attempt == 1 else f' (attempt {attempt})'}")
+                break
+            except (requests.HTTPError, requests.ConnectionError, requests.Timeout) as exc:
+                if attempt == args.attempts:
+                    print(f"  FAILED   {path.name:52} {exc}")
+                    print(f"  resume with: --draft {draft_id}")
+                    return 1
+                wait = min(60, 5 * 2 ** (attempt - 1))
+                print(f"  retry    {path.name:52} {exc}; waiting {wait}s")
+                time.sleep(wait)
 
     payload = {k: v for k, v in metadata.items() if k != "$schema"}
     payload.setdefault("publication_date", __import__("datetime").date.today().isoformat())
