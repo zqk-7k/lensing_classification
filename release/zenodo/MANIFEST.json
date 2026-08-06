@@ -3,8 +3,8 @@
   "files": [
     {
       "path": "README.md",
-      "bytes": 5162,
-      "sha256": "407636a4447f018ca4ffd9a8fcc71a84596bb86f7965f11582edc45f0b423d76"
+      "bytes": 5164,
+      "sha256": "e2307a3c9cb4623c64d7c656d20414cde692b5b4670d6417b3f73bc3ccfddc5c"
     },
     {
       "path": "README.zh-CN.md",
@@ -133,8 +133,8 @@
     },
     {
       "path": "docs/ARTIFACTS.md",
-      "bytes": 2322,
-      "sha256": "2b9b87d3cc2d51bc5ea89ae48b7b775c0d16c7b3e147df8efb59995e7989d2e4"
+      "bytes": 2324,
+      "sha256": "46f4dc3d146c38b5d727d2a8f8f3830e4b1fc9ca874e6c6eb0193bf57f676fc0"
     },
     {
       "path": "docs/BASELINE_CONFIG.md",
@@ -163,13 +163,13 @@
     },
     {
       "path": "docs/REPRODUCIBILITY_LOG.md",
-      "bytes": 3584,
-      "sha256": "5905697e8bfefe8f6f8b8cc864fe702a39b7c3684dfc22dea701ac287c5e2181"
+      "bytes": 3764,
+      "sha256": "71f7d568d8c8fea360fe6e0243a98c0aec5312d7cbfdcfd75d1a6f0933ce724c"
     },
     {
       "path": "docs/RESULTS.md",
-      "bytes": 8401,
-      "sha256": "b95c466328f24f391db221e3bc9f674cc41c4441e825a4cc65bdcfa63fbbc535"
+      "bytes": 8403,
+      "sha256": "2dca29e4904b12a9cab69490990ca24a3d606d800e1fdb2edc0e6f56af489b5e"
     },
     {
       "path": "docs/RESULT_INDEX.md",
@@ -210,6 +210,11 @@
       "path": "experiments/reproducibility/analyze_snr_matching_uncertainty.py",
       "bytes": 5208,
       "sha256": "9ff8baedb37d6d5cc121137b99bc850db142ce179cd53b285583f090045a4377"
+    },
+    {
+      "path": "experiments/reproducibility/analyze_snr_quintile_efficiency.py",
+      "bytes": 5556,
+      "sha256": "765f9f6fff4c02078fc5d6c48efd97777efa1475128c893ac4730e9612fe1a50"
     },
     {
       "path": "experiments/reproducibility/audit_0222_0228.py",
@@ -508,8 +513,8 @@
     },
     {
       "path": "results/core/SHA256SUMS",
-      "bytes": 1318,
-      "sha256": "32847aaacb509c20f14ccefe33b669b00655ee9c2f480d529085ef85e102a854"
+      "bytes": 1507,
+      "sha256": "2d0f1a7dca9382d58887afd71a2de7f9c0a2ce7063a2bc4f629a9cbaefc6a7b2"
     },
     {
       "path": "results/core/core_results.json",
@@ -630,6 +635,16 @@
       "path": "results/core/snr_matched_sis_pm.csv",
       "bytes": 433,
       "sha256": "8a8275f6f0cb5d7df50aa2b89c001d11fc08d51547b2a5e4e995f9c4daf39487"
+    },
+    {
+      "path": "results/core/snr_quintile_efficiency.csv",
+      "bytes": 2256,
+      "sha256": "41f5412e2f37655f2bc95c74d3471240bdb544ad31c8953c4c179c8115d4fc0e"
+    },
+    {
+      "path": "results/core/snr_quintile_efficiency.json",
+      "bytes": 6609,
+      "sha256": "6f1e3f40c3bb6a232867227115f5385ffbc417a412f659f2552727905ef9bd04"
     },
     {
       "path": "results/core/unified_predictions_0228_pm.csv.gz",
@@ -1982,6 +1997,6 @@
       "sha256": "a3f98e5162fb77c9a79c6dbf1513848e387e4477af9a7a0699aa9275636800fe"
     }
   ],
-  "file_count": 396,
-  "total_bytes": 2944958395
+  "file_count": 399,
+  "total_bytes": 2944973191
 }
