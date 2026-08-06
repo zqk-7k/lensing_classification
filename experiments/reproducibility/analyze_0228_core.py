@@ -91,12 +91,25 @@ def block_bootstrap(frame, thresholds, replicates, seed):
     return metrics, delta
 
 
+def open_ended_quantile_edges(values, count=5):
+    """Quantile bin edges whose outermost bins are open.
+
+    The inner quantiles fix where the bins divide; the outer edges are opened to
+    +-infinity so that an evaluation value beyond the calibration sample's range still
+    lands in the first or last bin. Closing the outer edges on the calibration min and
+    max, as an earlier version did, silently dropped such values: pandas returns NaN for
+    them, they enter no bin, and the binned counts then fail to sum to the sample.
+    """
+    inner = np.quantile(values, np.linspace(0, 1, count + 1)[1:-1])
+    return np.unique(np.r_[-np.inf, inner, np.inf])
+
+
 def selection_tables(lens, calibration, evaluation, thresholds, output_dir):
     cal_pos, ev_pos = calibration[calibration.label == 1], evaluation[evaluation.label == 1].copy()
     definitions = {
-        "y": np.linspace(0.01, 0.3, 6),
-        "flux_ratio": np.unique(np.quantile(cal_pos.flux_ratio, np.linspace(0, 1, 6))),
-        "rho_min": np.unique(np.quantile(cal_pos.rho_min, np.linspace(0, 1, 6))),
+        "y": np.unique(np.r_[-np.inf, np.linspace(0.01, 0.3, 6)[1:-1], np.inf]),
+        "flux_ratio": open_ended_quantile_edges(cal_pos.flux_ratio),
+        "rho_min": open_ended_quantile_edges(cal_pos.rho_min),
     }
     rows = []
     for variable, edges in definitions.items():
@@ -112,10 +125,15 @@ def selection_tables(lens, calibration, evaluation, thresholds, output_dir):
                              "n": total, "detected": successes, "efficiency": successes / total if total else np.nan,
                              "ci_low": low, "ci_high": high, "target_fpp": 1e-3})
     table = pd.DataFrame(rows)
+    for variable in definitions:
+        counted = int(table[(table.variable == variable)
+                            & (table.model == "pi_resnet")].n.sum())
+        assert counted == len(ev_pos), (
+            f"{lens} {variable}: bins hold {counted} of {len(ev_pos)} evaluation positives")
     table.to_csv(output_dir / f"selection_functions_0228_{lens}.csv", index=False)
     # Locked 5x5 two-SNR plane from calibration marginal quintiles.
-    e1 = np.unique(np.quantile(cal_pos.rho_1, np.linspace(0, 1, 6)))
-    e2 = np.unique(np.quantile(cal_pos.rho_2, np.linspace(0, 1, 6)))
+    e1 = open_ended_quantile_edges(cal_pos.rho_1)
+    e2 = open_ended_quantile_edges(cal_pos.rho_2)
     b1, b2 = pd.cut(ev_pos.rho_1, e1, include_lowest=True), pd.cut(ev_pos.rho_2, e2, include_lowest=True)
     grid = []
     for model, score in MODELS.items():
@@ -129,7 +147,11 @@ def selection_tables(lens, calibration, evaluation, thresholds, output_dir):
                              "rho1_right": float(i.right), "rho2_left": float(j.left),
                              "rho2_right": float(j.right), "n": total, "detected": detected,
                              "efficiency": detected / total if total else np.nan, "ci_low": low, "ci_high": high})
-    pd.DataFrame(grid).to_csv(output_dir / f"selection_rho1_rho2_0228_{lens}.csv", index=False)
+    grid_table = pd.DataFrame(grid)
+    counted = int(grid_table[grid_table.model == "pi_resnet"].n.sum())
+    assert counted == len(ev_pos), (
+        f"{lens} rho1-rho2 grid holds {counted} of {len(ev_pos)} evaluation positives")
+    grid_table.to_csv(output_dir / f"selection_rho1_rho2_0228_{lens}.csv", index=False)
 
 
 def snr_matched(datasets, thresholds, output_dir):

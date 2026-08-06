@@ -56,7 +56,11 @@ def main():
         ev_pos = frame[(frame.calibration_or_evaluation == "evaluation") & (frame.label == 1)]
 
         thr = {m: kth_threshold(cal_bg[f"{m}_score"].to_numpy(), TARGET) for m in MODELS}
-        edges = np.unique(np.quantile(cal_pos.rho_min, np.linspace(0, 1, 6)))
+        # inner quantiles only, with open outer edges: closing them on the calibration
+        # min and max drops evaluation positives beyond that range into NaN, so the
+        # binned counts would not sum to the sample
+        inner = np.quantile(cal_pos.rho_min, np.linspace(0, 1, 6)[1:-1])
+        edges = np.unique(np.r_[-np.inf, inner, np.inf])
         bins = pd.cut(ev_pos.rho_min, edges, include_lowest=True)
 
         blocks = np.sort(ev_pos.source_block_id.unique())
@@ -95,6 +99,9 @@ def main():
             }
             entries.append(entry)
             rows.append({"lens": fam.upper(), **entry})
+        counted = sum(e["n"] for e in entries)
+        assert counted == len(ev_pos), (
+            f"{fam}: quintiles hold {counted} of {len(ev_pos)} evaluation positives")
         report["families"][fam] = {"thresholds": {MODELS[m]: float(thr[m]) for m in MODELS},
                                    "bin_edges": [float(e) for e in edges],
                                    "quintiles": entries}

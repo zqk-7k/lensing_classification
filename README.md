@@ -100,15 +100,17 @@ not validate glitches or a catalog-level false-alarm rate. See
 
 The frozen reproducibility release is archived on Zenodo under the concept DOI
 [10.5281/zenodo.21311077](https://doi.org/10.5281/zenodo.21311077), which always
-resolves to the latest version (CC BY 4.0). Version v2.2.1 contains the four trained network checkpoints, the sixteen additional
+resolves to the latest version (CC BY 4.0). Version v2.2.2 contains the four trained network checkpoints, the sixteen additional
 instances of the variability study, the pinned DeiT initialization weights, the five CQT
-caches, and all derived result files: 399 hash-verified payload files, 2,944,973,191
-bytes, each verified against `release/zenodo/MANIFEST.json` and `MANIFEST.sha256`.
+caches, and all derived result files: **399 hash-verified payload files**. The
+authoritative inventory --- every path, size and checksum, and the payload total ---
+is `release/zenodo/MANIFEST.json`, itself covered by `MANIFEST.sha256`.
 
-The size and SHA-256 of the compressed archive are deliberately *not* recorded here.
-They cannot be: this file is inside the archive, so writing the archive's own checksum
-into it changes the archive and invalidates the value. They live outside the payload
-instead --- in the `.sha256` sidecar shipped beside the archive, in
+Two classes of number are deliberately absent from this file. The payload total, because
+repeating a figure that `MANIFEST.json` already fixes only creates a second place for it
+to go stale. And the compressed archive's size and SHA-256, because this file is inside
+that archive: writing the archive's own checksum into it changes the archive and
+invalidates the value. Those live in the `.sha256` sidecar beside the archive, in
 `release/zenodo/RELEASE_NOTES.md`, and in the Zenodo file listing.
 
 When citing, please cite both the Zenodo record and the repository commit used in
