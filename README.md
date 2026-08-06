@@ -100,11 +100,11 @@ not validate glitches or a catalog-level false-alarm rate. See
 
 The frozen reproducibility release is archived on Zenodo under the concept DOI
 [10.5281/zenodo.21311077](https://doi.org/10.5281/zenodo.21311077), which always
-resolves to the latest version (CC BY 4.0). Version v2.1.1 contains the four trained
+resolves to the latest version (CC BY 4.0). Version v2.2 contains the four trained
 network checkpoints, the sixteen additional instances of the variability study, the
 pinned DeiT initialization weights, the five CQT caches, and all derived result files:
-396 hash-verified payload files, 2,944,958,395 bytes uncompressed, distributed as a
-deterministic gzip archive of 2,654,425,064 bytes with a SHA-256 sidecar. Every payload
+399 hash-verified payload files, 2,944,973,191 bytes uncompressed, distributed as a
+deterministic gzip archive of 2,654,429,247 bytes with a SHA-256 sidecar. Every payload
 file is verified against `release/zenodo/MANIFEST.json` and `MANIFEST.sha256`.
 
 When citing, please cite both the Zenodo record and the repository commit used in

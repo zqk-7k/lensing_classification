@@ -37,7 +37,9 @@
 - Decomposed the threshold-inclusive interval into calibration and evaluation components, and computed it per training instance rather than for the archived instance alone.
 - Added generating code for the two analytic lensing figures, closing the last figure-provenance gap.
 - Added a figure-provenance gate that blocks a manuscript build carrying any figure other than the released one, after external review found the same stale-figure error twice.
-- Rebuilt the v2.1.1 bundle at tag apjs-resubmission-v2.1.1: 396 hash-verified payload files, 2,944,958,395 bytes, deterministic gzip archive of 2,654,425,064 bytes, SHA-256 604ea06bd7263042418440a6a8eed9c8659d2991ec3c10b6be8ef21b618ffbf2. Deposition pending account authorization; the concept DOI 10.5281/zenodo.21311077 is the citable identifier.
+- Released the S/N-stratified efficiencies with intervals, closing the last analysis quoted in the text without a generating script.
+- Regenerated and committed the manifest before tagging, so that the tag and the archive built from it describe the same payload; the previous tag carried a manifest one revision behind the archive.
+- Rebuilt the v2.2 bundle at tag apjs-resubmission-v2.2: 399 hash-verified payload files, 2,944,973,191 bytes, deterministic gzip archive of 2,654,429,247 bytes, SHA-256 6abaff9f7745e664e77820f93231d7627f26399aee3b2525f3dac30ae2f64a38. Deposition pending account authorization; the concept DOI 10.5281/zenodo.21311077 is the citable identifier.
 
 ## Additional completion analyses
 
