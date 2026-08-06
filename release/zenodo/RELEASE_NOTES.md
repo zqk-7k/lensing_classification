@@ -27,11 +27,12 @@ the payload file count, the payload byte total, and the per-file checksums.
 *Outside it* (this file, the `.sha256` sidecar, `archive_info.json`, the Zenodo file
 listing): the compressed archive size and the archive SHA-256.
 
-## Measured release size, v2.2.1
+## Measured release size, v2.2.2
 
-- Manifest payload: 399 files, 2,944,973,191 bytes (2.74 GiB).
-- Built at tag `apjs-resubmission-v2.2.1`, whose committed `MANIFEST.json` describes the
-  same 399 files, so the tag and the archive agree by construction.
+- Manifest payload: 399 files. The byte total is in `MANIFEST.json`; it is not repeated
+  here, nor in any file inside the payload, so that it has exactly one authority.
+- Built at tag `apjs-resubmission-v2.2.2`, whose committed `MANIFEST.json` describes the
+  same payload, so the tag and the archive agree by construction and this is checked.
 - The compressed size and SHA-256 are written by `build_frozen_release.py` into
   `dist/*.archive_info.json` and `dist/*.tar.gz.sha256` at build time. They are not
   repeated here, so that regenerating the archive does not require editing a file that
@@ -57,7 +58,7 @@ CC BY 4.0. The concept DOI `10.5281/zenodo.21311077` always resolves to the late
 version and is the one the manuscript cites, so the text does not have to change when a
 new version is deposited.
 
-Version v2.2.1 is built and verified in `release/zenodo/dist/`:
+Version v2.2.2 is built and verified in `release/zenodo/dist/`:
 publishing requires an authenticated Zenodo account. To deposit it, open the existing
 record, choose "New version", upload the four files from `dist/`, apply the metadata in
 `metadata.example.json`, and publish. The record's related identifier for the GitHub

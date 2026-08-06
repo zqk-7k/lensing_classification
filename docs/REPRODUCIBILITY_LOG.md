@@ -40,7 +40,9 @@
 - Released the S/N-stratified efficiencies with intervals, closing the last analysis quoted in the text without a generating script.
 - Regenerated and committed the manifest before tagging, so that the tag and the archive built from it describe the same payload; the previous tag carried a manifest one revision behind the archive.
 - Separated the payload facts from the archive facts, after repeated tags carried documentation describing a bundle other than the one built from them: version, payload count and payload bytes are recorded inside the tagged payload, while the compressed size and the archive SHA-256 are recorded only outside it, since a file inside an archive cannot state that archive's own checksum.
-- Rebuilt the bundle at tag apjs-resubmission-v2.2.1: 399 hash-verified payload files, 2,944,973,191 bytes. The compressed size and checksum are in release/zenodo/dist/ and on the Zenodo record; the concept DOI 10.5281/zenodo.21311077 is the citable identifier.
+- Corrected the selection-function and quintile bin edges, which had closed on the calibration sample's range and so silently dropped evaluation positives beyond it; the binned counts now sum to the full sample and an assertion enforces it.
+- Removed the payload total from the human-readable documentation, leaving MANIFEST.json as its single authority, after a tag shipped a README whose total was one revision behind the manifest beside it.
+- Rebuilt the bundle at tag apjs-resubmission-v2.2.2: 399 hash-verified payload files. The payload total is in release/zenodo/MANIFEST.json, the compressed size and checksum in release/zenodo/dist/ and on the Zenodo record; the concept DOI 10.5281/zenodo.21311077 is the citable identifier.
 
 ## Additional completion analyses
 
