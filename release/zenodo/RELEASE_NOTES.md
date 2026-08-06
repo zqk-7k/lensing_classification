@@ -14,23 +14,28 @@ The CQT caches are derived intermediates for the 0228 holdout catalog. Raw 0222/
 
 Every manifest payload file is verified by size and SHA-256 before archive creation. The final archive has a separate SHA-256 sidecar and an `archive_info.json` record in `release/zenodo/dist/`.
 
-## Measured release size, v2.2
+## Where the numbers live, and why they are split
+
+A file inside an archive cannot state that archive's own SHA-256: writing the value in
+changes the bytes and invalidates it. Several earlier tags shipped documentation
+describing a bundle other than the one built from them for exactly this reason. The two
+kinds of fact are therefore kept apart:
+
+*Inside the tagged payload* (README.md, docs/ARTIFACTS.md, MANIFEST.json): the version,
+the payload file count, the payload byte total, and the per-file checksums.
+
+*Outside it* (this file, the `.sha256` sidecar, `archive_info.json`, the Zenodo file
+listing): the compressed archive size and the archive SHA-256.
+
+## Measured release size, v2.2.1
 
 - Manifest payload: 399 files, 2,944,973,191 bytes (2.74 GiB).
-- Archive members: 407 files, including eight release-control files.
-- Deterministic gzip archive: 2,654,429,247 bytes (2.47 GiB),
-  SHA-256 `6abaff9f7745e664e77820f93231d7627f26399aee3b2525f3dac30ae2f64a38`.
-- Built at tag `apjs-resubmission-v2.2`, whose committed `MANIFEST.json` describes the
-  same 399 files; the tag and the archive agree by construction and this is checked.
-
-The manuscript statement should use these measured values. Suggested wording:
-
-> A frozen release containing the trained checkpoints, the pinned DeiT initialization
-> weights, the CQT caches, the twenty additional training instances, and all derived
-> results (399 manifest payload files; 2.94 GB uncompressed and 2.65 GB as a
-> gzip-compressed archive; hash-verified against the committed manifest) is deposited on
-> Zenodo under the concept DOI `10.5281/zenodo.21311077`, which always resolves to the
-> latest version.
+- Built at tag `apjs-resubmission-v2.2.1`, whose committed `MANIFEST.json` describes the
+  same 399 files, so the tag and the archive agree by construction.
+- The compressed size and SHA-256 are written by `build_frozen_release.py` into
+  `dist/*.archive_info.json` and `dist/*.tar.gz.sha256` at build time. They are not
+  repeated here, so that regenerating the archive does not require editing a file that
+  is inside it.
 
 ## What changed from v1.0
 
@@ -52,7 +57,7 @@ CC BY 4.0. The concept DOI `10.5281/zenodo.21311077` always resolves to the late
 version and is the one the manuscript cites, so the text does not have to change when a
 new version is deposited.
 
-Version v2.2 is built and verified in `release/zenodo/dist/` but **not yet deposited**:
+Version v2.2.1 is built and verified in `release/zenodo/dist/`:
 publishing requires an authenticated Zenodo account. To deposit it, open the existing
 record, choose "New version", upload the four files from `dist/`, apply the metadata in
 `metadata.example.json`, and publish. The record's related identifier for the GitHub

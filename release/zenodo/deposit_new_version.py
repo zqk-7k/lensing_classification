@@ -65,7 +65,9 @@ def main() -> int:
     token = os.environ.get("ZENODO_TOKEN")
     if not token:
         sys.exit("set ZENODO_TOKEN first")
-    auth = {"params": {"access_token": token}}
+    # header auth, not the access_token query parameter: a failing request would
+    # otherwise put the token into the exception message and into any log capturing it
+    auth = {"headers": {"Authorization": f"Bearer {token}"}}
 
     files = sorted(p for p in DIST.iterdir() if p.is_file())
     if not files:
@@ -84,11 +86,26 @@ def main() -> int:
     print(f"archive md5    : {md5(archive)}")
 
     if args.dry_run:
-        response = requests.get(f"{BASE}/deposit/depositions", **auth, timeout=60)
+        response = requests.get(f"{BASE}/deposit/depositions", **auth,
+                                params={"size": 100}, timeout=60)
         print(f"token check    : HTTP {response.status_code}"
-              f"{' (ok)' if response.ok else ' -- token rejected'}")
+              f"{' (valid)' if response.ok else ' -- token rejected'}")
+        if not response.ok:
+            return 1
+        owned = {str(x.get("id")) for x in response.json()}
+        print(f"depositions on this account: {len(owned)}")
+        target = requests.get(f"{BASE}/records/{args.concept}", timeout=60)
+        latest_id = str(target.json()["id"]) if target.ok else "?"
+        print(f"latest version of the concept record: {latest_id}")
+        if latest_id in owned:
+            print("ownership      : this account owns the record -- ready to deposit")
+        else:
+            print("ownership      : this account does NOT own the record.")
+            print("                 A token from the owning account is required; the")
+            print("                 owner is visible under 'owners' on the public record.")
+            return 1
         print("\ndry run only, nothing was created")
-        return 0 if response.ok else 1
+        return 0
 
     latest = requests.get(f"{BASE}/records/{args.concept}", **auth, timeout=60)
     latest.raise_for_status()

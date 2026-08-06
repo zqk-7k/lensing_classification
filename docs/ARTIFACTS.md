@@ -16,10 +16,11 @@ All source code, locked manifests, audit reports, compact training records, and 
 ## Published in the Zenodo release
 
 The frozen bundle is archived under the concept DOI 10.5281/zenodo.21311077, which
-always resolves to the latest version (CC BY 4.0). Version v2.2 carries 399 hash-verified
-payload files, 2,944,973,191 bytes uncompressed, distributed as a deterministic gzip
-archive of 2,654,429,247 bytes with a SHA-256 sidecar and an `archive_info.json` record.
-It contains:
+always resolves to the latest version (CC BY 4.0). Version v2.2.1 carries 399 hash-verified
+payload files totalling 2,944,973,191 bytes. The compressed archive's size and SHA-256
+are recorded outside the payload -- in the `.sha256` sidecar, the `archive_info.json`
+record, and the Zenodo file listing -- because a file inside the archive cannot state the
+archive's own checksum without changing it. The payload contains:
 
 - PI-ResNet checkpoints (about 131 MB each; above GitHub's ordinary per-file limit).
 - CQT-DeiT checkpoints.

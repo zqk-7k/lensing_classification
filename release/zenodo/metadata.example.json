@@ -1,7 +1,7 @@
 {
   "title": "Calibrated time-domain pair ranking for strongly lensed gravitational waves",
   "upload_type": "software",
-  "description": "Code, frozen model checkpoints, source and pair manifests, per-pair prediction scores, and statistical artifacts for calibrated pair verification of strongly lensed gravitational waves. Version 2.2 supersedes v1.0. A provenance audit found that the negatives of the original CQT-DeiT training pair images crossed the source-level train/validation split through their second member; the pair set was rebuilt with split-respecting negatives, the baseline retrained, and every derived result regenerated. PI-ResNet is unchanged and its checkpoints and scores are bit-identical. Twenty additional training instances, four seeds per architecture per lens family, are included for the instance-variability study, together with the provenance audit, the recovered manifests of the original pair set, and the post-hoc robustness, S/N-quintile and variance-decomposition analyses. Built from repository tag apjs-resubmission-v2.2, whose committed MANIFEST.json describes the same 399 payload files as this archive.",
+  "description": "Code, frozen model checkpoints, source and pair manifests, per-pair prediction scores, and statistical artifacts for calibrated pair verification of strongly lensed gravitational waves. Version 2.2.1 supersedes v1.0. A provenance audit found that the negatives of the original CQT-DeiT training pair images crossed the source-level train/validation split through their second member; the pair set was rebuilt with split-respecting negatives, the baseline retrained, and every derived result regenerated. PI-ResNet is unchanged and its checkpoints and scores are bit-identical. Twenty additional training instances, four seeds per architecture per lens family, are included for the instance-variability study, together with the provenance audit, the recovered manifests of the original pair set, and the post-hoc robustness, S/N-quintile and variance-decomposition analyses. Built from repository tag apjs-resubmission-v2.2.1, whose committed MANIFEST.json describes the same 399 payload files as this archive.",
   "creators": [
     {
       "name": "Zhang, Fan",
@@ -53,5 +53,5 @@
       "resource_type": "software"
     }
   ],
-  "version": "v2.2"
+  "version": "v2.2.1"
 }

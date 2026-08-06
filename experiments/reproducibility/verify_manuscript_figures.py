@@ -13,7 +13,9 @@ be run before `latexmk` and block a build rather than be noticed by a reviewer.
     python experiments/reproducibility/verify_manuscript_figures.py --figures <dir>
     python experiments/reproducibility/verify_manuscript_figures.py --figures <dir> --sync
 
-`--sync` copies the canonical files over the stale ones and re-checks.
+`--sync` copies the canonical files over the stale ones and re-checks. Outside the
+repository layout -- in a submission package, say -- pass `--registry` (and
+`--canonical-dir` if syncing) to point at a shipped copy of the registry.
 
 Figures with no entry in the registry are reported separately rather than silently
 passed: `before_whited.png` is a legacy illustrative raster with no generating script,
@@ -61,7 +63,19 @@ def main() -> int:
     parser.add_argument("--figures", required=True, help="manuscript figure directory")
     parser.add_argument("--sync", action="store_true",
                         help="copy the canonical figures over any that differ")
+    parser.add_argument("--registry", help="SHA256SUMS to check against; defaults to the "
+                                           "released registry in this repository")
+    parser.add_argument("--canonical-dir", help="directory holding the released figures; "
+                                                "only needed for --sync")
     args = parser.parse_args()
+
+    global CANONICAL, REGISTRY
+    if args.canonical_dir:
+        CANONICAL = Path(args.canonical_dir)
+    if args.registry:
+        REGISTRY = Path(args.registry)
+    elif args.canonical_dir:
+        REGISTRY = CANONICAL / "SHA256SUMS"
 
     figures = Path(args.figures)
     if not figures.is_dir():

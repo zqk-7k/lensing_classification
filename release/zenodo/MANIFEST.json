@@ -3,8 +3,8 @@
   "files": [
     {
       "path": "README.md",
-      "bytes": 5164,
-      "sha256": "e2307a3c9cb4623c64d7c656d20414cde692b5b4670d6417b3f73bc3ccfddc5c"
+      "bytes": 5436,
+      "sha256": "5dff05e99d331730926613c3adfc999c9c4bd4fb7be0003b108fcd4a635ee759"
     },
     {
       "path": "README.zh-CN.md",
@@ -133,8 +133,8 @@
     },
     {
       "path": "docs/ARTIFACTS.md",
-      "bytes": 2324,
-      "sha256": "46f4dc3d146c38b5d727d2a8f8f3830e4b1fc9ca874e6c6eb0193bf57f676fc0"
+      "bytes": 2466,
+      "sha256": "865083e8302f9bb8a39e6916981f170c5e53702de908b753996db3dea5eb2681"
     },
     {
       "path": "docs/BASELINE_CONFIG.md",
@@ -163,13 +163,13 @@
     },
     {
       "path": "docs/REPRODUCIBILITY_LOG.md",
-      "bytes": 3764,
-      "sha256": "71f7d568d8c8fea360fe6e0243a98c0aec5312d7cbfdcfd75d1a6f0933ce724c"
+      "bytes": 4395,
+      "sha256": "d4a273d8d942d1b799ff25cd5e67de90d40955135bcc9d16db2b98ec3c25a476"
     },
     {
       "path": "docs/RESULTS.md",
-      "bytes": 8403,
-      "sha256": "2dca29e4904b12a9cab69490990ca24a3d606d800e1fdb2edc0e6f56af489b5e"
+      "bytes": 8391,
+      "sha256": "ff730fcf5113b51352401dd67cd0dc35ff3ab52f7c242e7756eadb9d2069bdb1"
     },
     {
       "path": "docs/RESULT_INDEX.md",
@@ -398,8 +398,8 @@
     },
     {
       "path": "experiments/reproducibility/verify_manuscript_figures.py",
-      "bytes": 4765,
-      "sha256": "ec553713e42eaaaedd3d4a5d8660b007190b2b33d7b0414fd3f0f77c4b06da15"
+      "bytes": 5504,
+      "sha256": "bb169432fe1e2bcc2ab0ca0b1818750176c6e41b8480364db7eb70cdad5e08a1"
     },
     {
       "path": "experiments/reproducibility/zl_invariance_sanity.py",
@@ -1998,5 +1998,5 @@
     }
   ],
   "file_count": 399,
-  "total_bytes": 2944973191
+  "total_bytes": 2944974963
 }
