@@ -24,6 +24,15 @@ Path(FIGDIR).mkdir(parents=True, exist_ok=True)
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from thresholds import kth_threshold  # noqa: E402
 
+# Each figure is drawn at the width it is placed at in the manuscript, so LaTeX
+# scales it by 1.0 and the lettering reaches the page at the size set here:
+# snr_dist at \columnwidth (3.35in), the other two at 0.95\textwidth (6.75in).
+plt.rcParams.update({"font.size": 8, "axes.labelsize": 8, "axes.titlesize": 8.5,
+                     "xtick.labelsize": 7.5, "ytick.labelsize": 7.5,
+                     "legend.fontsize": 7, "axes.linewidth": 0.7,
+                     "grid.linewidth": 0.5, "xtick.major.width": 0.7,
+                     "ytick.major.width": 0.7})
+
 SEED, REPS = 20260711, 10000
 C_PI, C_CQT, C_Y = "#1f6fb2", "#c0392b", "#c0392b"
 
@@ -40,16 +49,16 @@ lens = {f: np.concatenate([DF[f][DF[f].label == 1].rho_1, DF[f][DF[f].label == 1
 lo = min(unl.min(), lens["sis"].min(), lens["pm"].min())
 hi = max(unl.max(), lens["sis"].max(), lens["pm"].max())
 bins = np.geomspace(max(lo, 0.3), hi * 1.02, 45)                       # identical edges, both panels
-fig, (a1, a2) = plt.subplots(2, 1, figsize=(7.0, 5.6), sharex=True)
+fig, (a1, a2) = plt.subplots(2, 1, figsize=(3.35, 3.5), sharex=True)
 a1.hist(unl, bins=bins, color="0.55", alpha=0.85, label="Unlensed events (pooled)")
-a2.hist(lens["sis"], bins=bins, histtype="step", lw=2.0, color=C_PI, label="Lensed images, SIS")
-a2.hist(lens["pm"], bins=bins, histtype="step", lw=2.0, color=C_CQT, ls="--", label="Lensed images, PM")
+a2.hist(lens["sis"], bins=bins, histtype="step", lw=1.3, color=C_PI, label="Lensed images, SIS")
+a2.hist(lens["pm"], bins=bins, histtype="step", lw=1.3, color=C_CQT, ls="--", label="Lensed images, PM")
 for ax in (a1, a2):
     ax.set_xscale("log"); ax.set_yscale("log")
-    ax.axvline(8, color="k", ls=":", lw=1.6)
-    ax.legend(frameon=False, fontsize=9, loc="upper right")
+    ax.axvline(8, color="k", ls=":", lw=1.0)
+    ax.legend(frameon=False, loc="upper right")
     ax.set_ylabel("Events")
-a1.text(8, a1.get_ylim()[1] * 0.45, r" $\rho=8$", fontsize=9)
+a1.text(8, a1.get_ylim()[1] * 0.45, r" $\rho=8$", fontsize=7.5)
 a2.set_xlabel(r"Optimal single-detector S/N $\rho$")
 fig.tight_layout(); save(fig, "snr_dist")
 for f in ["sis", "pm"]:
@@ -64,7 +73,7 @@ LBL = [r"$10^{-4}$", r"$10^{-3}$", r"$10^{-2}$"]
 # so the annotations cannot go stale when the analysis is rerun
 DELTA = {fam: [f"${100 * core['results'][fam]['paired']['efficiency_difference'][f]['point']:+.1f}$"
                for f in FPPS] for fam in ("sis", "pm")}
-fig, axes = plt.subplots(1, 2, figsize=(10.6, 4.1), sharey=True)
+fig, axes = plt.subplots(1, 2, figsize=(6.75, 2.75), sharey=True)
 for ax, fam, title in zip(axes, ["sis", "pm"], ["SIS", "PM"]):
     x = np.arange(3); w = 0.34
     for k, (m, c, name) in enumerate([("pi_resnet", C_PI, "PI-ResNet"), ("cqt_deit", C_CQT, "CQT--DeiT")]):
@@ -77,7 +86,7 @@ for ax, fam, title in zip(axes, ["sis", "pm"], ["SIS", "PM"]):
     for i in range(3):
         top = max(core["results"][fam]["models"][m]["operating_points"][FPPS[i]]["efficiency_ci"][1]
                   for m in ["pi_resnet", "cqt_deit"])
-        ax.text(x[i], top + 0.035, DELTA[fam][i] + " pp", ha="center", fontsize=8.6)
+        ax.text(x[i], top + 0.035, DELTA[fam][i] + " pp", ha="center", fontsize=7)
     ax.set_xticks(x); ax.set_xticklabels(LBL)
     ax.set_xlabel("Target per-pair $P_f$"); ax.set_title(title)
     ax.set_ylim(0, 0.95); ax.grid(axis="y", alpha=0.25)
@@ -87,7 +96,7 @@ fig.tight_layout(); save(fig, "fixed_fpp_efficiency_bars")
 # ------- Figure: fpp_selection_shift (dual axis, NORMAL orientation) -------
 fpp_grid = np.geomspace(1e-4, 1e-2, 25)
 rng = np.random.default_rng(SEED)
-fig, axes = plt.subplots(1, 2, figsize=(11, 4.3))
+fig, axes = plt.subplots(1, 2, figsize=(6.75, 2.9))
 capnum = {}
 for ax, fam, title in zip(axes, ["sis", "pm"], ["SIS", "PM"]):
     df = DF[fam]
@@ -125,7 +134,7 @@ for ax, fam, title in zip(axes, ["sis", "pm"], ["SIS", "PM"]):
     ax2.set_ylabel("Median $y$ of surviving pairs", color=C_Y); ax2.tick_params(axis="y", labelcolor=C_Y)
     if fam == "sis":
         ax.legend([l1, l2], ["Efficiency (left axis)", "Median $y$ of survivors (right axis)"],
-                  loc="lower right", fontsize=8.6, frameon=False)
+                  loc="lower right", frameon=False)
     med_all = pos.y.median()
     caps = {}
     for t in [1e-2, 1e-3, 1e-4]:

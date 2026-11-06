@@ -40,6 +40,14 @@ from astropy.cosmology import FlatLambdaCDM
 import astropy.units as u
 
 ROOT = Path(__file__).resolve().parents[2]
+# Drawn at the widths they are placed at in the manuscript --- 0.95\textwidth
+# (6.75in) and 0.9\textwidth (6.39in) --- so LaTeX does not scale them down.
+plt.rcParams.update({"font.size": 8, "axes.labelsize": 8, "axes.titlesize": 8.5,
+                     "xtick.labelsize": 7, "ytick.labelsize": 7,
+                     "legend.fontsize": 6.8, "axes.linewidth": 0.7,
+                     "grid.linewidth": 0.5, "xtick.major.width": 0.7,
+                     "ytick.major.width": 0.7})
+
 OUT = ROOT / "results" / "figures" / "manuscript"
 OUT.mkdir(parents=True, exist_ok=True)
 
@@ -66,40 +74,40 @@ def figure_magnification():
     pm_p, pm_m = mu_pm(y)
     inside = (y >= Y_PRIOR[0]) & (y <= Y_PRIOR[1])
 
-    fig, axes = plt.subplots(1, 3, figsize=(12.6, 3.6))
+    fig, axes = plt.subplots(1, 3, figsize=(6.75, 2.35))
 
     ax = axes[0]
-    ax.plot(y, np.abs(sis_p), color=C_SIS, lw=1.9, label=r"SIS $|\mu_+|$")
-    ax.plot(y, np.abs(sis_m), color=C_SIS, lw=1.9, ls="--", label=r"SIS $|\mu_-|$")
-    ax.plot(y, np.abs(pm_p), color=C_PM, lw=1.9, label=r"PM $|\mu_+|$")
-    ax.plot(y, np.abs(pm_m), color=C_PM, lw=1.9, ls="--", label=r"PM $|\mu_-|$")
+    ax.plot(y, np.abs(sis_p), color=C_SIS, lw=1.2, label=r"SIS $|\mu_+|$")
+    ax.plot(y, np.abs(sis_m), color=C_SIS, lw=1.2, ls="--", label=r"SIS $|\mu_-|$")
+    ax.plot(y, np.abs(pm_p), color=C_PM, lw=1.2, label=r"PM $|\mu_+|$")
+    ax.plot(y, np.abs(pm_m), color=C_PM, lw=1.2, ls="--", label=r"PM $|\mu_-|$")
     ax.axvspan(*Y_PRIOR, color="0.85", zorder=0)
     ax.set_yscale("log"); ax.set_xlim(0, 0.5)
     ax.set_xlabel(r"Impact parameter $y$"); ax.set_ylabel(r"$|\mu_\pm|$")
-    ax.set_title("(a)  Image magnifications", fontsize=10)
-    ax.legend(fontsize=7.6, frameon=False, ncol=2); ax.grid(alpha=0.25)
+    ax.set_title("(a)  Image magnifications")
+    ax.legend(frameon=False, ncol=2); ax.grid(alpha=0.25)
 
     ax = axes[1]
     ratio_p = np.sqrt(np.abs(sis_p) / np.abs(pm_p))
     ratio_m = np.sqrt(np.abs(sis_m) / np.abs(pm_m))
-    ax.plot(y, ratio_p, color=C_SIS, lw=1.9, label="type-I image")
-    ax.plot(y, ratio_m, color=C_PM, lw=1.9, ls="--", label="type-II image")
+    ax.plot(y, ratio_p, color=C_SIS, lw=1.2, label="type-I image")
+    ax.plot(y, ratio_m, color=C_PM, lw=1.2, ls="--", label="type-II image")
     ax.axhline(np.sqrt(2.0), color="0.4", lw=1.2, ls=":", label=r"$\sqrt{2}$")
     ax.axvspan(*Y_PRIOR, color="0.85", zorder=0)
     ax.set_xlim(0, 0.5); ax.set_ylim(1.30, 1.50)
     ax.set_xlabel(r"Impact parameter $y$")
     ax.set_ylabel(r"$\sqrt{|\mu^{\rm SIS}|/|\mu^{\rm PM}|}$")
-    ax.set_title("(b)  Per-image amplitude ratio", fontsize=10)
-    ax.legend(fontsize=7.6, frameon=False); ax.grid(alpha=0.25)
+    ax.set_title("(b)  Per-image amplitude ratio")
+    ax.legend(frameon=False); ax.grid(alpha=0.25)
 
     ax = axes[2]
-    ax.plot(y, np.abs(sis_p / sis_m), color=C_SIS, lw=1.9, label="SIS")
-    ax.plot(y, np.abs(pm_p / pm_m), color=C_PM, lw=1.9, ls="--", label="PM")
+    ax.plot(y, np.abs(sis_p / sis_m), color=C_SIS, lw=1.2, label="SIS")
+    ax.plot(y, np.abs(pm_p / pm_m), color=C_PM, lw=1.2, ls="--", label="PM")
     ax.axvspan(*Y_PRIOR, color="0.85", zorder=0)
     ax.set_yscale("log"); ax.set_xlim(0, 0.5)
     ax.set_xlabel(r"Impact parameter $y$"); ax.set_ylabel(r"$|\mu_+/\mu_-|$")
-    ax.set_title("(c)  Pair flux ratio", fontsize=10)
-    ax.legend(fontsize=7.6, frameon=False); ax.grid(alpha=0.25)
+    ax.set_title("(c)  Pair flux ratio")
+    ax.legend(frameon=False); ax.grid(alpha=0.25)
 
     fig.tight_layout()
     fig.savefig(OUT / "fig_lens_magnification.pdf")
@@ -134,7 +142,7 @@ def delay_shape(z_lens, z_source, profile):
 
 def figure_zl_dependence():
     fractions = np.linspace(0.05, 0.95, 400)
-    fig, axes = plt.subplots(1, 2, figsize=(10.4, 3.7), sharey=False)
+    fig, axes = plt.subplots(1, 2, figsize=(6.39, 2.45), sharey=False)
     summary = {}
     for ax, profile, title in zip(axes, ("SIS", "PM"),
                                   (r"(a)  SIS, fixed $(y,\sigma_v)$", r"(b)  PM, fixed $(y,M_L)$")):
@@ -143,15 +151,15 @@ def figure_zl_dependence():
             z_l = fractions * z_s
             shape = np.asarray([delay_shape(z, z_s, profile) for z in z_l])
             shape = shape / delay_shape(z_s / 2.0, z_s, profile)
-            ax.plot(fractions, shape, color=colour, lw=1.9, label=rf"$z_S={z_s}$")
+            ax.plot(fractions, shape, color=colour, lw=1.2, label=rf"$z_S={z_s}$")
             peaks.append(float(fractions[int(np.argmax(shape))]))
             summary[f"{profile}_zs{z_s}_range"] = [float(shape.min()), float(shape.max())]
         summary[f"{profile}_peak_fraction"] = peaks
         ax.axvline(0.5, color="0.4", lw=1.2, ls=":")
         ax.set_xlabel(r"$z_L / z_S$")
         ax.set_ylabel(r"$\Delta t_d(z_L) \,/\, \Delta t_d(z_L=z_S/2)$")
-        ax.set_title(title, fontsize=10)
-        ax.legend(fontsize=7.8, frameon=False); ax.grid(alpha=0.25)
+        ax.set_title(title)
+        ax.legend(frameon=False); ax.grid(alpha=0.25)
     fig.tight_layout()
     fig.savefig(OUT / "fig_zl_dependence.pdf")
     fig.savefig(OUT / "fig_zl_dependence.png", dpi=300)

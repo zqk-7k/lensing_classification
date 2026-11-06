@@ -46,7 +46,7 @@ C_ARROW = "#54606d"
 C_NOTE = "#4a5260"
 
 
-def box(ax, x, y, w, h, text, fc=C_BLOCK, ec=C_EDGE, fs=8.4, weight="normal", head=None, lw=1.1):
+def box(ax, x, y, w, h, text, fc=C_BLOCK, ec=C_EDGE, fs=6.5, weight="normal", head=None, lw=1.1):
     ax.add_patch(FancyBboxPatch((x, y), w, h, boxstyle="round,pad=0.30,rounding_size=0.9",
                                 fc=fc, ec=ec, lw=lw, zorder=2))
     if head is None:
@@ -69,29 +69,29 @@ def draw_encoder(ax):
     ax.axis("off"); ax.set_xlim(0, 100); ax.set_ylim(21.5, 45.5)
 
     # ---- Siamese inputs -------------------------------------------------
-    ax.text(0.5, 43.6, "(a)", fontsize=11, weight="bold", va="center")
-    ax.text(4.6, 43.6, "Siamese encoder, weights shared between branches",
-            fontsize=9.6, weight="bold", va="center")
+    ax.text(0.5, 43.6, "(a)", fontsize=8.5, weight="bold", va="center")
+    ax.text(6.2, 43.6, "Siamese encoder, weights shared between branches",
+            fontsize=7.8, weight="bold", va="center")
 
     box(ax, 1.5, 33.0, 15.0, 5.2, "whitened segment $d_1$\n$1\\times4096$  (2 s, 2048 Hz)", fc="#ffffff")
     box(ax, 1.5, 25.0, 15.0, 5.2, "whitened segment $d_2$\n$1\\times4096$  (2 s, 2048 Hz)", fc="#ffffff")
 
     # ---- shared backbone strip -----------------------------------------
     stages = [
-        (20.0, "Stem", "Conv1d $1{\\to}128$, k15, s2\nBN1d, ReLU\nMaxPool k3, s2", C_STEM, "$128\\times1024$"),
-        (37.5, "Stage 1", "ResBlock k15 $\\times2$\nConv1d $128{\\to}256$, k11, s2\nBN1d, ReLU\nResBlock k11", C_STAGE, "$256\\times512$"),
-        (55.0, "Stage 2", "ResBlock k11 $\\times2$\nConv1d $256{\\to}512$, k9, s2\nBN1d, ReLU\nResBlock k9", C_STAGE, "$512\\times256$"),
-        (72.5, "Stage 3", "Conv1d $512{\\to}1024$, k9, s2\nBN1d, ReLU\nResBlock k7", C_STAGE, "$1024\\times128$"),
+        (20.0, "Stem", "Conv1d $1{\\to}128$,\nk15, s2\nBN1d, ReLU\nMaxPool k3, s2", C_STEM, "$128\\times1024$"),
+        (37.5, "Stage 1", "ResBlock k15 $\\times2$\nConv1d $128{\\to}256$,\nk11, s2\nBN1d, ReLU\nResBlock k11", C_STAGE, "$256\\times512$"),
+        (55.0, "Stage 2", "ResBlock k11 $\\times2$\nConv1d $256{\\to}512$,\nk9, s2\nBN1d, ReLU\nResBlock k9", C_STAGE, "$512\\times256$"),
+        (72.5, "Stage 3", "Conv1d $512{\\to}1024$,\nk9, s2\nBN1d, ReLU\nResBlock k7", C_STAGE, "$1024\\times128$"),
     ]
     for x, title, body, colour, shape in stages:
-        box(ax, x, 25.4, 15.0, 12.4, body, fc=colour, fs=7.9, head=title)
-        ax.text(x + 7.5, 23.9, shape, ha="center", va="center", fontsize=7.6, color=C_NOTE)
+        box(ax, x, 25.4, 15.0, 12.4, body, fc=colour, fs=6.3, head=title)
+        ax.text(x + 7.5, 23.9, shape, ha="center", va="center", fontsize=6.0, color=C_NOTE)
 
     # bracket showing the shared trunk
     ax.add_patch(Rectangle((19.2, 22.6), 68.6, 16.4, fill=False, ec="#b08d57",
                            lw=1.2, ls=(0, (4, 3)), zorder=1))
     ax.text(53.5, 40.1, "shared weights  —  each branch is encoded independently by this trunk",
-            ha="center", fontsize=8.0, style="italic", color="#8a6d3b")
+            ha="center", fontsize=6.2, style="italic", color="#8a6d3b")
 
     for y in (35.6, 27.6):
         arrow(ax, 16.5, y, 20.0, y)
@@ -99,24 +99,24 @@ def draw_encoder(ax):
         arrow(ax, x, 31.6, x + 2.5, 31.6)
 
     # ---- pooling to the embedding --------------------------------------
-    box(ax, 89.0, 25.4, 9.5, 12.4, "global\navg-pool\n$\\oplus$\nmax-pool", fc=C_POOL, fs=7.9)
+    box(ax, 89.0, 25.4, 9.5, 12.4, "global\navg-pool\n$\\oplus$\nmax-pool", fc=C_POOL, fs=6.3)
     arrow(ax, 87.5, 31.6, 89.0, 31.6)
 
 
 
 def draw_head(ax):
     ax.axis("off"); ax.set_xlim(0, 100); ax.set_ylim(0, 22)
-    ax.text(0.5, 19.6, "(b)", fontsize=11, weight="bold", va="center")
-    ax.text(4.6, 19.6, "Pairwise-interaction layer and scoring head",
-            fontsize=9.6, weight="bold", va="center")
+    ax.text(0.5, 19.6, "(b)", fontsize=8.5, weight="bold", va="center")
+    ax.text(6.2, 19.6, "Pairwise-interaction layer and scoring head",
+            fontsize=7.8, weight="bold", va="center")
 
     box(ax, 20.0, 5.4, 24.0, 8.6,
         "$[\\,\\mathbf{f}_1\\odot\\mathbf{f}_2,\\;|\\mathbf{f}_1-\\mathbf{f}_2|\\,]$\n$\\rightarrow\\;4096$",
-        fc=C_FUSE, fs=9.0, head="Pairwise interaction")
+        fc=C_FUSE, fs=6.8, head="Pairwise interaction")
     box(ax, 50.0, 5.4, 24.0, 8.6,
         "Linear $4096{\\to}256$\nReLU,  Dropout $0.7$\nLinear $256{\\to}1$",
-        fc=C_HEAD, fs=8.2, head="Scoring head")
-    box(ax, 80.0, 6.6, 18.5, 6.2, "pair score\n$s(d_1,d_2)$", fc="#ffffff", fs=9.4, weight="bold")
+        fc=C_HEAD, fs=6.5, head="Scoring head")
+    box(ax, 80.0, 6.6, 18.5, 6.2, "pair score\n$s(d_1,d_2)$", fc="#ffffff", fs=7.0, weight="bold")
 
     arrow(ax, 44.0, 9.7, 50.0, 9.7)
     arrow(ax, 74.0, 9.7, 80.0, 9.7)
@@ -126,19 +126,19 @@ def draw_head(ax):
     ax.plot([93.75, 32.0], [17.0, 17.0], color=C_ARROW, lw=1.25, zorder=1)
     arrow(ax, 32.0, 17.0, 32.0, 14.0)
     ax.text(63.0, 17.8, "branch embeddings $\\mathbf{f}_1,\\mathbf{f}_2$  (2048-d each)",
-            ha="center", fontsize=8.0, color=C_NOTE)
+            ha="center", fontsize=6.2, color=C_NOTE)
 
-    ax.text(89.25, 4.6, "a ranking statistic, not a calibrated probability;\n"
+    ax.text(89.25, 3.0, "a ranking statistic, not a calibrated probability;\n"
                         "thresholds are set on the empirical background",
-            ha="center", va="top", fontsize=7.2, style="italic", color=C_NOTE, linespacing=1.5)
+            ha="center", va="top", fontsize=5.9, style="italic", color=C_NOTE, linespacing=1.5)
 
 
 
 
 def draw_residual_block(ax):
     ax.axis("off"); ax.set_xlim(0, 40); ax.set_ylim(-3.2, 45.5)
-    ax.text(0.5, 43.6, "(c)", fontsize=11, weight="bold", va="center")
-    ax.text(4.6, 43.6, "Residual block", fontsize=9.6, weight="bold", va="center")
+    ax.text(0.5, 43.6, "(c)", fontsize=8.5, weight="bold", va="center")
+    ax.text(7.5, 43.6, "Residual block", fontsize=7.8, weight="bold", va="center")
 
     x, w = 9.0, 22.0
     rows = [
@@ -149,10 +149,10 @@ def draw_residual_block(ax):
         (22.2, "BatchNorm1d"),
     ]
     for y, text in rows:
-        box(ax, x, y, w, 3.0, text, fc=C_BLOCK, fs=8.0)
-    box(ax, x, 17.4, w, 3.4, "SE (channel gate)", fc="#e2eddf", fs=8.0)
-    box(ax, x, 10.4, w, 3.4, "$\\oplus$   residual add", fc="#ffffff", fs=8.6)
-    box(ax, x, 5.4, w, 3.0, "ReLU", fc=C_BLOCK, fs=8.0)
+        box(ax, x, y, w, 3.0, text, fc=C_BLOCK, fs=6.3)
+    box(ax, x, 17.4, w, 3.4, "SE (channel gate)", fc="#e2eddf", fs=6.3)
+    box(ax, x, 10.4, w, 3.4, "$\\oplus$  residual add", fc="#ffffff", fs=6.5)
+    box(ax, x, 5.4, w, 3.0, "ReLU", fc=C_BLOCK, fs=6.3)
 
     for y0, y1 in [(38.2, 37.2), (34.2, 33.2), (30.2, 29.2), (26.2, 25.2),
                    (22.2, 20.8), (17.4, 13.8), (10.4, 8.4)]:
@@ -165,7 +165,7 @@ def draw_residual_block(ax):
     ax.text(4.6, 27.0, "identity", rotation=90, ha="center", va="center",
             fontsize=7.8, color=C_NOTE, style="italic")
 
-    ax.text(20.0, -2.8, "SE:  GAP$\\rightarrow$Linear $C{\\to}C/4\\rightarrow$ReLU\n"
+    ax.text(20.0, -4.6, "SE:  GAP$\\rightarrow$Linear $C{\\to}C/4\\rightarrow$ReLU\n"
                        "$\\rightarrow$Linear $C/4{\\to}C\\rightarrow$Sigmoid$\\rightarrow$scale",
             ha="center", va="bottom", fontsize=7.2, color=C_NOTE, linespacing=1.5)
 
@@ -179,7 +179,9 @@ def main():
     assert total == 32_807_937, f"parameter count drifted: {total}"
     print(f"trainable parameters: {total:,}")
 
-    fig = plt.figure(figsize=(9.4, 5.2))
+    # Drawn at 0.9\textwidth (6.39in), the width it is placed at, so LaTeX
+    # leaves it unscaled and the lettering keeps the size set here.
+    fig = plt.figure(figsize=(6.39, 4.35))
     gs = fig.add_gridspec(2, 2, height_ratios=[24, 24], width_ratios=[100, 42],
                           hspace=0.06, wspace=0.05,
                           left=0.012, right=0.988, top=0.985, bottom=0.015)
