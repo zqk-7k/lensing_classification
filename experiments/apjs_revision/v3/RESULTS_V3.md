@@ -138,7 +138,13 @@ pi (seed 42) − cqt (seed 43): +17.5 [16.4, 18.8] at 1e-3, +28.7 [27.3, 30.1] a
 
 Stream-A-only ablation (`pi3A`: all detectors, 2 s at 2048 Hz, no 64 s stream): pending.
 
-Sensitivity to the evaluation set (first ET build, image 1 at the source time): pending.
+Sensitivity to the evaluation set: the first ET build (image 1 at the ler source time, `work_v3_ET`)
+gives, at 1e-3, pi 37.1 [36.1, 38.3], early 22.6, cqt 17.3, v2info 15.4, pi_td 51.2, cqt_td 28.6; paired
+differences pi − cqt +19.8 [18.8, 20.9], pi − early +14.6 [13.5, 15.5], pi − v2info +21.7 [20.5, 23.1].
+Every number is within 2 points of the corrected set, as expected from the small S/N smear at ET.
+
+Note on `v2info`: it keeps the loudest arm chosen by the noiseless signal energy, an oracle choice that
+favours the baseline.
 
 ## 6. Time-delay statistic
 
@@ -167,11 +173,54 @@ Achieved false-positive probability of `pi_td` on the evaluation background at t
 
 ## 7. Point-mass lens-profile robustness
 
-pending
+The 5 000 ET 0228 sources re-lensed by a point mass (log-uniform 1e8 to 1e10 Msun, p(y) proportional
+to y on (0, 1]; `generate_pm_v3.py`); 4 668 accepted (both images at network S/N >= 8 from 20 Hz at
+their own arrival times, delay >= 128 s). Its own manifests (3 268 evaluation pairs, 100 000
+background pairs drawn from point-mass images and unlensed events), scored by the **galaxy-trained**
+seed-42 models: a test of the lens profile, not a target population. Fainter-image network S/N
+13.1 / 17.6 / 34.2 (10 / 50 / 90 %), flux ratio 1.38 / 2.52 / 5.39, delay 0.05 / 0.36 / 2.6 days.
+
+| Model | AUC | P_f = 1e-2 | **P_f = 1e-3** | P_f = 1e-4 |
+|---|---:|---:|---:|---:|
+| **PI-ResNet v3** | 0.9950 | 84.8 [84.0, 85.7] | **33.5 [32.1, 34.9]** | 9.7 [8.8, 10.7] |
+| Early fusion | 0.9880 | 70.7 [69.7, 71.6] | 20.7 [19.6, 22.0] | 1.8 [1.3, 2.4] |
+| CQT-DeiT v3 | 0.9844 | 49.7 [48.0, 51.7] | 12.9 [11.9, 14.0] | 5.2 [4.3, 6.2] |
+| Same network, submitted information | 0.9756 | 43.8 [42.4, 45.1] | 12.7 [11.6, 13.7] | 4.9 [4.1, 5.8] |
+
+| A − B | P_f = 1e-2 | **P_f = 1e-3** | P_f = 1e-4 |
+|---|---:|---:|---:|
+| pi − cqt | +35.1 [32.7, 37.3] | **+20.5 [18.9, 22.3]** | +4.5 [3.6, 5.4] |
+| pi − early | +14.1 [13.0, 15.2] | **+12.8 [11.3, 14.0]** | +7.8 [7.2, 8.5] |
+| pi − v2info | +40.9 [39.1, 42.9] | **+20.8 [19.3, 22.4]** | +4.8 [3.9, 5.6] |
+
+Achieved false-positive probability of `pi` at the 1e-3 threshold: 1.21e-3 (hard 1.16e-3, easy
+1.33e-3). The galaxy-trained network loses 3 points at 1e-3 on a lens profile it never saw (36.8 to
+33.5 %), and the ordering of the models is the same as for galaxy lenses.
 
 ## 8. O4
 
 pending
+
+## 8b. Compute cost (`bench_v3.py`, measured 2026-11-08)
+
+PI-ResNet v3 scores a pair from two per-event feature vectors, so a catalogue search encodes each event
+once and evaluates only the small pairwise head per pair: cost(N) = N c_event + N(N-1)/2 c_head. The
+early-fusion and image models must process every pair in full.
+
+| | GPU, RTX 5000 Ada (bf16, batch 512) | CPU, 1 thread, Xeon Silver 4314 (fp32, batch 16) |
+|---|---:|---:|
+| PI-ResNet v3, per event encoding | 3.7e-4 s | 0.27 s |
+| PI-ResNet v3, per pair head | 2.8e-8 s | 2.5e-5 s |
+| PI-ResNet v3, full pair (both encodings) | 7.3e-4 s | 0.55 s |
+| Early fusion, full pair | 3.7e-4 s | 0.27 s |
+| CQT-DeiT v3, full pair | 2.3e-4 s | 0.037 s |
+| **PI-ResNet v3 per pair, O4-like year (200 events)** | 3.7e-6 s | **2.8e-3 s** |
+| **PI-ResNet v3 per pair, ET year (1e5 events, 5e9 pairs)** | 3.5e-8 s | **3.1e-5 s** |
+
+An ET year of pairs costs about 3 GPU-minutes or 1.8 CPU-days on one thread with PI-ResNet v3; the
+early-fusion and image models would need 1.4e9 and 1.9e8 CPU-seconds (43 and 6 CPU-years). Parameters:
+41.3 M (pi), 40.5 M (early), 5.8 M (cqt). Raw numbers: server `apjs_rev/bench/*.json`. The CPU numbers
+were taken with the other GPUs training (load average 6.5 on 64 cores).
 
 ## 9. Detection definition, image times, and what was corrected
 
