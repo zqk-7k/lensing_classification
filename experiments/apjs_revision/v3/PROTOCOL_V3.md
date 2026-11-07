@@ -55,3 +55,29 @@ p_U = 2 (T - dt) / T^2, the difference of two times uniform over the observing s
 0222 event times). Thresholds again come from the 0228 calibration background only. This is the
 time-delay information every lensing search uses (Haris et al. 2018; PO2.0); it is reported next to,
 not instead of, the network alone.
+
+## Addendum, 2026-11-08 02:15 server time (before any 0228 score was read)
+
+ET inference of `cqt` has run, but no 0228 score, efficiency or comparison has been read or computed
+from it. This addendum records decisions taken since the protocol commit:
+
+- **Extra runs.** `pi3A` (stream A only, all detectors) and second seeds (43) of `pi` and `cqt` on ET.
+  Their predictions are named `<variant>_s43_*`; comparisons `pi_s43` vs `cqt_s43`, `pi_s43` vs `cqt`,
+  `pi` vs `cqt_s43`, `pi` vs `pi3A`. Time-delay versions of `pi`, `cqt`, `v2info`, `early`.
+- **Point-mass set** (`generate_pm_v3.py`, ET): the 0228 SIS sources re-lensed by a point mass with the
+  priors of the v2 robustness set (log-uniform 1e8 to 1e10 Msun; p(y) proportional to y on (0, 1]),
+  accepted when both images have network S/N >= 8 from 20 Hz at their own arrival times and the delay
+  is at least 128 s. Own manifests (`manifests_pm`, `--families SIS,PM`), scored by the galaxy-trained
+  seed-42 models, comparisons `pi` vs `cqt`, `v2info`, `early` with `--family pm`.
+- **Time-delay span.** `combine_td.py` takes T from all 0222 arrival times, including second images,
+  which gives T = 1050 days (image 1 is the brighter image, so the delay is signed and second images
+  lie up to a year before or after the one-year source window). Kept as committed: below 100 days,
+  where nearly all lensed delays lie, it changes ln p_U by at most about 0.2 nats against T = 365 days.
+- **Known property of the catalogs, recorded, not corrected.** `pair_rows` (shared with v2) places
+  image 1 at the source time of the ler draw rather than at that image's own ler arrival time; the
+  relative delay is exact. The antenna pattern is therefore evaluated at a shifted sidereal time, and
+  the injected network S/N from 20 Hz scatters about the ler value (median ratio 1.00; 5 to 95 % range
+  0.64 to 1.57 for image 1). 1.9 % of image 1 and 9.8 % of image 2 in the ET 0228 set lie below S/N 8
+  from 20 Hz; the redrawn spins add a smaller scatter (unlensed: 0.92 to 1.09, 6.4 % below 8). These
+  pairs stay in the evaluation set; efficiencies are therefore slightly conservative. Selection
+  functions are reported against the injected S/N.
