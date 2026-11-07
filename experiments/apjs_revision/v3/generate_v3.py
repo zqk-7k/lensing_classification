@@ -297,6 +297,9 @@ def main():
     ap.add_argument("--mtot-det-max", type=float, default=800.0)
     ap.add_argument("--approximant", default="IMRPhenomXPHM")
     ap.add_argument("--seed", type=int, default=20261108)
+    ap.add_argument("--image-time", choices=["arrival", "source"], default="arrival",
+                    help="arrival: image 1 at its own ler arrival time (source time + t_offset_1), the time at which ler evaluated its detectability; source: at the source time (v2 and the first ET v3 build)")
+    ap.add_argument("--roles", default="0222,0228", help="roles to generate (the role assignment is unchanged)")
     ap.add_argument("--workers", type=int, default=60)
     ap.add_argument("--chunk", type=int, default=50)
     args = ap.parse_args()
@@ -312,6 +315,9 @@ def main():
         for x in r:
             x["ler_draw"], x["ler_file"] = d, name
         rows += r; stats[name] = s
+    if args.image_time == "arrival":
+        for r in rows:
+            r["source_time"] = r["geocent_time"]; r["geocent_time"] = r["geocent_time"] + r["t_offset_1"]
     heavy = [r for r in rows if r["mass_1"] + r["mass_2"] > args.mtot_det_max]
     rows = [r for r in rows if r["mass_1"] + r["mass_2"] <= args.mtot_det_max]
     stats["excluded_heavy_detector_frame"] = len(heavy)
@@ -329,6 +335,7 @@ def main():
     sel = {"0228": ([rows[k] for k in np.sort(pl[:n28l])], [unl[k] for k in np.sort(pu[:n28u])]),
            "0222": ([rows[k] for k in np.sort(pl[n28l:n28l + args.max_lensed_0222])],
                     [unl[k] for k in np.sort(pu[n28u:n28u + args.max_unlensed_0222])])}
+    sel = {role: sel[role] for role in args.roles.split(",")}
     n_det = len(CONFIGS[c]["psd"])
     tasks, names_of = [], {}
     for role, (lr, ur) in sel.items():
@@ -347,7 +354,7 @@ def main():
                 tasks.append((role, kind, s, e, items[s:e], len(items), str(out), fam, store))
     total = sum(len(t[4]) * (2 if t[1] == "lensed" else 1) for t in tasks)
     print(f"[{c}] pairs available {len(rows)}, unlensed available {len(unl)}; "
-          f"0228 {n28l}/{n28u}, 0222 {len(sel['0222'][0])}/{len(sel['0222'][1])}; {total} injections; {stats}", flush=True)
+          f"roles {list(sel)}; 0228 {n28l}/{n28u}; {total} injections; {stats}", flush=True)
     got = {key: [] for key in names_of}
     done = 0
     with Pool(args.workers, initializer=init_worker, initargs=(c, args.approximant)) as pool:
@@ -371,7 +378,9 @@ def main():
             "optimal_SNR_arrays": "network optimal S/N over all detectors from fmin",
             "selection": f"ler detection (network S/N >= {args.snr_th} from 20 Hz per image, two images); min delay {args.min_delay_s} s; "
                          f"detector-frame total mass <= {args.mtot_det_max}",
-            "pair_stats": stats, "assignment_seed": args.seed,
+            "pair_stats": stats, "assignment_seed": args.seed, "roles": list(sel),
+            "image_time": ("image 1 at its own ler arrival time (source time + t_offset_1); image 2 delay_s later"
+                           if args.image_time == "arrival" else "image 1 at the ler source time; image 2 delay_s later"),
             "software": {"python": platform.python_version(), "numpy": np.__version__, "bilby": bilby.__version__, "lal": lal.__version__},
             "wall_s": time.time() - t0}
     (out / "generation_meta_v3.json").write_text(json.dumps(meta, indent=2, default=str))

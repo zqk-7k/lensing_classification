@@ -139,6 +139,9 @@ def pair_rows(lp: dict, snr_th: float, min_delay_s: float) -> tuple[list[dict], 
             "morse_1": MORSE[int(itype[i, a])], "morse_2": MORSE[int(itype[i, b])],
             "delay_s": delay, "brighter_arrives_first": bool(delay > 0),
             "snr_net_ler_1": float(snr[i, a]), "snr_net_ler_2": float(snr[i, b]),
+            # ler's arrival time of image 1 is the source time plus this offset (time_delays are
+            # relative to the first-arriving image); v2 places image 1 at the source time.
+            "t_offset_1": float(dt[i, a]),
         }
         rows.append(row)
     stats = {"systems_in_json": int(n_sys), "fewer_than_two_detected_images": n_lt2,
