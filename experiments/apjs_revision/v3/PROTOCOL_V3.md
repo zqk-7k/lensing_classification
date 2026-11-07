@@ -81,3 +81,25 @@ from it. This addendum records decisions taken since the protocol commit:
   from 20 Hz; the redrawn spins add a smaller scatter (unlensed: 0.92 to 1.09, 6.4 % below 8). These
   pairs stay in the evaluation set; efficiencies are therefore slightly conservative. Selection
   functions are reported against the injected S/N.
+
+## Addendum 2, 2026-11-08 04:10 server time (before any 0228 score was read)
+
+- **Detection definition, stated exactly.** ler/gwsnr detection is `pdet_type="boolean"` with
+  `distribution_type="noncentral_chi2"`: one draw of the observed network S/N from a noncentral
+  chi-square with 2 degrees of freedom per detector and non-centrality equal to the squared optimal
+  S/N (IMRPhenomD, no spins, from 20 Hz), threshold 8, for each of the two images. Images with optimal
+  S/N somewhat below 8 are therefore detected (ET 0228: 7.6 % of second images, O4: 20.7 %), as in a
+  real search. The first protocol section's "network optimal S/N >= 8" is shorthand for this.
+- **Image arrival time corrected.** The first addendum recorded that image 1 sat at the ler source time.
+  `generate_v3.py --image-time arrival` (now the default) places it at its own ler arrival time, which is
+  where ler evaluated its detectability; injected and ler S/N then agree to 0.86 to 1.12 (5 to 95 %),
+  as for unlensed events. Consequences:
+  - **O4** is regenerated in full with the corrected times and its training restarted (the first O4
+    build, `data_v3_O4_srctime`, and its partial runs are set aside; no O4 0228 score was computed).
+  - **ET**: the evaluation set is regenerated with the corrected times (`data_v3_ET2`: same systems,
+    spins, magnifications, delays and noise seeds; unlensed events identical). The ET training set and
+    all ET models are kept (training data placed at source times: 2 points more second images below
+    S/N 8 than ler's own selection, a small widening of the training distribution). **The primary ET
+    results are those on `data_v3_ET2`.** Scores on the first ET evaluation set (`work_v3_ET`) are
+    reported as a sensitivity check only.
+  - The ET point-mass set is unaffected (its acceptance used its own arrival times).
