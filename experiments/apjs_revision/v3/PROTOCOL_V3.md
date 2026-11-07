@@ -82,7 +82,7 @@ from it. This addendum records decisions taken since the protocol commit:
   pairs stay in the evaluation set; efficiencies are therefore slightly conservative. Selection
   functions are reported against the injected S/N.
 
-## Addendum 2, 2026-11-08 04:10 server time (before any 0228 score was read)
+## Addendum 2, 2026-11-08 03:57 server time (before any 0228 score was read)
 
 - **Detection definition, stated exactly.** ler/gwsnr detection is `pdet_type="boolean"` with
   `distribution_type="noncentral_chi2"`: one draw of the observed network S/N from a noncentral
