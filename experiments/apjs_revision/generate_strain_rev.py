@@ -35,10 +35,11 @@ Physics, identical to the original generators unless stated:
     and the signed delay are recorded in pair_meta.csv;
   * the second image is injected at geocent_time + delay, so the Earth has rotated;
   * the stored channel is one detector: the one with the highest optimal S/N
-    among the detectors that share the reference PSD (O4: H1 or L1, both at the
-    aLIGO O4 high ASD; ET: one of the three ET-D arms). The paper's PI-ResNet is a
-    single-detector method and this is the detector a pipeline would hand it.
-    All per-detector and network S/N values are kept in the meta tables.
+    in the network (O4: H1, L1 or V1; ET: one of the three ET-D arms). The paper's
+    PI-ResNet is a single-detector method and this is the detector a pipeline would
+    hand it; at O4 the whitening therefore mixes the aLIGO and AdV spectra, which
+    is a condition of the real network. All per-detector and network S/N values
+    are kept in the meta tables.
   * pairs whose images arrive within --min-delay-s of each other are excluded
     (they overlap in one segment and belong to an overlapping-signal search);
     the excluded fraction is recorded.
@@ -64,7 +65,7 @@ SOURCE_COLUMNS = ["luminosity_distance", "mass_1_source", "mass_2_source", "a_1"
                   "phi_12", "phi_jl", "ra", "dec", "theta_jn", "psi", "phase", "geocent_time"]
 DETECTORS = {
     "O4": dict(ifos=["H1", "L1", "V1"], psd={"H1": ("asd", "aLIGO_O4_high_asd.txt"), "L1": ("asd", "aLIGO_O4_high_asd.txt"),
-                                             "V1": ("asd", "AdV_asd.txt")}, reference=["H1", "L1"]),
+                                             "V1": ("asd", "AdV_asd.txt")}, reference=["H1", "L1", "V1"]),
     "ET": dict(ifos=["ET"], psd={"ET1": ("psd", "ET_D_psd.txt"), "ET2": ("psd", "ET_D_psd.txt"), "ET3": ("psd", "ET_D_psd.txt")},
                reference=["ET1", "ET2", "ET3"]),
 }
