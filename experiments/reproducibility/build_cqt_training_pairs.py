@@ -196,6 +196,7 @@ def build_family(data_root: Path, out_root: Path, lens: str, seed: int, workers:
 
 
 def main():
+    global SPLIT, OUTDIR
     parser = argparse.ArgumentParser()
     parser.add_argument("--data-root", default=os.environ.get("GW_DATA_ROOT", str(ROOT / "data")))
     parser.add_argument("--out-root", required=True)
@@ -205,7 +206,12 @@ def main():
     parser.add_argument("--audit-suffix", default="",
                         help="Suffix for the audit/manifest filenames, e.g. _seed43.")
     parser.add_argument("--workers", type=int, default=min(48, os.cpu_count() or 8))
+    parser.add_argument("--split-manifest", default=str(SPLIT),
+                        help="Shared source-level split (default: the frozen 0222 seed-42 manifest).")
+    parser.add_argument("--audit-dir", default=str(OUTDIR),
+                        help="Where the audit JSON and manifest copies go (default: results/audit).")
     args = parser.parse_args()
+    SPLIT, OUTDIR = Path(args.split_manifest), Path(args.audit_dir)
 
     report = {"seed": args.seed, "hard_probability": HARD_P,
               "negative_rule": "mirrors PairDataset._build_fixed_pairs, restricted to each split",

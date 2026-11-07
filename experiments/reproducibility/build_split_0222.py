@@ -20,7 +20,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output-dir", default=str(ROOT / "experiments" / "reproducibility" / "manifests"))
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--train-fraction", type=float, default=0.8)
+    parser.add_argument("--families", default="SIS,PM",
+                        help="Comma-separated lens families present under the data root (default: both).")
     return parser.parse_args()
+
+
+# Fixed per-family seed offsets keep the SIS/PM split bitwise identical to the frozen manifest.
+FAMILY_SEED_OFFSET = {"SIS": 101, "PM": 202}
 
 
 def sha256(path: Path) -> str:
@@ -44,44 +50,34 @@ def count_rows(path: Path) -> int:
 def main() -> None:
     args = parse_args()
     data_root = Path(args.data_root)
-    files = {
-        "sis_image_1": data_root / "SIS_data_0222" / "SIS_data_strain_1.npy",
-        "sis_image_2": data_root / "SIS_data_0222" / "SIS_data_strain_2.npy",
-        "pm_image_1": data_root / "PM_data_0222" / "PM_data_strain_1.npy",
-        "pm_image_2": data_root / "PM_data_0222" / "PM_data_strain_2.npy",
-        "unlensed": data_root / "Unlensed_data_0222" / "unlensed_data_strain.npy",
-    }
+    families = [item.strip().upper() for item in args.families.split(",") if item.strip()]
+    files = {}
+    for family in families:
+        files[f"{family.lower()}_image_1"] = data_root / f"{family}_data_0222" / f"{family}_data_strain_1.npy"
+        files[f"{family.lower()}_image_2"] = data_root / f"{family}_data_0222" / f"{family}_data_strain_2.npy"
+    files["unlensed"] = data_root / "Unlensed_data_0222" / "unlensed_data_strain.npy"
     for path in files.values():
         if not path.is_file():
             raise FileNotFoundError(path)
 
-    sizes = {
-        "sis": count_rows(files["sis_image_1"]),
-        "pm": count_rows(files["pm_image_1"]),
-        "unlensed": count_rows(files["unlensed"]),
-    }
-    if count_rows(files["sis_image_2"]) != sizes["sis"]:
-        raise ValueError("SIS image arrays have different source counts")
-    if count_rows(files["pm_image_2"]) != sizes["pm"]:
-        raise ValueError("PM image arrays have different source counts")
+    sizes = {family.lower(): count_rows(files[f"{family.lower()}_image_1"]) for family in families}
+    sizes["unlensed"] = count_rows(files["unlensed"])
+    for family in families:
+        if count_rows(files[f"{family.lower()}_image_2"]) != sizes[family.lower()]:
+            raise ValueError(f"{family} image arrays have different source counts")
 
     # Separate deterministic streams avoid accidental identical permutations across pools.
-    sis_train, sis_val = split_ids(sizes["sis"], args.train_fraction, args.seed + 101)
-    pm_train, pm_val = split_ids(sizes["pm"], args.train_fraction, args.seed + 202)
+    split_map, checks = {}, {}
+    for index, family in enumerate(families):
+        offset = FAMILY_SEED_OFFSET.get(family, 404 + 101 * index)
+        train, val = split_ids(sizes[family.lower()], args.train_fraction, args.seed + offset)
+        split_map[f"{family.lower()}_train_source_ids"] = train
+        split_map[f"{family.lower()}_val_source_ids"] = val
+        checks[f"{family.lower()}_train_val_disjoint"] = bool(set(train).isdisjoint(val))
     unl_train, unl_val = split_ids(sizes["unlensed"], args.train_fraction, args.seed + 303)
-    split_map = {
-        "sis_train_source_ids": sis_train,
-        "sis_val_source_ids": sis_val,
-        "pm_train_source_ids": pm_train,
-        "pm_val_source_ids": pm_val,
-        "unlensed_train_source_ids": unl_train,
-        "unlensed_val_source_ids": unl_val,
-    }
-    checks = {
-        "sis_train_val_disjoint": bool(set(sis_train).isdisjoint(sis_val)),
-        "pm_train_val_disjoint": bool(set(pm_train).isdisjoint(pm_val)),
-        "unlensed_train_val_disjoint": bool(set(unl_train).isdisjoint(unl_val)),
-    }
+    split_map["unlensed_train_source_ids"] = unl_train
+    split_map["unlensed_val_source_ids"] = unl_val
+    checks["unlensed_train_val_disjoint"] = bool(set(unl_train).isdisjoint(unl_val))
     assert all(checks.values()), checks
 
     output_dir = Path(args.output_dir)

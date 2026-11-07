@@ -54,14 +54,15 @@ def render_pair(left, right):
     return np.asarray(Image.open(buffer).convert("RGB"))
 
 
-def validate(data_root: Path):
+def validate(data_root: Path, families=("SIS", "PM"), reference_root: Path | None = None):
     results = {}
-    for lens in ("SIS", "PM"):
+    reference_root = reference_root or data_root
+    for lens in families:
         base = data_root / f"{lens}_data_0222"
         a = np.load(base / f"{lens}_data_strain_1.npy", mmap_mode="r")
         b = np.load(base / f"{lens}_data_strain_2.npy", mmap_mode="r")
         generated = render_pair(spectrum(a[0]), spectrum(b[0]))
-        reference_path = data_root / f"dataset_images_{lens}_noisy_cqt/lensed/pos_0000.png"
+        reference_path = reference_root / f"dataset_images_{lens}_noisy_cqt/lensed/pos_0000.png"
         reference = np.asarray(Image.open(reference_path).convert("RGB"))
         diff = np.abs(generated.astype(np.int16) - reference.astype(np.int16))
         results[lens] = {
@@ -92,6 +93,10 @@ def parse_args():
     parser.add_argument("--data-root", default=str(ROOT / "data"))
     parser.add_argument("--output-dir", default=str(ROOT / "artifacts/cqt_cache"))
     parser.add_argument("--workers", type=int, default=48)
+    parser.add_argument("--families", default="SIS,PM",
+                        help="Comma-separated lens families present under the data root (default: both).")
+    parser.add_argument("--reference-root", default=None,
+                        help="Root holding dataset_images_{LENS}_noisy_cqt for the validation image (default: data root).")
     return parser.parse_args()
 
 
@@ -99,7 +104,8 @@ def main():
     args = parse_args()
     data_root, output = Path(args.data_root), Path(args.output_dir)
     output.mkdir(parents=True, exist_ok=True)
-    validation = validate(data_root)
+    families = [item.strip().upper() for item in args.families.split(",") if item.strip()]
+    validation = validate(data_root, families, Path(args.reference_root) if args.reference_root else None)
     validation_path = output / "preprocessing_validation.json"
     validation_path.write_text(json.dumps(validation, indent=2), encoding="utf-8")
     # FFT/plotting-library revisions can move a tiny number of quantized RGB values by a few levels.
@@ -110,12 +116,14 @@ def main():
         raise RuntimeError(f"CQT preprocessing validation failed: {validation}")
 
     specs = []
-    for lens in ("SIS", "PM"):
+    for lens in families:
         base = data_root / f"{lens}_data_0228"
         for image in (1, 2):
-            specs.append((str(base / f"{lens}_data_strain_{image}.npy"), 2500,
+            source = base / f"{lens}_data_strain_{image}.npy"
+            specs.append((str(source), int(np.load(source, mmap_mode="r").shape[0]),
                           str(output / f"{lens.lower()}_img{image}_spectra.npy")))
-    specs.append((str(data_root / "Unlensed_data_0228/unlensed_data_strain.npy"), 5000,
+    unlensed_source = data_root / "Unlensed_data_0228/unlensed_data_strain.npy"
+    specs.append((str(unlensed_source), int(np.load(unlensed_source, mmap_mode="r").shape[0]),
                   str(output / "unlensed_spectra.npy")))
     tasks = []
     shape_tail = (112, 224)

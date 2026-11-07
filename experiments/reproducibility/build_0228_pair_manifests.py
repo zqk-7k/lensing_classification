@@ -15,6 +15,8 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parents[2]
 LENS_OFFSETS = {"SIS": 1000, "PM": 2000}
 PARTITION_OFFSETS = {"calibration": 10, "evaluation": 20}
+SPLIT_SEED_OFFSETS = {"SIS": 1, "PM": 2}
+CALIBRATION_FRACTION = 0.3
 
 
 def sha256(path: Path) -> str:
@@ -132,6 +134,8 @@ def parse_args():
     parser.add_argument("--seed", type=int, default=20260711)
     parser.add_argument("--background-count", type=int, default=100000)
     parser.add_argument("--blocks", type=int, default=10)
+    parser.add_argument("--families", default="SIS,PM",
+                        help="Comma-separated lens families present under the data root (default: both).")
     return parser.parse_args()
 
 
@@ -139,16 +143,26 @@ def main():
     args = parse_args()
     data_root, output = Path(args.data_root), Path(args.output_dir)
     output.mkdir(parents=True, exist_ok=True)
-    sis_cal, sis_eval = split_ids(2500, 750, args.seed + 1)
-    pm_cal, pm_eval = split_ids(2500, 750, args.seed + 2)
-    unl_cal, unl_eval = split_ids(5000, 1500, args.seed + 3)
+    families = [item.strip().upper() for item in args.families.split(",") if item.strip()]
+    # Source counts come from the catalog itself; 2500 lensed sources and 5000 unlensed events
+    # give the frozen 750/1750 and 1500/3500 partitions.
+    family_splits = {}
+    for index, lens in enumerate(families):
+        n_sources = len(pd.read_csv(data_root / f"{lens}_data_0228" / "lens.csv"))
+        offset = SPLIT_SEED_OFFSETS.get(lens, 4 + index)
+        family_splits[lens] = split_ids(n_sources, int(round(CALIBRATION_FRACTION * n_sources)), args.seed + offset)
+    n_unlensed = len(np.load(data_root / "Unlensed_data_0228/unlensed_optimal_SNR.npy"))
+    unl_cal, unl_eval = split_ids(n_unlensed, int(round(CALIBRATION_FRACTION * n_unlensed)), args.seed + 3)
+    split_arrays = {}
+    for lens, (cal_ids, eval_ids) in family_splits.items():
+        split_arrays[f"{lens.lower()}_calibration_source_ids"] = cal_ids
+        split_arrays[f"{lens.lower()}_evaluation_source_ids"] = eval_ids
     np.savez_compressed(output / "split_0228_calibration_evaluation_seed20260711.npz",
-                        sis_calibration_source_ids=sis_cal, sis_evaluation_source_ids=sis_eval,
-                        pm_calibration_source_ids=pm_cal, pm_evaluation_source_ids=pm_eval,
+                        **split_arrays,
                         unlensed_calibration_source_ids=unl_cal, unlensed_evaluation_source_ids=unl_eval,
                         random_seed=np.asarray(args.seed))
     products = {}
-    for lens, cal_ids, eval_ids in (("SIS", sis_cal, sis_eval), ("PM", pm_cal, pm_eval)):
+    for lens, (cal_ids, eval_ids) in family_splits.items():
         base = data_root / f"{lens}_data_0228"
         lens_params, lens_values = pd.read_csv(base / "lens_params.csv"), pd.read_csv(base / "lens.csv")
         snr1 = np.load(base / f"{lens}_optimal_SNR_1.npy")

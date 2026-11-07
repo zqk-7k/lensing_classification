@@ -44,7 +44,7 @@ def wilson(successes, total, z=1.959963984540054):
 def freeze_predictions(lens, prediction_dir, manifest_dir, output_dir):
     pi = pd.read_csv(prediction_dir / f"pi_predictions_0228_{lens}.csv.gz")
     cqt = pd.read_csv(prediction_dir / f"cqt_deit_predictions_0228_{lens}.csv.gz")
-    assert len(pi) == len(cqt) == 202500
+    assert len(pi) == len(cqt)
     assert pi.pair_id.is_unique and cqt.pair_id.is_unique
     merged = pi.merge(cqt[["pair_id", "label", "source_block_id", "negative_type",
                            "calibration_or_evaluation", "cqt_deit_logit_0",
@@ -59,7 +59,7 @@ def freeze_predictions(lens, prediction_dir, manifest_dir, output_dir):
                 "right_source_id", "y", "mu_plus", "mu_minus", "flux_ratio", "rho_1", "rho_2",
                 "rho_min", "rho_max"]
     merged = merged.merge(manifests[physical], on="pair_id", validate="one_to_one")
-    assert len(merged) == 202500 and merged.pair_id.is_unique
+    assert len(merged) == len(pi) == len(manifests) and merged.pair_id.is_unique
     path = output_dir / f"unified_predictions_0228_{lens}.csv.gz"
     merged.to_csv(path, index=False, compression="gzip")
     return merged, path
@@ -195,6 +195,8 @@ def parse_args():
     parser.add_argument("--output-dir", default=str(ROOT / "results/core"))
     parser.add_argument("--bootstrap-replicates", type=int, default=10000)
     parser.add_argument("--seed", type=int, default=20260711)
+    parser.add_argument("--families", default="sis,pm",
+                        help="Comma-separated lens families to analyze (default: both).")
     return parser.parse_args()
 
 
@@ -202,7 +204,8 @@ def main():
     args = parse_args(); prediction_dir, manifest_dir = Path(args.prediction_dir), Path(args.manifest_dir)
     output_dir = Path(args.output_dir); output_dir.mkdir(parents=True, exist_ok=True)
     datasets, unified_paths, thresholds_all, summary, primary_rows = {}, {}, {}, {}, []
-    for lens in ("sis", "pm"):
+    families = [item.strip().lower() for item in args.families.split(",") if item.strip()]
+    for lens in families:
         data, path = freeze_predictions(lens, prediction_dir, manifest_dir, output_dir)
         datasets[lens], unified_paths[lens] = data, path
         cal = data[data.calibration_or_evaluation == "calibration"]
@@ -249,7 +252,9 @@ def main():
                                                                                  "ci": interval(delta[fpp])} for fpp in TARGET_FPPS}}
         summary[lens] = lens_summary
         selection_tables(lens, cal, ev, thresholds, output_dir)
-    matched = snr_matched(datasets, thresholds_all, output_dir)
+    # The SIS--PM reweighting needs both families; a single-family run records that it was skipped.
+    matched = (snr_matched(datasets, thresholds_all, output_dir) if {"sis", "pm"} <= set(families)
+               else {"status": "skipped", "reason": "requires both sis and pm"})
     pd.DataFrame(primary_rows).to_csv(output_dir / "fixed_fpp_primary_table.csv", index=False)
     result = {"status": "complete", "bootstrap_replicates": args.bootstrap_replicates, "seed": args.seed,
               "unified_predictions": {lens: {"path": str(path), "sha256": sha256(path)} for lens, path in unified_paths.items()},
