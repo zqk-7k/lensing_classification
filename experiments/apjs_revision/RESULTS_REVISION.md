@@ -95,6 +95,7 @@ pairs as the cold evaluation; CQT-DeiT numbers are therefore identical to Sectio
 
 | P_f per pair | PI-ResNet (warm from ET) | CQT-DeiT | paired difference |
 |---|---|---|---|
+| 1e-1 | 28.9% | 16.2% | |
 | 1e-2 | 8.4% [7.2, 9.6] | 3.9% [3.4, 4.4] | +4.5 [3.1, 6.1] |
 | 1e-3 (primary) | 1.9% [1.5, 2.5] | 1.0% [0.6, 1.5] | +0.9 [0.3, 1.5] |
 | 1e-4 | 0.34% [0.17, 0.51] | 0.11% [0, 0.29] | +0.23 [0.06, 0.40] |
@@ -102,14 +103,32 @@ pairs as the cold evaluation; CQT-DeiT numbers are therefore identical to Sectio
 
 Achieved background rates for PI-ResNet: 8.6e-3, 5.4e-4, 1e-5 (the O4 thresholds sit on a
 sparser score tail than at ET). McNemar at 0.5 is not informative here (PI-ResNet accuracy at
-0.5 is 0.48: the warm model's scores are not centred on 0.5). The 1e-1 point, the selection
-functions and the detected-subset efficiency come from `analyze_revision_extras` (pending).
+0.5 is 0.48: the warm model's scores are not centred on 0.5). The collapsed cold model gives
+11.5% at 1e-1 (below CQT-DeiT) and nothing below.
+
+Where the O4 efficiency lives (P_f = 1e-3, warm model): pairs with both images at or above
+single-detector S/N 8 are only 27.5% of the population (481 pairs) and give 2.5% [1.5, 3.4]
+vs 1.0% [0.4, 1.7] for CQT-DeiT; the top quintile of the fainter-image S/N (above 9.2) gives
+11.0% [7.9, 15.0] and the four lower quintiles 0-0.3%. The efficiency is flat in y, flux ratio
+and z_s within the errors: at O4 the fainter image's S/N is the only variable that matters.
 
 O4 point-mass robustness set: 741 of 2500 sources accepted (both point-mass images at network
-S/N 8 is rare at O4). With 222 threshold-setting sources in 10 blocks only about 18,000 distinct
-within-block hard pairs exist, so the point-mass background for O4 is 10,000 pairs instead of
-100,000 (`--background-count 10000`; the 1e-4 point is then not resolvable). Scored by the cold
-(collapsed) and the warm PI-ResNet: pending.
+S/N 8 is rare at O4), 519 evaluation positives. With 222 threshold-setting sources in 10
+blocks only about 18,000 distinct within-block hard pairs exist, so the point-mass background
+is 10,000 pairs instead of 100,000 (`--background-count 10000`); the 1e-4 row is then the
+single highest background score and is not resolvable. Galaxy-trained warm PI-ResNet:
+
+| P_f | point-mass efficiency (O4) | galaxy efficiency (O4, Section 4) |
+|---|---|---|
+| 1e-2 | 8.7% [6.0, 11.4] | 8.4% |
+| 1e-3 | 2.7% [1.5, 3.9] | 1.9% |
+| 1e-4 (unresolved, 10k background) | 1.2% [0.6, 1.7] | 0.34% |
+
+At the galaxy thresholds: 11.6% / 1.5% / 0.6% with achieved P_f 1.4e-2 / 1.2e-3 / 3e-4. The
+O4 point-mass set is brighter than the galaxy set by construction (only sources whose two
+point-mass images both reach network S/N 8 are kept), which is why its efficiency is not
+below the galaxy value here; the ET set (Section 5), where most sources are accepted, is the
+cleaner profile test. The cold model gives 1.2% / 0.2% / 0 on the same set.
 
 ## 5. Point-mass lens-profile robustness (ET)
 
@@ -173,6 +192,12 @@ term amortised over the pairs each event enters. With the realistic ET efficienc
   which is affordable, so the pre-filter has no case at O4 scale. The case, if any, is at ET
   scale (5e9 pairs per year; 9.5e3 CPU-yr for the overlap-only search, 10 CPU-yr with the
   pre-filter at 1e-3), and there the efficiency loss must be stated.
+
+With the O4 (warm) efficiencies the picture is the same: PI-ResNet alone at 1e-3 recovers
+1.9% and costs 4.5e3 CPU-s per recovered lensed pair against 30-490 for the overlap statistic;
+the pre-filter chain saves the same factors of compute at combined efficiency 0.19 (1e-1) and
+0.013 (1e-3). Tables: `cost_model_table_{ET,O4}.csv`, `cost_model_catalogue_scale_{ET,O4}.csv`,
+figures `fig_cost_model_{ET,O4}.pdf`.
 
 ## 8. What was not done
 

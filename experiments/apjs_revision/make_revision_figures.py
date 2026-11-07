@@ -22,6 +22,7 @@ import matplotlib.ticker
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+LABELS = {"O4_warm": "O4 (PI-ResNet warm-started from ET)", "O4": "O4", "ET": "ET"}
 
 plt.rcParams.update({"font.size": 8, "axes.labelsize": 8, "legend.fontsize": 7, "xtick.labelsize": 7, "ytick.labelsize": 7,
                      "pdf.fonttype": 42, "figure.dpi": 150})
@@ -47,7 +48,7 @@ def fig_curve(rev, cfgs, out):
             ax.plot(d.target_fap, d.efficiency, "o-", ms=3, lw=1.1, color=c, label=NAMES[model])
             ax.fill_between(d.target_fap, d.efficiency_ci_low, d.efficiency_ci_high, color=c, alpha=0.18, lw=0)
         ax.set_xscale("log"); ax.invert_xaxis(); ax.set_xlabel(r"target per-pair false-alarm probability $P_f$")
-        ax.set_title(f"{cfg} sensitivity, realistic population"); ax.grid(alpha=0.25); ax.set_ylim(0, 1)
+        ax.set_title(f"{LABELS.get(cfg, cfg)} sensitivity, realistic population"); ax.grid(alpha=0.25); ax.set_ylim(0, 1)
         ax.axvline(1e-3, color="gray", lw=0.8, ls=":")
     axes[0, 0].set_ylabel("efficiency on lensed pairs"); axes[0, 0].legend(frameon=True, loc="upper right")
     fig.tight_layout(); fig.savefig(out / "fig_rev_efficiency_vs_fap.pdf"); fig.savefig(out / "fig_rev_efficiency_vs_fap.png", dpi=200); plt.close(fig)
@@ -88,7 +89,7 @@ def fig_population(rev, cfgs, out):
             continue
         m = pd.read_csv(p)
         rho_min = m[["snr_channel_1", "snr_channel_2"]].min(axis=1)
-        axes[0].hist(rho_min, bins=np.logspace(np.log10(2), np.log10(60), 30), histtype="step", lw=1.2, color=c, label=cfg)
+        axes[0].hist(rho_min, bins=np.logspace(np.log10(2), np.log10(60), 30), histtype="step", lw=1.2, color=c, label=LABELS.get(cfg, cfg))
         axes[1].hist((m.mu_1 / m.mu_2).abs(), bins=np.logspace(0, 1.5, 30), histtype="step", lw=1.2, color=c)
         axes[2].hist(m.delay_s.abs() / 86400, bins=np.logspace(-3, 2.6, 30), histtype="step", lw=1.2, color=c)
     axes[0].axvline(8, color="gray", ls=":", lw=0.8)
