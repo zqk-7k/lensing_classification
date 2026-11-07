@@ -46,3 +46,12 @@ validation AUC is the one evaluated.
 - Primary comparisons, in order: `pi` vs `v2info` (gain from the added information), `pi` vs `cqt`
   (baseline with the same information), `pi` vs `early` (does the pairwise interaction matter).
 - Reported regardless of outcome. Second seeds, O4, and the point-mass set follow the same protocol.
+
+## Secondary statistic: time-delay prior (added before any 0228 score, same commit rule)
+
+`combine_td.py`: s_td = logit + ln[p_L(dt) / p_U(dt)] with dt = |arrival-time difference| of the two
+events. p_L is a Gaussian KDE in ln dt of the 0222 lensed pairs (bandwidth by Scott's rule);
+p_U = 2 (T - dt) / T^2, the difference of two times uniform over the observing span T (taken from the
+0222 event times). Thresholds again come from the 0228 calibration background only. This is the
+time-delay information every lensing search uses (Haris et al. 2018; PO2.0); it is reported next to,
+not instead of, the network alone.
