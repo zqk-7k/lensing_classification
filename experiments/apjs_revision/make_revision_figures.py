@@ -18,6 +18,7 @@ from pathlib import Path
 
 import matplotlib
 matplotlib.use("Agg")
+import matplotlib.ticker
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -68,6 +69,9 @@ def fig_selection(rev, cfgs, out, variables=("rho_min", "flux_ratio", "zs"), fap
                             capsize=2, color=col, label=NAMES[model] if (r == 0 and c == len(variables) - 1) else None)
             if var in ("flux_ratio",):
                 ax.set_xscale("log")
+                ax.xaxis.set_major_locator(matplotlib.ticker.LogLocator(base=10, subs=(1.0, 2.0, 5.0)))
+                ax.xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter("%g"))
+                ax.xaxis.set_minor_formatter(matplotlib.ticker.NullFormatter())
             if r == len(cfgs) - 1:
                 ax.set_xlabel(LABEL[var])
             ax.set_ylim(0, 1.02); ax.grid(alpha=0.25)
