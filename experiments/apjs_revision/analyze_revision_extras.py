@@ -115,6 +115,29 @@ def selection(data, meta, out, faps=(1e-3, 1e-2)):
     return df
 
 
+def detected_subset(data, out, replicates, seed, rho_th=8.0):
+    """Pairs whose two members both reach single-detector S/N >= rho_th in the stored channel.
+
+    The background is filtered the same way and the thresholds are re-derived on the filtered
+    calibration background, as in the fully-detected-event analysis of posthoc_robustness.
+    Post hoc: separates pairs the network could not see from pairs it mis-ranked."""
+    sub = data[(data.rho_1 >= rho_th) & (data.rho_2 >= rho_th)]
+    cal = sub[sub.calibration_or_evaluation == "calibration"]; ev = sub[sub.calibration_or_evaluation == "evaluation"]
+    rows = []
+    for i, fap in enumerate((1e-2, 1e-3, 1e-4)):
+        for model, score in MODELS.items():
+            thr = threshold(cal.loc[cal.label == 0, score].to_numpy(), fap)
+            pos, neg = ev[ev.label == 1], ev[ev.label == 0]
+            eci, fci = block_boot(ev, score, thr, replicates, seed + 900 + i)
+            rows.append({"model": model, "target_fap": fap, "rho_threshold": rho_th, "threshold": thr,
+                         "efficiency": float((pos[score] >= thr).mean()), "efficiency_ci_low": eci[0], "efficiency_ci_high": eci[1],
+                         "achieved_fap": float((neg[score] >= thr).mean()), "achieved_fap_ci_low": fci[0], "achieved_fap_ci_high": fci[1],
+                         "n_positives": int(len(pos)), "n_background": int(len(neg)),
+                         "positive_fraction_retained": float(len(pos) / (data[(data.calibration_or_evaluation == "evaluation") & (data.label == 1)]).shape[0])})
+    df = pd.DataFrame(rows); df.to_csv(out / f"detected_subset_rho{int(rho_th)}.csv", index=False)
+    return df
+
+
 def pm_robustness(pred_dir, manifest_dir, data_sis, out, replicates, seed):
     path = pred_dir / "pi_predictions_0228_pm_checkpoint_sis.csv.gz"
     if not path.exists():
@@ -155,12 +178,14 @@ def main():
     meta = pd.read_csv(data / "SIS_data_0228/pair_meta.csv")
     curve = efficiency_curve(uni, out, args.replicates, args.seed)
     sel = selection(uni, meta, out)
+    det = detected_subset(uni, out, args.replicates, args.seed)
     pm = pm_robustness(work / "results/predictions", work / "manifests/0228_pairs_pm", uni, out, args.replicates, args.seed)
     core = json.loads((work / "results/core/core_results.json").read_text())["results"]["sis"]
     summary = {"core_fixed_fap": {m: {fp: {k: core["models"][m]["operating_points"][fp][k] for k in ("efficiency", "efficiency_ci", "achieved_fpp")}
                                       for fp in ("0.01", "0.001", "0.0001")} for m in MODELS},
                "core_paired": core["paired"],
                "efficiency_at_1e-1": {m: float(curve[(curve.model == m) & (np.isclose(curve.target_fap, 1e-1))].efficiency.iloc[0]) for m in MODELS},
+               "detected_subset_rho8": det[det.target_fap == 1e-3].set_index("model")[["efficiency", "efficiency_ci_low", "efficiency_ci_high", "n_positives", "positive_fraction_retained"]].to_dict("index"),
                "pm_robustness": pm, "bootstrap_replicates_extras": args.replicates,
                "n_evaluation_positives": int((uni[uni.calibration_or_evaluation == "evaluation"].label == 1).sum())}
     (out / "summary.json").write_text(json.dumps(summary, indent=2))
