@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Extra ET runs, queued on GPUs as the main chains free them:
-#   GPU 0 (after ET pi):  pi3A ablation (stream A only), then a second CQT seed (43)
+#   GPU 3 (idle while the O4 catalog is generated): a second CQT seed (43)
+#   GPU 0 (after ET pi):  pi3A ablation (stream A only)
 #   GPU 2 (after O4 cqt): a second PI-ResNet seed (43)
 # plus the pre-registered time-delay statistic once the ET chain has scored every variant.
 set -uo pipefail
@@ -29,8 +30,8 @@ seedinfer() {  # VARIANT GPU SEED
 (until grep -q "infer ET pi .* finished" $L/v3_ET_infer_pi.log 2>/dev/null; do sleep 60; done
  bash $R train ET pi3A 0 > $L/v3_ET_train_pi3A.log 2>&1; bash $R infer ET pi3A 0 > $L/v3_ET_infer_pi3A.log 2>&1
  until grep -q "CHAIN_ET_DONE" $L/v3_ET_manifests.log 2>/dev/null; do sleep 60; done
- bash $R compare ET pi pi3A > $L/v3_ET_compare_pi_pi3A.log 2>&1
- bash $R train ET cqt 0 43 > $L/v3_ET_train_cqt_s43.log 2>&1; seedinfer cqt 0 43 > $L/v3_ET_infer_cqt_s43.log 2>&1) &
+ bash $R compare ET pi pi3A > $L/v3_ET_compare_pi_pi3A.log 2>&1) &
+(bash $R train ET cqt 3 43 > $L/v3_ET_train_cqt_s43.log 2>&1; seedinfer cqt 3 43 > $L/v3_ET_infer_cqt_s43.log 2>&1) &
 (until grep -q "infer O4 cqt .* finished" $L/v3_O4_infer_cqt.log 2>/dev/null; do sleep 60; done
  bash $R train ET pi 2 43 > $L/v3_ET_train_pi_s43.log 2>&1; seedinfer pi 2 43 > $L/v3_ET_infer_pi_s43.log 2>&1) &
 wait
