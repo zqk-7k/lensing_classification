@@ -63,7 +63,8 @@ def fig_selection(rev, cfgs, out, variables=("rho_min", "flux_ratio", "zs"), fap
             for model, col in COLORS.items():
                 d = df[(df.model == model) & (df.variable == var) & np.isclose(df.target_fap, fap)].sort_values("bin_left")
                 x = d.median_in_bin.to_numpy()
-                ax.errorbar(x, d.efficiency, yerr=[d.efficiency - d.ci_low, d.ci_high - d.efficiency], fmt="o-", ms=3, lw=1.1,
+                yerr = np.clip([d.efficiency - d.ci_low, d.ci_high - d.efficiency], 0, None)
+                ax.errorbar(x, d.efficiency, yerr=yerr, fmt="o-", ms=3, lw=1.1,
                             capsize=2, color=col, label=NAMES[model] if (r == 0 and c == len(variables) - 1) else None)
             if var in ("flux_ratio",):
                 ax.set_xscale("log")
