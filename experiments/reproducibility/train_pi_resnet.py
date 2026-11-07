@@ -44,6 +44,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--device", default="cuda:0")
     parser.add_argument("--workers", type=int, default=4)
+    parser.add_argument("--init-checkpoint", default=None,
+                        help="Warm start: load model weights from this best.pt before training (recorded in config.json). "
+                             "Not used by the frozen runs.")
+    parser.add_argument("--run-name", default=None,
+                        help="Run directory name; default pi_resnet_{lens}_noisy_seed{seed}.")
     return parser.parse_args()
 
 
@@ -113,7 +118,7 @@ def main() -> None:
         if not path.exists():
             raise FileNotFoundError(path)
 
-    run_dir = Path(args.output_root) / f"pi_resnet_{args.lens.lower()}_noisy_seed{args.seed}"
+    run_dir = Path(args.output_root) / (args.run_name or f"pi_resnet_{args.lens.lower()}_noisy_seed{args.seed}")
     run_dir.mkdir(parents=True, exist_ok=True)
 
     cfg.DATA_MODE = "noisy"
@@ -160,6 +165,9 @@ def main() -> None:
         in_channels=1, d_model=256, width_scale=4.0,
         use_snake=False, use_se=True, use_pairwise_fusion=True,
     ).to(device)
+    if args.init_checkpoint:
+        init = torch.load(args.init_checkpoint, map_location=device, weights_only=False)
+        model.load_state_dict(init["model_state_dict"])
     criterion = nn.BCEWithLogitsLoss()
     optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=args.epochs, eta_min=1e-6)
@@ -171,7 +179,10 @@ def main() -> None:
         "l1_path": str(l1_path), "l2_path": str(l2_path), "unl_path": str(unl_path),
         "selection_metric": "validation_auc", "use_snake": False,
         "use_se": True, "use_pairwise_fusion": True,
-        "protocol_status": "frozen_training_run", "shared_split_manifest": str(split_path),
+        "protocol_status": "frozen_training_run" if not args.init_checkpoint else "warm_start_secondary_run",
+        "init_checkpoint": args.init_checkpoint,
+        "init_checkpoint_sha256": sha256(Path(args.init_checkpoint)) if args.init_checkpoint else None,
+        "shared_split_manifest": str(split_path),
         "shared_split_manifest_sha256": sha256(split_path),
     }
     (run_dir / "config.json").write_text(json.dumps(metadata, indent=2), encoding="utf-8")
