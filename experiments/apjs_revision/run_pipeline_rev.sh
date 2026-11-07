@@ -48,7 +48,11 @@ pm() {
   log "generate_pm_robustness_rev"
   OMP_NUM_THREADS=1 /root/autodl-tmp/ler-venv/bin/python "$(dirname "$0")/generate_pm_robustness_rev.py" --config "$CFG" --root "$DATA" --workers 48
   log "build_0228_pair_manifests (SIS,PM) into a separate manifest dir"
-  $PY $E/build_0228_pair_manifests.py --data-root "$DATA" --output-dir "$WORK/manifests/0228_pairs_pm" --families SIS,PM
+  # The hard background is sampled without replacement inside source blocks; with few accepted
+  # point-mass sources (741 at O4) the 100k default cannot be met and the sampler never returns,
+  # so PM_BACKGROUND (default 100000) is exposed here. O4 used 10000.
+  $PY $E/build_0228_pair_manifests.py --data-root "$DATA" --output-dir "$WORK/manifests/0228_pairs_pm" --families SIS,PM \
+      --background-count "${PM_BACKGROUND:-100000}"
   log "infer_pi_0228 PM with the SIS checkpoint"
   $PY $E/infer_pi_0228.py --lens PM --checkpoint-lens SIS --data-root "$DATA" --manifest-dir "$WORK/manifests/0228_pairs_pm" \
       --training-root "$WORK/artifacts/training" --output-dir "$WORK/results/predictions" --device cuda:$GPU
