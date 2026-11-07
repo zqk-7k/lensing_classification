@@ -228,12 +228,16 @@ def work(task):
             row = rows[i - start]
             params_base = {k: row[k] for k in ("mass_1", "mass_2", "a_1", "a_2", "tilt_1", "tilt_2", "phi_12", "phi_jl",
                                                "luminosity_distance", "theta_jn", "psi", "phase", "ra", "dec")}
-            rec = {"catalog_index": i, **row}
+            rec = {"catalog_index": i, "failed": False, **row}
             for k in (1, 2):
                 params = dict(params_base, geocent_time=row["geocent_time"] + (row["delay_s"] if k == 2 else 0.0),
                               magnification=row[f"mu_{k}"], morse_index=row[f"morse_{k}"])
                 seed = ROLE_SEED[role] + KIND_SEED[kind] + 10 * i + k
-                data, sig, snr_single, snr_net = inject(W["wfg_lensed"], params, seed)
+                try:
+                    data, sig, snr_single, snr_net = inject(W["wfg_lensed"], params, seed)
+                except RuntimeError as err:  # waveform generator refused these parameters
+                    rec["failed"] = True; rec["failure"] = str(err)[:200]
+                    break
                 j = ref[int(np.argmax(snr_single[ref]))]
                 array(base / f"{fam}_data_strain_{k}.npy", (n_total, N), np.float32)[i] = data[j]
                 array(base / f"{fam}_h_strain_{k}.npy", (n_total, N), np.float32)[i] = sig[j]
@@ -251,12 +255,16 @@ def work(task):
             params = {k: row[k] for k in ("mass_1", "mass_2", "a_1", "a_2", "tilt_1", "tilt_2", "phi_12", "phi_jl",
                                           "luminosity_distance", "theta_jn", "psi", "phase", "ra", "dec", "geocent_time")}
             seed = ROLE_SEED[role] + KIND_SEED[kind] + 10 * i
-            data, sig, snr_single, snr_net = inject(W["wfg_plain"], params, seed)
+            try:
+                data, sig, snr_single, snr_net = inject(W["wfg_plain"], params, seed)
+            except RuntimeError as err:
+                results.append({"catalog_index": i, "failed": True, "failure": str(err)[:200], **row})
+                continue
             j = ref[int(np.argmax(snr_single[ref]))]
             array(base / "unlensed_data_strain.npy", (n_total, N), np.float32)[i] = data[j]
             array(base / "unlensed_h_strain.npy", (n_total, N), np.float32)[i] = sig[j]
             array(base / "unlensed_optimal_SNR.npy", (n_total,), np.float64)[i] = snr_single[j]
-            rec = {"catalog_index": i, **row, "channel": names[j], "snr_channel": float(snr_single[j]), "snr_net_bilby": snr_net,
+            rec = {"catalog_index": i, "failed": False, **row, "channel": names[j], "snr_channel": float(snr_single[j]), "snr_net_bilby": snr_net,
                    "segment_start_gps": params["geocent_time"] - (N / W["fs"] - PEAK_OFFSET_SAMPLES / W["fs"]), "noise_seed": seed}
             for name, value in zip(names, snr_single):
                 rec[f"snr_{name}"] = float(value)
@@ -271,8 +279,29 @@ def create(path, shape, dtype):
     np.lib.format.open_memmap(path, mode="w+", dtype=dtype, shape=shape).flush()
 
 
+def compact(base: Path, names: list[str], n_written: int, keep: np.ndarray):
+    """Remove the rows of failed injections so arrays and tables stay aligned."""
+    if len(keep) == n_written:
+        return
+    for name in names:
+        path = base / name
+        src = np.load(path, mmap_mode="r")
+        tmp = base / (name + ".tmp")
+        dst = np.lib.format.open_memmap(tmp, mode="w+", dtype=src.dtype, shape=(len(keep),) + src.shape[1:])
+        for new, old in enumerate(keep):
+            dst[new] = src[old]
+        dst.flush(); del dst, src
+        tmp.replace(path)
+
+
 def write_lensed_tables(base: Path, fam: str, recs: list[dict]):
     df = pd.DataFrame(recs).sort_values("catalog_index").reset_index(drop=True)
+    failed = df[df.failed]
+    if len(failed):
+        failed[["catalog_index", "system_index", "failure"]].to_csv(base / "failed_injections.csv", index=False)
+        compact(base, [f"{fam}_{s}_{k}.npy" for s in ("data_strain", "h_strain", "optimal_SNR") for k in (1, 2)],
+                len(df), df.index[~df.failed].to_numpy())
+        df = df[~df.failed].reset_index(drop=True); df["catalog_index"] = np.arange(len(df))
     df.to_csv(base / "pair_meta.csv", index=False)
     pd.DataFrame({"mu_0": df.mu_1, "mu_1": df.mu_2, "t_d": df.delay_s}).to_csv(base / "lens.csv", index=False)
     pd.DataFrame({"z_l": df.zl, "z_s": df.zs, "sigma_v": df.sigma, "theta_E(arcsec)": df.theta_E_rad * ARCSEC, "y": df.y,
@@ -287,6 +316,12 @@ def write_lensed_tables(base: Path, fam: str, recs: list[dict]):
 
 def write_unlensed_tables(base: Path, recs: list[dict]):
     df = pd.DataFrame(recs).sort_values("catalog_index").reset_index(drop=True)
+    failed = df[df.failed]
+    if len(failed):
+        failed[["catalog_index", "ler_index", "failure"]].to_csv(base / "failed_injections.csv", index=False)
+        compact(base, ["unlensed_data_strain.npy", "unlensed_h_strain.npy", "unlensed_optimal_SNR.npy"],
+                len(df), df.index[~df.failed].to_numpy())
+        df = df[~df.failed].reset_index(drop=True); df["catalog_index"] = np.arange(len(df))
     df.to_csv(base / "event_meta.csv", index=False)
     df[SOURCE_COLUMNS].to_csv(base / "source_samples.csv", index=False)
     return df
@@ -303,6 +338,9 @@ def main():
     ap.add_argument("--n-unlensed", type=int, default=5000, help="unlensed events per role")
     ap.add_argument("--snr-th", type=float, default=8.0)
     ap.add_argument("--min-delay-s", type=float, default=60.0)
+    ap.add_argument("--mtot-det-max", type=float, default=800.0,
+                    help="drop systems whose detector-frame total mass exceeds this: their IMRPhenomXPHM cutoff "
+                         "frequency falls below the 20 Hz minimum frequency, i.e. no in-band signal")
     ap.add_argument("--duration", type=float, default=24.0)
     ap.add_argument("--fs", type=float, default=4096.0)
     ap.add_argument("--fmin", type=float, default=20.0)
@@ -321,12 +359,18 @@ def main():
     lp = load_json(ler_dir / f"n_lensed_detectable_{args.config}.json")
     up = load_json(ler_dir / f"n_unlensed_detectable_{args.config}.json")
     rows, stats = pair_rows(lp, args.snr_th, args.min_delay_s)
-    n_unl_avail = len(up["zs"])
+    heavy = [r for r in rows if r["mass_1"] + r["mass_2"] > args.mtot_det_max]
+    rows = [r for r in rows if r["mass_1"] + r["mass_2"] <= args.mtot_det_max]
+    stats.update(excluded_heavy_detector_frame=len(heavy), mtot_det_max=args.mtot_det_max, usable_pairs=len(rows))
+    unl_mtot = (np.asarray(up["mass_1_source"], float) + np.asarray(up["mass_2_source"], float)) * (1 + np.asarray(up["zs"], float))
+    unl_keep = np.where(unl_mtot <= args.mtot_det_max)[0]
+    stats["excluded_heavy_unlensed"] = int(len(unl_mtot) - len(unl_keep))
+    n_unl_avail = len(unl_keep)
     need_l, need_u = args.n_lensed * len(roles), args.n_unlensed * len(roles)
     if len(rows) < need_l or n_unl_avail < need_u:
         raise SystemExit(f"population too small: {len(rows)} usable pairs (need {need_l}), {n_unl_avail} unlensed (need {need_u})")
     rng = np.random.RandomState(args.seed)
-    perm_l = rng.permutation(len(rows)); perm_u = rng.permutation(n_unl_avail)
+    perm_l = rng.permutation(len(rows)); perm_u = unl_keep[rng.permutation(n_unl_avail)]
     assignment = {}
     for r, role in enumerate(roles):
         sel_l = np.sort(perm_l[r * args.n_lensed:(r + 1) * args.n_lensed])
@@ -378,6 +422,7 @@ def main():
             "approximant": args.approximant, "reference_frequency_hz": 10.0, "snr_threshold_population": args.snr_th,
             "min_delay_s": args.min_delay_s, "pair_selection_stats": stats, "assignment_seed": args.seed,
             "n_lensed": int(len(ldf)), "n_unlensed": int(len(udf)),
+            "failed_injections_dropped": {"lensed": int(args.n_lensed - len(ldf)), "unlensed": int(args.n_unlensed - len(udf))},
             "image_order": "image 1 = brighter of the two brightest detected images; image 2 = fainter",
             "channel_counts_lensed": {k: {str(c): int(v) for c, v in ldf[f"channel_{k}"].value_counts().items()} for k in (1, 2)},
             "channel_counts_unlensed": {str(c): int(v) for c, v in udf["channel"].value_counts().items()},
