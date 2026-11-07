@@ -3,7 +3,8 @@
 offsets, no augmentation). Order-dependent models (early fusion, CQT images) are scored in both
 orders and the logits averaged, so every model is symmetric in the two events.
 
-Output: <out>/<variant>_predictions_0228_<fam>.csv.gz with the manifest keys and logit, score.
+Output: <out>/<tag>_predictions_0228_<fam>.csv.gz with the manifest keys and logit, score; <tag> is the
+variant name unless --tag is given (used for additional training seeds).
 """
 from __future__ import annotations
 
@@ -33,6 +34,7 @@ def main():
     ap.add_argument("--output-dir", required=True)
     ap.add_argument("--device", default="cuda:0")
     ap.add_argument("--batch", type=int, default=512)
+    ap.add_argument("--tag", default=None, help="output name prefix (default: the variant name)")
     a = ap.parse_args()
     dev = torch.device(a.device)
     root, run = Path(a.root), Path(a.run_dir)
@@ -85,9 +87,10 @@ def main():
     out["logit"] = logits.astype(np.float64)
     out["score"] = 1.0 / (1.0 + np.exp(-out["logit"]))
     od = Path(a.output_dir); od.mkdir(parents=True, exist_ok=True)
-    path = od / f"{cfg['variant']}_predictions_0228_{fam}.csv.gz"
+    tag = a.tag or cfg["variant"]
+    path = od / f"{tag}_predictions_0228_{fam}.csv.gz"
     out.to_csv(path, index=False, compression="gzip")
-    (od / f"{cfg['variant']}_predictions_0228_{fam}.metadata.json").write_text(json.dumps({
+    (od / f"{tag}_predictions_0228_{fam}.metadata.json").write_text(json.dumps({
         "run_dir": str(run), "checkpoint": a.checkpoint, "checkpoint_step": ck.get("step"), "val_auc": ck.get("val_auc"),
         "checkpoint_sha256": hashlib.sha256((run / a.checkpoint).read_bytes()).hexdigest(),
         "manifest_dir": a.manifest_dir, "symmetrized": not symmetric, "rows": len(out)}, indent=2))
