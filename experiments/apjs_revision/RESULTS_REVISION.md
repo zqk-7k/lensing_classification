@@ -204,3 +204,13 @@ figures `fig_cost_model_{ET,O4}.pdf`.
 - Posterior-overlap statistic on the same pairs (needs per-event PE for 10,000 events).
 - Population-mismatch test (second `ler` draw with another mass model or VDF).
 - Zenodo redeposit (token), LICENSE, AI disclosure, response letter.
+
+## 9. Later finding (2026-11-08), superseded by v3
+
+`pair_rows` in `generate_strain_rev.py` placed image 1 at the `ler` source time rather than at its own
+`ler` arrival time (source time plus its time delay), so the antenna pattern of each lensed injection
+was not the one `ler` evaluated detectability with; the relative delay is exact. The v2 catalogs here
+carry this. It widens the injected S/N distribution about the selected one (in the v3 ET build, second
+images below network S/N 8 from 20 Hz: 9.8 % against 7.6 % in ler's own selection; O4: 34 % against 21 %),
+so the v2 efficiencies, O4 above all, are biased low. v3 (`v3/RESULTS_V3.md`) places images at their
+arrival times; see Section 9 there.
