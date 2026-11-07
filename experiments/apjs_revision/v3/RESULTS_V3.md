@@ -136,7 +136,19 @@ Second seeds (43), same recipe and evaluation set:
 
 pi (seed 42) − cqt (seed 43): +17.5 [16.4, 18.8] at 1e-3, +28.7 [27.3, 30.1] at 1e-2, +9.2 [8.3, 10.1] at 1e-4.
 
-Stream-A-only ablation (`pi3A`: all detectors, 2 s at 2048 Hz, no 64 s stream): pending.
+Stream-A-only ablation (`pi3A`: all three arms, the 2 s full-band stream only, no 64 s
+low-frequency stream), corrected evaluation set:
+
+| Model | AUC | P_f = 1e-2 | P_f = 1e-3 | P_f = 1e-4 |
+|---|---:|---:|---:|---:|
+| `v2info`: loudest arm, 2 s, above 20 Hz | 0.9794 | 53.0 [50.7, 54.9] | 17.0 [15.7, 18.3] | 4.2 [3.7, 4.8] |
+| `pi3A`: three arms, 2 s | 0.9932 | 77.1 [76.5, 77.9] | 31.0 [29.7, 32.4] | 7.5 [6.7, 8.3] |
+| `pi`: three arms, 2 s + 64 s below 64 Hz | 0.9954 | 86.8 [85.7, 87.8] | 36.8 [35.1, 38.6] | 13.4 [12.3, 14.5] |
+
+pi − pi3A: +9.7 [8.8, 10.5] at 1e-2, +5.8 [4.3, 7.4] at 1e-3, +5.9 [4.9, 6.8] at 1e-4 (first ET build:
++8.9, +6.5, +4.7). Of the 19.9-point gain over the submitted information at 1e-3, about 14 points come
+from the three arms and the band below 20 Hz in the 2 s window, and 6 from the 64 s inspiral stream,
+which also nearly doubles the efficiency at 1e-4.
 
 Sensitivity to the evaluation set: the first ET build (image 1 at the ler source time, `work_v3_ET`)
 gives, at 1e-3, pi 37.1 [36.1, 38.3], early 22.6, cqt 17.3, v2info 15.4, pi_td 51.2, cqt_td 28.6; paired
