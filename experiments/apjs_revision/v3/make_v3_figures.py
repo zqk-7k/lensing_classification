@@ -46,7 +46,7 @@ NETS = [  # variant, label, colour
     ("pi", "PI-ResNet", "#1f5fa8"),
     ("early", "Early fusion", "#d9822b"),
     ("cqt", "CQT--DeiT, same input", "#3a8f5c"),
-    ("v2info", "PI-ResNet, submitted information", "#8a6bb0"),
+    ("v2info", "PI-ResNet, reduced input", "#8a6bb0"),
 ]
 CFG = {  # work dir, data dir, time-delay suffix used in the manuscript tables, label
     "ET": ("work_v3_ET2", "data_v3_ET2", "td", "ET (3 $\\times$ ET-D, from 5 Hz)"),
