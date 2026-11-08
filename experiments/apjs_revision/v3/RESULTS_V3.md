@@ -205,6 +205,14 @@ complementary to the delay information (it adds 14 points at 1e-3 on top of the 
 Achieved false-positive probability of `pi_td` on the evaluation background at the 1e-3 threshold:
 1.00e-3 (hard 1.11e-3, easy 0.73e-3).
 
+Second PI-ResNet seed with the time delay (`pi_s43_td`, protocol addendum 4): AUC 0.9959, 86.2
+[85.3, 87.2] at 1e-2, **47.0 [45.8, 48.2] at 1e-3**, 11.5 [10.0, 12.7] at 1e-4 (achieved false-positive
+probability 0.85e-3 at the 1e-3 threshold). pi_s43_td − pi_s43: +7.0, **+11.4 [10.3, 12.5]**, +9.3;
+pi_s43_td − cqt_td: +16.0 [14.5, 17.4], **+17.7 [17.0, 18.4]**, +1.7 [0.8, 2.5]. The delay prior does
+not remove the seed-43 background outliers (8 of its 10 highest calibration background pairs stay in
+the top 10, at logits 9.3 to 12.8); it lifts enough lensed pairs past them that at 1e-4 the second seed
+goes from 2.2 to 11.5 %, again above the image baseline but still half of seed 42 (23.9 %).
+
 ## 7. Point-mass lens-profile robustness
 
 The 5 000 ET 0228 sources re-lensed by a point mass (log-uniform 1e8 to 1e10 Msun, p(y) proportional
