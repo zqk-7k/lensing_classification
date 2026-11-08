@@ -405,27 +405,42 @@ early-fusion and image models would need 1.4e9 and 1.9e8 CPU-seconds (43 and 6 C
 41.3 M (pi), 40.5 M (early), 5.8 M (cqt). Raw numbers: server `apjs_rev/bench/*.json`. The CPU numbers
 were taken with the other GPUs training (load average 6.5 on 64 cores).
 
-### Staged-search cost with the v3 numbers
+### Staged-search cost with the v3 numbers (corrected 2026-11-08 evening)
 
-`gw-catalog/paper_pi_resnet/experiments/cost_model.py`, configs `ET_v3`, `ET_v3_td`, `O4_v3`, `O4_v3_td`
-(inputs and sources in `cost_model_inputs.json`; PI-ResNet cost per pair = 2 c_event / (N - 1) + c_head
-from the one-thread CPU benchmark above; posterior overlap (PO2.0, Barsode et al. 2024) at 65 % for a
-false-alarm probability of 2e-6, 60 s per pair nominal, half a CPU-hour of PE per event, one CPU-day of
-joint PE per surviving pair):
+`gw-catalog/paper_pi_resnet/experiments/cost_model.py`, configs `ET_v3`, `O4_v3` (inputs and sources in
+`cost_model_inputs.json`; PI-ResNet cost per pair = 2 c_event / (N - 1) + c_head from the one-thread CPU
+benchmark above; PO2.0 (Barsode et al. 2024) at 65 % for a false-alarm probability of 2e-6, half a
+CPU-hour of PE per event, one CPU-day of joint PE per pair surviving the overlap stage). CPU-years:
 
-| catalogue | overlap only | PI-ResNet at P_f = 1e-3, then overlap | efficiency of the chain (independent to nested) |
-|---|---:|---:|---|
-| O4-like year (200 events) | 0.05 CPU-yr | 5e-5 CPU-yr | 0.10 to 0.16 (network), 0.42 to 0.65 (with delay) |
-| ET year (1e5 events, 5e9 pairs) | 9.5e3 CPU-yr | 9.5 CPU-yr | 0.24 to 0.37 (network), 0.33 to 0.51 (with delay) |
+| catalogue | PO2.0 per pair | PO2.0 only | PI-ResNet at P_f = 1e-3, then PO2.0 |
+|---|---:|---:|---:|
+| O4-like year (200 events) | 1 s / 10 s / 60 s | 0.012 / 0.018 / 0.049 | 0.0021 / 0.0021 / 0.0021 |
+| ET year (1e5 events, 5e9 pairs) | 1 s / 10 s / 60 s | 1.9e2 / 1.6e3 / 9.5e3 | 5.9 / 7.3 / 15.2 |
 
-- At O4 scale the overlap-only search is affordable, so a pre-filter has no compute case there, and
-  PI-ResNet alone (16 % at 1e-3; 64 % with the delay) does not match PO2.0's 65 % at a 500 times lower
-  false-alarm probability.
-- At ET scale the pre-filter cuts the compute 1000-fold and sends 10 instead of 1e4 pairs per year to
-  joint PE, at a stated efficiency cost (chain 0.24 to 0.51 against 0.65). PO2.0 publishes no ET
-  number; its O4 efficiency stands in for ET here.
-- Before quoting the "with delay" chain efficiencies against PO2.0, check whether its 65 % already uses
-  a time-delay prior; if it does, the delay information would be counted twice.
+Pairs to joint PE per year: 0.04 vs 4e-5 (O4-like), 1e4 vs 10 (ET). Chain efficiency (independent to
+nested): 0.10 to 0.16 at O4, 0.24 to 0.37 at ET, network-only PI-ResNet.
+
+**Correction.** The first version of this table (9.5 CPU-yr at ET, 5e-5 at O4) charged single-event PE
+only to the fraction p_P of surviving pairs. An event needs PE as soon as one of its N - 1 pairs
+survives, a fraction 1 - (1 - p_P)^(N - 1) of events: 18 % in an O4-like year and all of them in an ET
+year at p_P = 1e-3 (each event keeps about 100 surviving partners). PE then contributes 5.7 CPU-yr to
+every ET chain. The reduction at ET is 30-, 220- or 630-fold for 1, 10 or 60 s per overlap pair, not a
+flat 1000-fold.
+
+**PO2.0 facts** (arXiv:2412.01278, 2510.23238, 2605.10333, read 2026-11-08):
+- PO2.0's 65 % includes the time-delay prior R^L_U (Eq. 11, App. B.4, C.1); arrival time and delay
+  "add about 20-40% to the detection efficiency" (Sec. III.2). The like-for-like comparison is with our
+  time-delay statistic (O4: 64.5 % at 1e-3 vs 65 % at 2e-6). No "with delay" chain is quoted: both stages
+  would use the delay, and their false positives would not be independent.
+- The reviewer's "54 % at 1e-6" is not stated in any of the texts; it matches the ROC of the superseded
+  implementation in 2605.10333 App. A Fig. 6 (old ~0.55, new ~0.59 at 1e-6, figure readings).
+- Per-pair cost: "a few minutes" (2412.01278 Sec. I), ~10 CPU s (2510.23238 Sec. III.2), one to two
+  orders of magnitude less in 2605.10333. None includes single-event PE (~0.5 CPU-h per event).
+- Population (2412.01278 App. D): HLV at O4, GWTC-3 PLP, Madau-Dickinson rate to z = 7, SIE lenses
+  (SDSS VDF, no shear), optimal network S/N >= 8 and >= 4 in two detectors, two images, 18 months.
+- A same-pair comparison would need PE for the 16 000 events of the O4 evaluation catalogue (about
+  8 000 CPU-hours at 0.5 CPU-h each) plus PO2.0 (public code, github.com/anbarsode/PO2.0) on ~2e5 pairs;
+  not attempted. The reviewer's own comment allows comparison through matched settings.
 
 ## 9. Detection definition, image times, and what was corrected
 
