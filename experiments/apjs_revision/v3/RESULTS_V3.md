@@ -100,8 +100,9 @@ Reading it:
   start, 64 s low-frequency stream) doubles it again to 36.8 %.
 - With the same information, the image baseline does not use it: CQT-DeiT v3 is at the level of the
   submitted-information network. The pairwise-interaction head beats early fusion of the same encoders
-  by 14 points at 1e-3 and by a factor 3 at 1e-4, which is the architectural claim the reviewer asked
-  to see separated from Offermans et al.
+  by 14 points at 1e-3 (and by a factor 3 at 1e-4 for this seed; the 1e-4 point depends on the
+  training seed, Section 5), which is the architectural claim the reviewer asked to see separated
+  from Offermans et al.
 
 Efficiency at P_f = 1e-3 against the fainter image's network S/N from 5 Hz (quintiles of the evaluation
 positives; `selection_functions_0228_sis.csv`):
@@ -132,9 +133,30 @@ Second seeds (43), same recipe and evaluation set:
 |---|---:|---:|---:|---:|
 | CQT-DeiT v3, seed 42 | 0.9868 | 59.0 [57.8, 60.1] | 17.2 [16.3, 18.4] | 4.8 [4.3, 5.3] |
 | CQT-DeiT v3, seed 43 | 0.9869 | 58.1 [56.7, 59.5] | 19.4 [18.2, 20.7] | 4.1 [3.5, 4.7] |
-| PI-ResNet v3, seed 43 | pending | | | |
+| PI-ResNet v3, seed 42 | 0.9954 | 86.8 [85.7, 87.8] | 36.8 [35.1, 38.6] | 13.4 [12.3, 14.5] |
+| PI-ResNet v3, seed 43 | 0.9942 | 79.2 [78.0, 80.4] | 35.7 [34.5, 36.7] | 2.2 [1.8, 2.6] |
 
-pi (seed 42) − cqt (seed 43): +17.5 [16.4, 18.8] at 1e-3, +28.7 [27.3, 30.1] at 1e-2, +9.2 [8.3, 10.1] at 1e-4.
+Paired differences for every seed pairing (percentage points):
+
+| A − B | P_f = 1e-2 | **P_f = 1e-3** | P_f = 1e-4 |
+|---|---:|---:|---:|
+| pi (42) − cqt (42) | +27.8 [26.7, 28.8] | **+19.6 [18.2, 21.3]** | +8.6 [7.5, 9.6] |
+| pi (42) − cqt (43) | +28.7 [27.3, 30.1] | **+17.5 [16.4, 18.8]** | +9.2 [8.3, 10.1] |
+| pi (43) − cqt (42) | +20.2 [18.6, 21.8] | **+18.4 [17.1, 19.8]** | −2.6 [−3.4, −1.8] |
+| pi (43) − cqt (43) | +21.1 [19.1, 23.0] | **+16.3 [15.2, 17.3]** | −2.0 [−2.8, −1.1] |
+
+The two PI-ResNet seeds agree at the primary operating point (36.8 and 35.7 % at 1e-3; achieved
+false-positive probability 1.18e-3 and 0.99e-3), and PI-ResNet beats the image baseline by 16 to 20
+points at 1e-3 and by 20 to 29 points at 1e-2 in all four pairings. They differ by 8 points at 1e-2,
+and at 1e-4 they disagree outright (13.4 against 2.2 %). The 1e-4 threshold is the tenth-highest of the
+100 000 calibration background scores. Seed 43 gives ten calibration background pairs logits of 9.2
+to 12.7, above about 98 % of the lensed pairs, while the highest background logit of seed 42 is 7.6.
+Six of the ten are "hard" background (images of two different sources from the same source block),
+four pair a lensed image with an unrelated unlensed event; their network S/N (12 to 97) is ordinary
+for the set, and no single event dominates (the most frequent appears in 4 of the top 60). The source-block bootstrap does not include this training-seed
+variance. **Efficiencies at 1e-4 are therefore not a stable property of the recipe**: they are
+reported, but no claim rests on them (protocol addendum 4). The CQT-DeiT seeds agree at every point
+(4.8 and 4.1 % at 1e-4).
 
 Stream-A-only ablation (`pi3A`: all three arms, the 2 s full-band stream only, no 64 s
 low-frequency stream), corrected evaluation set:
