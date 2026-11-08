@@ -420,7 +420,8 @@ joint PE per surviving pair):
   PI-ResNet alone (16 % at 1e-3; 64 % with the delay) does not match PO2.0's 65 % at a 500 times lower
   false-alarm probability.
 - At ET scale the pre-filter cuts the compute 1000-fold and sends 10 instead of 1e4 pairs per year to
-  joint PE, at a stated efficiency cost (chain 0.24 to 0.51 against 0.65).
+  joint PE, at a stated efficiency cost (chain 0.24 to 0.51 against 0.65). PO2.0 publishes no ET
+  number; its O4 efficiency stands in for ET here.
 - Before quoting the "with delay" chain efficiencies against PO2.0, check whether its 65 % already uses
   a time-delay prior; if it does, the delay information would be counted twice.
 
