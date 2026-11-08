@@ -104,7 +104,7 @@ from it. This addendum records decisions taken since the protocol commit:
     reported as a sensitivity check only.
   - The ET point-mass set is unaffected (its acceptance used its own arrival times).
 
-## Addendum 3, 2026-11-08 08:15 server time (before any O4 0228 score was read)
+## Addendum 3, 2026-11-08 08:06 server time (before any O4 0228 score was read)
 
 No O4 comparison has been run and no O4 0228 efficiency has been read (only the `cqt` predictions
 exist). GPU 2 became free when the second ET PI-ResNet seed finished, so O4 gets the full set of
