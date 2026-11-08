@@ -1,7 +1,7 @@
 # v3 results: all detectors, low-frequency start, fresh noise, compact catalogs
 
 Status: all sections filled (2026-11-08). Protocol addenda 4 and 5 were decided after scores were read; see PROTOCOL_V3.md.
-Protocol: `PROTOCOL_V3.md` (committed before any 0228 score, addendum before any score was read).
+Protocol: `PROTOCOL_V3.md` (committed before any 0228 score was computed; addenda 1 and 2 before any score was read, addendum 3 before any O4 score was read, addenda 4 and 5 after).
 
 ## 1. Why v3
 
@@ -45,10 +45,12 @@ detector-frame total mass exceeds 800 Msun.
 
 ## 3. Storage
 
+Sizes in GB = 10^9 bytes (`du -sb`, 2026-11-08).
+
 | Data | Before | After | Check |
 |---|---:|---:|---|
-| Submitted catalogs 0222 + 0228 (SIS, PM, unlensed) | 154 GB | 3.7 GB | re-scored from the compact root: max abs(Δlogit) = 0 on all 202 500 pairs, SIS and PM |
-| v2 rerun catalogs, ET + O4 | 35 GB | 3.0 GB | max abs(Δlogit) = 0 on every archived prediction (ET SIS 202 500, ET PM 202 339, O4 SIS 202 500, O4 PM 20 741 pairs) |
+| Submitted catalogs 0222 + 0228 (SIS, PM, unlensed) | 165 GB | 3.9 GB | re-scored from the compact root: max abs(Δlogit) = 0 on all 202 500 pairs, SIS and PM |
+| v2 rerun catalogs, ET + O4 | 36 GB | 3.0 GB | max abs(Δlogit) = 0 on every archived prediction (ET SIS 202 500, ET PM 202 339, O4 SIS 202 500, O4 PM 20 741 pairs) |
 | v3 ET (5x more events, 3 detectors, two streams) | — | 9.5 GB | — |
 | v3 ET point-mass set | — | 1.4 GB | — |
 | v3 ET corrected evaluation set (`data_v3_ET2`: new lensed 0228 only; the rest are links) | — | 1.6 GB | unlensed 0228 byte-identical to the first build, now a link |
@@ -65,8 +67,8 @@ Why it shrinks without losing anything the analysis uses:
   removes the fixed-noise memorisation the v2 recipe was exposed to. Only the 0228 test set stores
   its noisy data, so the test inputs are fixed on disk.
 
-Not used by any script in this repository (no reference anywhere): the 0123 catalogs (77 GB),
-`old_data` (30 GB) and the `test_*` twin arrays inside each catalog directory. Deleting the full
+Not used by any script in this repository (no reference anywhere): the 0123 catalogs (83 GB),
+`old_data` (32 GB) and the `test_*` twin arrays inside each catalog directory. Deleting the full
 originals is the authors' decision; the compact copies and the generation records make them
 unnecessary for every number reported here.
 
@@ -203,7 +205,7 @@ Thresholds again from the calibration background only. Same evaluation set as Se
 | pi_td − v2info_td | +25.5 [24.6, 26.5] | **+19.3 [18.5, 20.2]** | +10.2 [9.4, 11.1] |
 
 The delay prior helps every model, and the ordering is unchanged; the network's ranking is
-complementary to the delay information (it adds 14 points at 1e-3 on top of the network alone).
+complementary to the delay information (the delay adds 14 points at 1e-3 on top of the network alone).
 Achieved false-positive probability of `pi_td` on the evaluation background at the 1e-3 threshold:
 1.00e-3 (hard 1.11e-3, easy 0.73e-3).
 
