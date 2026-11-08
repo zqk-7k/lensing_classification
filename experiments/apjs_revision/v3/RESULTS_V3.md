@@ -239,6 +239,33 @@ Achieved false-positive probability of `pi` at the 1e-3 threshold: 1.21e-3 (hard
 1.33e-3). The galaxy-trained network loses 3 points at 1e-3 on a lens profile it never saw (36.8 to
 33.5 %), and the ordering of the models is the same as for galaxy lenses.
 
+## 7b. Score precision (fp32 rescoring, protocol addendum 4)
+
+The registered scores were computed under bf16 autocast, which rounds the logits (2 100 to 12 500
+distinct values over 205 000 pairs, depending on the model) and creates ties at the thresholds. Every ET
+model was rescored in full fp32 precision (`infer_v3.py --precision fp32`: 144 000 to 201 000 distinct
+values; |Δlogit| median 0.004 to 0.044, 99th percentile 0.05 to 0.24) and run through the same analysis
+(`work_v3_ET2/compare_fp32`).
+
+| Model | P_f = 1e-2, bf16 → fp32 | **P_f = 1e-3** | P_f = 1e-4 | achieved FPP at 1e-3, fp32 |
+|---|---:|---:|---:|---:|
+| PI-ResNet v3 (seed 42) | 86.8 → 86.9 | **36.8 → 36.1** | 13.4 → 12.5 | 1.13e-3 |
+| PI-ResNet v3 (seed 43) | 79.2 → 79.2 | **35.7 → 35.7** | 2.2 → 2.1 | 0.98e-3 |
+| Early fusion | 74.9 → 74.9 | **22.5 → 22.3** | 4.0 → 3.9 | 0.92e-3 |
+| CQT-DeiT v3 (seed 42) | 59.0 → 58.3 | **17.2 → 16.8** | 4.8 → 4.1 | 1.05e-3 |
+| CQT-DeiT v3 (seed 43) | 58.1 → 58.1 | **19.4 → 19.1** | 4.1 → 4.1 | 1.23e-3 |
+| Submitted information | 53.0 → 52.7 | **17.0 → 17.0** | 4.2 → 4.2 | 0.96e-3 |
+| Stream A only (`pi3A`) | 77.1 → 77.1 | **31.0 → 30.5** | 7.5 → 7.6 | 0.74e-3 |
+| PI-ResNet v3 + time delay | 91.7 → 91.6 | **51.0 → 51.0** | 23.9 → 23.3 | 1.00e-3 |
+| PI-ResNet v3 (seed 43) + time delay | 86.2 → 86.2 | **47.0 → 47.0** | 11.5 → 11.5 | 0.88e-3 |
+
+Paired differences at 1e-3 in fp32: pi − v2info +19.2 [17.7, 21.1], pi − cqt +19.3 [17.9, 20.9],
+pi − early +13.9 [12.4, 15.2], pi − pi3A +5.6 [4.1, 7.3], pi_td − pi +14.9 [13.6, 16.0], pi_td − cqt_td
++21.7 [21.0, 22.3], pi_s43 − cqt_s43 +16.6 [15.5, 17.6]. No efficiency and no paired difference moves by more
+than 0.9 points (largest: pi at 1e-4, and pi − pi3A at 1e-4); AUCs agree to four decimals. Rounding
+does not change any ordering or conclusion; the registered bf16 numbers stay primary. The O4 models
+are rescored the same way.
+
 ## 8. O4
 
 pending
