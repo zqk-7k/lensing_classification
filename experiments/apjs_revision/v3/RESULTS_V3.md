@@ -263,8 +263,11 @@ Paired differences at 1e-3 in fp32: pi − v2info +19.2 [17.7, 21.1], pi − cqt
 pi − early +13.9 [12.4, 15.2], pi − pi3A +5.6 [4.1, 7.3], pi_td − pi +14.9 [13.6, 16.0], pi_td − cqt_td
 +21.7 [21.0, 22.3], pi_s43 − cqt_s43 +16.6 [15.5, 17.6]. No efficiency and no paired difference moves by more
 than 0.9 points (largest: pi at 1e-4, and pi − pi3A at 1e-4); AUCs agree to four decimals. Rounding
-does not change any ordering or conclusion; the registered bf16 numbers stay primary. The O4 models
-are rescored the same way.
+does not change any ordering or conclusion; the registered bf16 numbers stay primary.
+
+O4 (`work_v3_O4/compare_fp32`, all five models): 2 700 to 11 800 distinct bf16 values against about
+198 000 in fp32, |Δlogit| median 0.009 to 0.015. No efficiency moves by more than 0.4 points (PI-ResNet
+at 1e-3, 16.1 → 15.7) and no paired difference by more than 0.5 points; AUCs agree to 2e-4.
 
 ## 8. O4
 
