@@ -1,0 +1,60 @@
+{
+ "title": "Simulated strain of lensed and unlensed binary black holes at O4 and Einstein Telescope sensitivity for lensed-pair identification (PI-ResNet v3)",
+ "upload_type": "dataset",
+ "version": "v3.0.0",
+ "license": "cc-by-4.0",
+ "creators": [
+  {
+   "name": "Zhang, Fan",
+   "orcid": "0009-0004-3509-7495",
+   "affiliation": "Zhejiang University"
+  },
+  {
+   "name": "Zhang, Qikai",
+   "orcid": "0009-0008-7902-8191",
+   "affiliation": "Zhejiang University"
+  },
+  {
+   "name": "Yang, Qiyuan",
+   "orcid": "0009-0007-6444-2026",
+   "affiliation": "Wuhan University"
+  },
+  {
+   "name": "Huang, Jiaqing",
+   "orcid": "0009-0009-2516-8866",
+   "affiliation": "Jiangsu Sungo Intelligent Technology Research Center Co., Ltd."
+  },
+  {
+   "name": "Yuan, Yong",
+   "orcid": "0009-0002-9540-9230",
+   "affiliation": "Institute of Mechanics, Chinese Academy of Sciences"
+  },
+  {
+   "name": "Fan, Xilong",
+   "orcid": "0000-0002-8174-0128",
+   "affiliation": "Wuhan University"
+  }
+ ],
+ "keywords": [
+  "gravitational-wave lensing",
+  "strong lensing",
+  "simulation",
+  "Einstein Telescope",
+  "O4",
+  "binary black holes"
+ ],
+ "description": "<p>Strain catalogues of the v3 analysis of the PI-ResNet study (ApJS manuscript AAS82367). Populations drawn with ler 1.0.2 (GWTC-3 power-law-plus-peak binary black holes, merger rate to z = 10, elliptical power-law galaxy lenses with external shear; detection: two images at observed network S/N 8). Waveforms IMRPhenomXPHM, injected into every detector of each configuration: ET = three ET-D interferometers from 5 Hz; O4 = H1, L1 (O4 high) and V1 (AdV) from 20 Hz.</p><p>Each event is stored as two whitened streams aligned on the geocentric merger time: stream A (2048 Hz, 4608 samples around a 2 s window) and stream B (below 64 Hz, 128 Hz, 8224 samples around a 64 s window), as float16 noiseless signals (sig_*) for every event; evaluation catalogues (0228) also store the fixed noisy inputs (data_*). Per-event parameters, lens parameters, image types, magnifications, delays and S/N are in pair_meta.csv / event_meta.csv; generation settings in the generation_meta JSON files. Development catalogues are SIS_data_0222 (lensed; the SIS label holds the galaxy-lens family) and Unlensed_data_0222; evaluation catalogues are the 0228 sets. v3_ET2_SIS_data_0228 is the corrected ET evaluation catalogue (image 1 at its own arrival time) used for the reported ET results; v3_ET_SIS_data_0228 is the first build, reported as a sensitivity check. v3_ET_PM_data_0228 is the point-mass robustness set. Each .tar unpacks to one directory of .npy and .csv files; SHA256SUMS lists the tar checksums.</p><p>Code and trained networks: the companion software record (related identifiers).</p>",
+ "related_identifiers": [
+  {
+   "identifier": "https://github.com/zqk-7k/lensing_classification",
+   "relation": "isSupplementTo",
+   "resource_type": "software"
+  },
+  {
+   "identifier": "10.5281/zenodo.21311077",
+   "relation": "isSupplementTo",
+   "resource_type": "software"
+  }
+ ],
+ "notes": "Associated with ApJS manuscript AAS82367."
+}
