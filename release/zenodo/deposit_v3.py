@@ -25,6 +25,11 @@ import time
 from pathlib import Path
 
 import requests
+import urllib3.util.connection as _u3c
+
+# The GPU server reaches zenodo.org over IPv6 at ~0.2 MB/s and over IPv4 at ~2.5 MB/s (measured
+# 2026-11-08 with a 20 MB PUT); a 3 GB upload over IPv6 stalled for two hours. Force IPv4.
+_u3c.HAS_IPV6 = False
 
 BASE = "https://zenodo.org/api"
 
