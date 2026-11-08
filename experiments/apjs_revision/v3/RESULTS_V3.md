@@ -1,6 +1,6 @@
 # v3 results: all detectors, low-frequency start, fresh noise, compact catalogs
 
-Status: data and storage sections final; result sections are filled as the runs finish.
+Status: all sections filled (2026-11-08). Protocol addenda 4 and 5 were decided after scores were read; see PROTOCOL_V3.md.
 Protocol: `PROTOCOL_V3.md` (committed before any 0228 score, addendum before any score was read).
 
 ## 1. Why v3
@@ -213,6 +213,11 @@ not remove the seed-43 background outliers (8 of its 10 highest calibration back
 the top 10, at logits 9.3 to 12.8); it lifts enough lensed pairs past them that at 1e-4 the second seed
 goes from 2.2 to 11.5 %, again above the image baseline but still half of seed 42 (23.9 %).
 
+Protocol addendum 5 found a defect in how the statistic handles pairs with dt above the training span
+T; it does not trigger at ET (largest dt 708 days against T = 1050 days). The corrected statistic, with
+T from the searched catalogue's own event times (718 days), changes no ET efficiency in this section
+by more than 0.3 points (`work_v3_ET2/compare_tdc`). It matters at O4 (Section 8a).
+
 ## 7. Point-mass lens-profile robustness
 
 The 5 000 ET 0228 sources re-lensed by a point mass (log-uniform 1e8 to 1e10 Msun, p(y) proportional
@@ -271,7 +276,109 @@ at 1e-3, 16.1 → 15.7) and no paired difference by more than 0.5 points; AUCs a
 
 ## 8. O4
 
-pending
+H1 and L1 at aLIGO O4 high sensitivity, V1 at AdV, all from 20 Hz; same population model, detection
+rule, recipe and frozen analysis as ET (`data_v3_O4`, `work_v3_O4`). Lensed systems 13 536 (0222) and
+4 000 (0228), unlensed events 25 801 and 8 000. 2 145 of 20 000 drawn systems (10.7 %) were dropped
+because their two brightest images arrive within one 128 s frame, and 319 because the detector-frame
+total mass exceeds 800 Msun. Evaluation: 2 800 lensed pairs and 100 000 background pairs (70 % hard).
+
+| O4 0228 set | 10 % | 50 % | 90 % |
+|---|---:|---:|---:|
+| Fainter image, network S/N from 20 Hz | 7.1 | 9.5 | 15.0 |
+| Louder image, network S/N from 20 Hz | 8.5 | 11.6 | 18.9 |
+| Fainter image, loudest detector | 5.0 | 6.8 | 10.8 |
+| Unlensed event, network S/N | 7.0 | 9.5 | 16.1 |
+| Source redshift, lensed / unlensed | 0.97 / 0.23 | 1.80 / 0.61 | 3.11 / 1.31 |
+| Flux ratio of the two images | 1.03 | 1.25 | 2.28 |
+| abs(time delay), days | 0.01 | 0.40 | 27.9 |
+
+63 % of the lensed pairs come from four-image systems (2 517 of 4 000; 1 106 two-image, 377
+three-image), consistent with both images needing magnification to be detected at O4 sensitivity: the
+pairs are mostly the two brightest images of quads, nearly equal in flux and close in time.
+
+| Model | AUC | P_f = 1e-2 | **P_f = 1e-3** | P_f = 1e-4 | achieved FPP at 1e-3 |
+|---|---:|---:|---:|---:|---:|
+| **PI-ResNet v3** (seed 42) | 0.9654 | 43.6 [42.5, 44.8] | **16.1 [15.1, 17.0]** | 6.0 [5.4, 6.8] | 0.94e-3 |
+| PI-ResNet v3 (seed 43) | 0.9661 | 44.8 [43.1, 46.4] | **17.5 [16.6, 18.4]** | 5.2 [4.4, 6.0] | 1.01e-3 |
+| Same network, submitted information (`v2info`) | 0.9368 | 31.6 [30.2, 33.2] | 12.9 [12.1, 13.7] | 3.5 [2.9, 4.1] | 1.36e-3 |
+| CQT-DeiT v3 (`cqt`) | 0.8754 | 23.9 [22.8, 25.0] | 10.2 [9.7, 10.8] | 4.7 [4.0, 5.5] | 1.37e-3 |
+| Early fusion (`early`) | 0.9167 | 20.9 [19.6, 22.1] | 5.8 [5.0, 6.6] | 1.7 [1.3, 2.1] | 1.04e-3 |
+| *v2 rerun (warm-started from ET; the frozen cold starts collapsed)* | 0.696 | 8.4 | 1.9 [1.5, 2.5] | 0.34 | |
+
+| A − B | ΔAUC | P_f = 1e-2 | **P_f = 1e-3** | P_f = 1e-4 |
+|---|---:|---:|---:|---:|
+| pi − v2info | +0.0286 [+0.0250, +0.0323] | +12.1 [11.2, 12.9] | **+3.2 [2.2, 3.9]** | +2.5 [1.7, 3.5] |
+| pi − cqt | +0.0900 [+0.0849, +0.0946] | +19.8 [18.7, 20.9] | **+5.9 [4.9, 6.8]** | +1.3 [0.5, 2.3] |
+| pi − early | +0.0487 [+0.0463, +0.0511] | +22.8 [21.9, 23.8] | **+10.3 [9.2, 11.5]** | +4.4 [3.7, 5.3] |
+| pi (43) − cqt | +0.0907 [+0.0857, +0.0953] | +20.9 [19.1, 22.7] | **+7.3 [6.4, 8.2]** | +0.5 [−0.3, 1.4] |
+| pi (43) − v2info | +0.0293 [+0.0258, +0.0332] | +13.2 [11.6, 14.9] | **+4.6 [3.3, 6.0]** | +1.7 [0.8, 2.6] |
+
+Reading it:
+
+- The O4 PI-ResNet now trains from scratch: both seeds converge (AUC 0.965 and 0.966) where all three
+  v2 cold starts collapsed (validation AUC about 0.52), and the seeds agree at every operating point
+  (16.1 and 17.5 % at 1e-3; 6.0 and 5.2 % at 1e-4). Against the v2 warm-started run the efficiency at
+  1e-3 rises from 1.9 to 16.1 % (the v2 O4 catalogs also carried the image-time bias of Section 9, 34 %
+  of second images below S/N 8 against ler's 21 %).
+- PI-ResNet is first at every operating point and every pairing; the margins are smaller than at ET
+  (3 to 7 points at 1e-3 over the submitted-information network and the image baseline, 10 over early
+  fusion). The information added at O4 is smaller than at ET: every model already starts at 20 Hz, and
+  what is added is the other two detectors and the 20 to 64 Hz inspiral stream.
+- `v2info` and `cqt` run slightly above the nominal false-positive rate at 1e-3 (1.36e-3 and 1.37e-3
+  against 0.94e-3 for PI-ResNet), which favours them in the efficiencies above.
+- At 1e-4 PI-ResNet's margin over the image baseline is 0.5 to 1.3 points, at the edge of the
+  intervals.
+
+Efficiency at P_f = 1e-3 against the fainter image's network S/N (quintiles of the calibration
+positives) and against the flux ratio:
+
+| fainter-image S/N | n | pi | pi (43) | early | cqt | v2info |
+|---|---:|---:|---:|---:|---:|---:|
+| < 7.8 | 552 | 2.9 | 3.8 | 0.7 | 1.1 | 1.6 |
+| 7.8 to 8.9 | 524 | 4.8 | 5.5 | 0.2 | 1.1 | 3.6 |
+| 8.9 to 10.0 | 514 | 5.8 | 7.8 | 1.9 | 2.3 | 5.8 |
+| 10.0 to 12.0 | 591 | 11.8 | 13.7 | 2.5 | 5.4 | 10.5 |
+| > 12.0 | 619 | 49.9 | 51.5 | 21.3 | 37.2 | 38.9 |
+
+| flux ratio | n | pi | pi (43) | early | cqt | v2info |
+|---|---:|---:|---:|---:|---:|---:|
+| < 1.07 | 496 | 24.2 | 24.8 | 8.9 | 14.7 | 19.2 |
+| 1.07 to 1.17 | 596 | 21.0 | 23.3 | 6.9 | 13.9 | 16.3 |
+| 1.17 to 1.34 | 602 | 16.6 | 18.3 | 5.3 | 9.8 | 12.0 |
+| 1.34 to 1.75 | 575 | 12.7 | 13.9 | 4.5 | 9.0 | 11.0 |
+| > 1.75 | 531 | 6.0 | 7.2 | 3.6 | 3.6 | 6.4 |
+
+As in v2, the O4 efficiency lives in the fainter image's S/N: half of the pairs whose fainter image is
+above network S/N 12 are recovered at 1e-3, and only 3 to 12 % below it.
+
+### 8a. O4 with the time-delay statistic
+
+The registered statistic is defective at O4 (protocol addendum 5): it takes the span T from the
+training catalogue (617 days), the O4 evaluation catalogue spans 692 days, and the 26 background
+pairs with dt > T get the largest log ratio of all (+13.0 nats) and set the 1e-4 thresholds. The
+corrected statistic takes T from the searched catalogue's own event times (no labels; every pair has
+dt <= T). On ET the correction changes no efficiency by more than 0.3 points (`compare_tdc`).
+
+| Model + time delay | registered: 1e-2 / **1e-3** / 1e-4 | corrected: AUC | 1e-2 | **1e-3** | 1e-4 |
+|---|---|---:|---:|---:|---:|
+| **PI-ResNet v3** | 83.0 / **62.9** / 8.9 | 0.9914 | 83.3 [81.7, 84.6] | **64.5 [62.4, 66.6]** | 47.2 [45.6, 48.8] |
+| PI-ResNet v3 (seed 43) | 82.5 / **62.4** / 11.6 | 0.9912 | 82.9 [81.4, 84.4] | **64.2 [62.0, 66.7]** | 49.8 [47.9, 51.9] |
+| Same network, submitted information | 77.2 / **57.5** / 6.5 | 0.9856 | 77.5 [76.2, 78.8] | **61.0 [58.6, 63.3]** | 44.8 [43.1, 46.6] |
+| Early fusion | 75.4 / **54.4** / 2.3 | 0.9830 | 75.5 [73.9, 77.1] | **56.7 [54.4, 58.9]** | 38.8 [37.6, 39.9] |
+| CQT-DeiT v3 | 72.4 / **50.9** / 0.0 | 0.9743 | 72.8 [70.9, 74.7] | **53.7 [52.2, 55.4]** | 33.5 [32.5, 34.7] |
+
+Corrected paired differences: pi_tdc − pi +39.7 / **+48.4 [46.5, 50.7]** / +41.1; pi_tdc − cqt_tdc
++10.5 / **+10.8 [9.8, 12.0]** / +13.6; pi_tdc − early_tdc +7.8 / **+7.8 [7.0, 8.8]** / +8.4;
+pi_tdc − v2info_tdc +5.8 / **+3.5 [2.3, 4.8]** / +2.4; pi_s43_tdc − cqt_tdc +10.1 / **+10.5 [9.3, 11.6]** /
++16.3. Achieved false-positive probability of `pi_tdc` at the 1e-3 threshold 1.07e-3.
+
+At O4 the time delay carries most of the information: the lensed delays are short (median 0.4 days)
+against a 692-day span, and the prior quadruples PI-ResNet's efficiency at 1e-3 (16.1 to 64.5 %).
+With the delay included in every model, PI-ResNet still leads every baseline by 3.5 to 10.8 points at
+1e-3 (both seeds). Two caveats belong next to these numbers: p_L is estimated from the same simulated
+lens population as the test set, so the gain is what a search with the right lens-population model
+would get; and the 128 s minimum delay leaves out the 10.7 % of systems whose two brightest images
+overlap in time (a separate analysis problem), both from the test positives and from p_L.
 
 ## 8b. Compute cost (`bench_v3.py`, measured 2026-11-08)
 
