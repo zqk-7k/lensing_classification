@@ -129,3 +129,23 @@ seed. They are sensitivity checks; the registered numbers stay primary.
   `infer_v3.py --precision fp32` rescores every ET model (and the O4 models once trained) in full
   precision into `predictions_fp32/`, compared in `compare_fp32/` with the same analysis.
 - **Time-delay version of the second seed** (`pi_s43_td`), compared with `pi_s43` and `cqt_td`.
+
+## Addendum 5, 2026-11-08 11:48 server time (after the O4 time-delay scores were read)
+
+**Defect in the registered time-delay statistic.** `combine_td.py` takes the observing span T from the
+training-catalogue (0222) event times and clips dt to just below T before evaluating
+p_U = 2 (T - dt) / T^2. A searched pair with dt > T therefore gets p_U close to 0 and the largest log
+ratio of all (+13.0 nats at O4) instead of being treated as an ordinary unrelated pair. With image 1
+at its own arrival time, lensed images arrive up to about a year after the one-year source window, so
+the searched catalogue can span more than the training catalogue: at O4 T(0222) = 617 days, the 0228
+events span 692 days, and 26 of the 204 000 manifest pairs (all background) have dt > T; they occupy
+the top of the background ranking and set the P_f = 1e-4 threshold of every time-delay model. At ET,
+T(0222) = 1050 days and no pair exceeds it (largest dt 708 days), so the registered ET time-delay
+numbers are unaffected.
+
+**Correction** (`combine_td.py --span-from 0228 --suffix tdc`): T is the span of the event times of the
+searched catalogue itself, which a real search knows (its observing span) and which uses no labels;
+every searched pair then has dt <= T. Applied to the registered bf16 scores of `pi`, `pi_s43`, `cqt`,
+`v2info` and `early` on ET (`data_v3_ET2`) and O4, comparisons in `compare_tdc/` (`pi_tdc` vs `pi`,
+`cqt_tdc`, `v2info_tdc`, `early_tdc`; `pi_s43_tdc` vs `cqt_tdc`). Both versions are reported; for O4 the
+corrected one is the one the text relies on, flagged as a post-hoc correction.
