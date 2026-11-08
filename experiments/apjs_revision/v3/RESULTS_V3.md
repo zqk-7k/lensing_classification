@@ -403,6 +403,27 @@ early-fusion and image models would need 1.4e9 and 1.9e8 CPU-seconds (43 and 6 C
 41.3 M (pi), 40.5 M (early), 5.8 M (cqt). Raw numbers: server `apjs_rev/bench/*.json`. The CPU numbers
 were taken with the other GPUs training (load average 6.5 on 64 cores).
 
+### Staged-search cost with the v3 numbers
+
+`gw-catalog/paper_pi_resnet/experiments/cost_model.py`, configs `ET_v3`, `ET_v3_td`, `O4_v3`, `O4_v3_td`
+(inputs and sources in `cost_model_inputs.json`; PI-ResNet cost per pair = 2 c_event / (N - 1) + c_head
+from the one-thread CPU benchmark above; posterior overlap (PO2.0, Barsode et al. 2024) at 65 % for a
+false-alarm probability of 2e-6, 60 s per pair nominal, half a CPU-hour of PE per event, one CPU-day of
+joint PE per surviving pair):
+
+| catalogue | overlap only | PI-ResNet at P_f = 1e-3, then overlap | efficiency of the chain (independent to nested) |
+|---|---:|---:|---|
+| O4-like year (200 events) | 0.05 CPU-yr | 5e-5 CPU-yr | 0.10 to 0.16 (network), 0.42 to 0.65 (with delay) |
+| ET year (1e5 events, 5e9 pairs) | 9.5e3 CPU-yr | 9.5 CPU-yr | 0.24 to 0.37 (network), 0.33 to 0.51 (with delay) |
+
+- At O4 scale the overlap-only search is affordable, so a pre-filter has no compute case there, and
+  PI-ResNet alone (16 % at 1e-3; 64 % with the delay) does not match PO2.0's 65 % at a 500 times lower
+  false-alarm probability.
+- At ET scale the pre-filter cuts the compute 1000-fold and sends 10 instead of 1e4 pairs per year to
+  joint PE, at a stated efficiency cost (chain 0.24 to 0.51 against 0.65).
+- Before quoting the "with delay" chain efficiencies against PO2.0, check whether its 65 % already uses
+  a time-delay prior; if it does, the delay information would be counted twice.
+
 ## 9. Detection definition, image times, and what was corrected
 
 - **Detection is on an observed S/N.** ler/gwsnr draws, for each image, one observed network S/N from a
