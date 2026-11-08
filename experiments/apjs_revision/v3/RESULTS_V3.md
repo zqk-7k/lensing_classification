@@ -49,9 +49,11 @@ detector-frame total mass exceeds 800 Msun.
 |---|---:|---:|---|
 | Submitted catalogs 0222 + 0228 (SIS, PM, unlensed) | 154 GB | 3.7 GB | re-scored from the compact root: max abs(Δlogit) = 0 on all 202 500 pairs, SIS and PM |
 | v2 rerun catalogs, ET + O4 | 35 GB | 3.0 GB | max abs(Δlogit) = 0 on every archived prediction (ET SIS 202 500, ET PM 202 339, O4 SIS 202 500, O4 PM 20 741 pairs) |
-| v3 ET (5x more events, 3 detectors, two streams) | — | 8.9 GB | — |
-| v3 ET point-mass set | — | pending | — |
-| v3 O4 | — | pending | — |
+| v3 ET (5x more events, 3 detectors, two streams) | — | 9.5 GB | — |
+| v3 ET point-mass set | — | 1.4 GB | — |
+| v3 ET corrected evaluation set (`data_v3_ET2`: new lensed 0228 only; the rest are links) | — | 1.6 GB | unlensed 0228 byte-identical to the first build, now a link |
+| v3 O4 | — | 6.6 GB | — |
+| **all v3 data** | | **19 GB** | |
 
 Why it shrinks without losing anything the analysis uses:
 
