@@ -85,7 +85,7 @@ def draw_head(ax, n_pi, n_early):
     ax.text(0.5, 22.3, "(b)", fontsize=8.0, weight="bold", va="center")
     ax.text(5.5, 22.3, "Pairwise interaction and scoring head", fontsize=7.4, weight="bold", va="center")
     box(ax, 1.0, 12.0, 15.0, 6.0, "$\\mathbf{f}_1,\\ \\mathbf{f}_2$\n(events 1 and 2)", fc="#ffffff", fs=6.1)
-    box(ax, 20.0, 11.5, 25.0, 7.0, "$[\\,\\mathbf{f}_1\\odot\\mathbf{f}_2,\;|\\mathbf{f}_1-\\mathbf{f}_2|\\,]$"
+    box(ax, 20.0, 11.5, 25.0, 7.0, r"$[\,\mathbf{f}_1\odot\mathbf{f}_2,\;|\mathbf{f}_1-\mathbf{f}_2|\,]$"
         "$\\rightarrow6144$", fc=C_FUSE, fs=6.3, head="Pairwise interaction")
     box(ax, 49.0, 11.5, 25.0, 7.0, "Linear $6144{\\to}256$, ReLU\nDropout 0.7, Linear $256{\\to}1$",
         fc=C_HEAD, fs=6.0, head="Scoring head")
@@ -94,10 +94,10 @@ def draw_head(ax, n_pi, n_early):
     ax.text(50.0, 9.0, f"PI-ResNet: {n_pi / 1e6:.1f} M parameters; symmetric in the two events; "
                        "each event is encoded once per catalogue", ha="center", fontsize=5.8, color=C_NOTE)
     box(ax, 1.0, 0.6, 97.5, 5.6,
-        "Early fusion (comparison): the channels of both events are stacked ($6\\times4096$, $6\\times8192$) and "
-        "passed through the same two encoders;\nthe head acts on the joint 3072-d embedding, with no pairwise layer "
-        f"({n_early / 1e6:.1f} M parameters). Every pair must be encoded in full.",
-        fc="#f4f4f4", ec="#b5b5b5", fs=5.8)
+        "Early fusion (comparison): the channels of both events are stacked ($6\\times4096$, $6\\times8192$)\n"
+        "and passed through the same two encoders; the head acts on the joint 3072-d embedding,\n"
+        f"with no pairwise layer ({n_early / 1e6:.1f} M parameters). Every pair must be encoded in full.",
+        fc="#f4f4f4", ec="#b5b5b5", fs=5.6)
 
 
 def draw_residual_block(ax):
@@ -107,10 +107,10 @@ def draw_residual_block(ax):
     x, w = 9.0, 22.0
     for y, t in [(38.2, "Conv1d $C{\\to}C$, kernel $k$"), (34.2, "BatchNorm1d"), (30.2, "ReLU"),
                  (26.2, "Conv1d $C{\\to}C$, kernel $k$"), (22.2, "BatchNorm1d")]:
-        box(ax, x, y, w, 3.0, t, fs=6.0)
-    box(ax, x, 17.4, w, 3.4, "SE (channel gate)", fc="#e2eddf", fs=6.0)
-    box(ax, x, 10.4, w, 3.4, "$\\oplus$  residual add", fc="#ffffff", fs=6.2)
-    box(ax, x, 5.4, w, 3.0, "ReLU", fs=6.0)
+        box(ax, x, y + 0.3, w, 2.4, t, fs=5.8)
+    box(ax, x, 17.6, w, 2.8, "SE (channel gate)", fc="#e2eddf", fs=5.8)
+    box(ax, x, 10.6, w, 2.8, "$\\oplus$  residual add", fc="#ffffff", fs=6.0)
+    box(ax, x, 5.6, w, 2.4, "ReLU", fs=5.8)
     for y0, y1 in [(38.2, 37.2), (34.2, 33.2), (30.2, 29.2), (26.2, 25.2), (22.2, 20.8), (17.4, 13.8), (10.4, 8.4)]:
         arrow(ax, x + w / 2, y0, x + w / 2, y1)
     ax.plot([5.4, 5.4], [41.2, 12.1], color=C_ARROW, lw=1.1, ls=(0, (4, 3)), zorder=1)
