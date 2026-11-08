@@ -204,7 +204,8 @@ Thresholds again from the calibration background only. Same evaluation set as Se
 | pi_td − early_td | +9.7 [8.8, 10.6] | **+8.5 [7.5, 9.4]** | +8.2 [7.0, 9.7] |
 | pi_td − v2info_td | +25.5 [24.6, 26.5] | **+19.3 [18.5, 20.2]** | +10.2 [9.4, 11.1] |
 
-The delay prior helps every model, and the ordering is unchanged; the network's ranking is
+The delay prior helps every model and PI-ResNet stays first at every operating point (the order of the
+other three changes: v2info_td passes cqt_td at 1e-3, early_td leads them at 1e-4); the network's ranking is
 complementary to the delay information (the delay adds 14 points at 1e-3 on top of the network alone).
 Achieved false-positive probability of `pi_td` on the evaluation background at the 1e-3 threshold:
 1.00e-3 (hard 1.11e-3, easy 0.73e-3).
@@ -401,7 +402,8 @@ early-fusion and image models must process every pair in full.
 | **PI-ResNet v3 per pair, ET year (1e5 events, 5e9 pairs)** | 3.5e-8 s | **3.1e-5 s** |
 
 An ET year of pairs costs about 3 GPU-minutes or 1.8 CPU-days on one thread with PI-ResNet v3; the
-early-fusion and image models would need 1.4e9 and 1.9e8 CPU-seconds (43 and 6 CPU-years). Parameters:
+early-fusion and image models would need 1.4e9 and 1.9e8 CPU-seconds (43 and 6 CPU-years) in one input
+order; both are scored in two orders (infer_v3.py), which doubles that. bench_v3.py times one order. Parameters:
 41.3 M (pi), 40.5 M (early), 5.8 M (cqt). Raw numbers: server `apjs_rev/bench/*.json`. The CPU numbers
 were taken with the other GPUs training (load average 6.5 on 64 cores).
 
@@ -424,8 +426,9 @@ nested): 0.10 to 0.16 at O4, 0.24 to 0.37 at ET, network-only PI-ResNet.
 only to the fraction p_P of surviving pairs. An event needs PE as soon as one of its N - 1 pairs
 survives, a fraction 1 - (1 - p_P)^(N - 1) of events: 18 % in an O4-like year and all of them in an ET
 year at p_P = 1e-3 (each event keeps about 100 surviving partners). PE then contributes 5.7 CPU-yr to
-every ET chain. The reduction at ET is 30-, 220- or 630-fold for 1, 10 or 60 s per overlap pair, not a
-flat 1000-fold.
+every ET chain. The reduction at ET is 32-, 221- or 626-fold for 1, 10 or 60 s per overlap pair (about 30- to
+600-fold), not a flat 1000-fold. At 60 s the overlap on the 5e6 surviving pairs (9.5 CPU-yr) outweighs
+single-event PE (5.7); at 1 and 10 s PE dominates.
 
 **PO2.0 facts** (arXiv:2412.01278, 2510.23238, 2605.10333, read 2026-11-08):
 - PO2.0's 65 % includes the time-delay prior R^L_U (Eq. 11, App. B.4, C.1); arrival time and delay
