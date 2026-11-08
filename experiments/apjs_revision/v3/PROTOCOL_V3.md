@@ -103,3 +103,14 @@ from it. This addendum records decisions taken since the protocol commit:
     results are those on `data_v3_ET2`.** Scores on the first ET evaluation set (`work_v3_ET`) are
     reported as a sensitivity check only.
   - The ET point-mass set is unaffected (its acceptance used its own arrival times).
+
+## Addendum 3, 2026-11-08 08:15 server time (before any O4 0228 score was read)
+
+No O4 comparison has been run and no O4 0228 efficiency has been read (only the `cqt` predictions
+exist). GPU 2 became free when the second ET PI-ResNet seed finished, so O4 gets the full set of
+primary comparisons that ET has:
+
+- **O4 `early`** (seed 42, same recipe), scored and compared as `pi` vs `early`. `chain_v3_O4.sh` had left
+  it out only for lack of GPU time.
+- **O4 time-delay versions** of `pi`, `cqt`, `v2info`, `early` with `combine_td.py` (T from the O4 0222
+  arrival times), comparisons `pi_td` vs `cqt_td`, `v2info_td`, `early_td`, `pi`, as on ET.
