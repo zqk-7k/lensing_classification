@@ -9,6 +9,7 @@ variant name unless --tag is given (used for additional training seeds).
 from __future__ import annotations
 
 import argparse
+import contextlib
 import hashlib
 import json
 import sys
@@ -35,6 +36,8 @@ def main():
     ap.add_argument("--device", default="cuda:0")
     ap.add_argument("--batch", type=int, default=512)
     ap.add_argument("--tag", default=None, help="output name prefix (default: the variant name)")
+    ap.add_argument("--precision", choices=("bf16", "fp32"), default="bf16",
+                    help="bf16 autocast (the registered setting) or full fp32 (sensitivity check of logit rounding)")
     a = ap.parse_args()
     dev = torch.device(a.device)
     root, run = Path(a.root), Path(a.run_dir)
@@ -68,7 +71,8 @@ def main():
         return out
 
     logits = np.empty(len(man), np.float32)
-    with torch.no_grad(), torch.autocast("cuda", dtype=torch.bfloat16):
+    amp = torch.autocast("cuda", dtype=torch.bfloat16) if a.precision == "bf16" else contextlib.nullcontext()
+    with torch.no_grad(), amp:
         for s in range(0, len(man), a.batch):
             e = min(len(man), s + a.batch)
             m = man.iloc[s:e]
@@ -93,7 +97,7 @@ def main():
     (od / f"{tag}_predictions_0228_{fam}.metadata.json").write_text(json.dumps({
         "run_dir": str(run), "checkpoint": a.checkpoint, "checkpoint_step": ck.get("step"), "val_auc": ck.get("val_auc"),
         "checkpoint_sha256": hashlib.sha256((run / a.checkpoint).read_bytes()).hexdigest(),
-        "manifest_dir": a.manifest_dir, "symmetrized": not symmetric, "rows": len(out)}, indent=2))
+        "manifest_dir": a.manifest_dir, "symmetrized": not symmetric, "rows": len(out), "precision": a.precision}, indent=2))
     print(f"wrote {path}", flush=True)
 
 

@@ -114,3 +114,18 @@ primary comparisons that ET has:
   it out only for lack of GPU time.
 - **O4 time-delay versions** of `pi`, `cqt`, `v2info`, `early` with `combine_td.py` (T from the O4 0222
   arrival times), comparisons `pi_td` vs `cqt_td`, `v2info_td`, `early_td`, `pi`, as on ET.
+
+## Addendum 4, 2026-11-08 08:35 server time (after the ET seed-43 scores were read)
+
+Unlike the earlier addenda, these were decided **after** reading the ET scores of the second PI-ResNet
+seed. They are sensitivity checks; the registered numbers stay primary.
+
+- **Seed dependence at P_f = 1e-4.** The two PI-ResNet seeds agree at 1e-3 (36.8 and 35.7 %) but not at
+  1e-4 (13.4 and 2.2 %): seed 43 scores a few background pairs above almost all lensed pairs, and the
+  1e-4 threshold is the tenth-highest of 100 000 calibration background scores. Claims rest on
+  P_f = 1e-3 (and 1e-2); 1e-4 numbers are reported with this caveat.
+- **Logit rounding.** `infer_v3.py` scores under bf16 autocast, so the logits take about 2 000 distinct
+  values over 205 000 pairs and ties at a threshold move efficiencies by up to about 1 point.
+  `infer_v3.py --precision fp32` rescores every ET model (and the O4 models once trained) in full
+  precision into `predictions_fp32/`, compared in `compare_fp32/` with the same analysis.
+- **Time-delay version of the second seed** (`pi_s43_td`), compared with `pi_s43` and `cqt_td`.
