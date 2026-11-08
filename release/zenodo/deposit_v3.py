@@ -60,8 +60,15 @@ def main() -> int:
         if d.get("submitted"):
             sys.exit(f"{a.draft} is published; refusing")
     elif a.new_record:
-        r = requests.post(f"{BASE}/deposit/depositions", **auth, json={}, timeout=120)
-        r.raise_for_status(); d = r.json()
+        # idempotent: reuse an unpublished draft that already carries this title
+        mine = requests.get(f"{BASE}/deposit/depositions", **auth, params={"size": 100}, timeout=60).json()
+        same = [x for x in mine if not x.get("submitted") and x.get("metadata", {}).get("title") == meta["title"]]
+        if same:
+            d = requests.get(f"{BASE}/deposit/depositions/{same[0]['id']}", **auth, timeout=60).json()
+            print(f"reusing unpublished draft with the same title", flush=True)
+        else:
+            r = requests.post(f"{BASE}/deposit/depositions", **auth, json={}, timeout=120)
+            r.raise_for_status(); d = r.json()
     else:
         mine = requests.get(f"{BASE}/deposit/depositions", **auth, params={"size": 100}, timeout=60).json()
         pub = [x for x in mine if str(x.get("conceptrecid")) == a.new_version_of and x.get("submitted")]
