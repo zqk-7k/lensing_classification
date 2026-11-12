@@ -105,8 +105,8 @@ Reading it:
 - With the same information, the image baseline does not use it: CQT-DeiT v3 is at the level of the
   submitted-information network. The pairwise-interaction head beats early fusion of the same encoders
   by 14 points at 1e-3 (and by a factor 3 at 1e-4 for this seed; the 1e-4 point depends on the
-  training seed, Section 5), which is the architectural claim the reviewer asked to see separated
-  from Offermans et al.
+  training seed, Section 5), which separates the architecture from the input, relative to
+  Offermans et al.
 
 Efficiency at P_f = 1e-3 against the fainter image's network S/N from 5 Hz (quintiles of the evaluation
 positives; `selection_functions_0228_sis.csv`):
@@ -435,7 +435,7 @@ single-event PE (5.7); at 1 and 10 s PE dominates.
   "add about 20-40% to the detection efficiency" (Sec. III.2). The like-for-like comparison is with our
   time-delay statistic (O4: 64.5 % at 1e-3 vs 65 % at 2e-6). No "with delay" chain is quoted: both stages
   would use the delay, and their false positives would not be independent.
-- The reviewer's "54 % at 1e-6" is not stated in any of the texts; it matches the ROC of the superseded
+- An efficiency of "54 % at 1e-6" is not stated in any of the texts; it matches the ROC of the superseded
   implementation in 2605.10333 App. A Fig. 6 (old ~0.55, new ~0.59 at 1e-6, figure readings).
 - Per-pair cost: "a few minutes" (2412.01278 Sec. I), ~10 CPU s (2510.23238 Sec. III.2), one to two
   orders of magnitude less in 2605.10333. None includes single-event PE (~0.5 CPU-h per event).
@@ -443,7 +443,7 @@ single-event PE (5.7); at 1 and 10 s PE dominates.
   (SDSS VDF, no shear), optimal network S/N >= 8 and >= 4 in two detectors, two images, 18 months.
 - A same-pair comparison would need PE for the 16 000 events of the O4 evaluation catalogue (about
   8 000 CPU-hours at 0.5 CPU-h each) plus PO2.0 (public code, github.com/anbarsode/PO2.0) on ~2e5 pairs;
-  not attempted. The reviewer's own comment allows comparison through matched settings.
+  not attempted; the comparison is made through matched settings.
 
 ## 9. Detection definition, image times, and what was corrected
 

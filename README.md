@@ -15,7 +15,32 @@ not a complete catalog search, false-alarm-rate pipeline, or real-noise analysis
 
 [中文说明](README.zh-CN.md)
 
-## Main results
+## Current release: v3.0.0 (realistic populations, O4 and Einstein Telescope)
+
+The analysis of the current version of the paper is in
+[experiments/apjs_revision/v3/](experiments/apjs_revision/v3/): its protocol
+([PROTOCOL_V3.md](experiments/apjs_revision/v3/PROTOCOL_V3.md)), every reported number
+([RESULTS_V3.md](experiments/apjs_revision/v3/RESULTS_V3.md)), the figure scripts and data, and the
+staged-search cost model ([cost_model/](experiments/apjs_revision/v3/cost_model/)). Lensed and unlensed
+binary black holes follow the observed population, with galaxy lenses drawn with `ler`, at the
+sensitivity of O4 (H1, L1, V1) and of the Einstein Telescope (three ET-D interferometers from 5 Hz); the
+networks see all detectors in two streams. At a per-pair false-positive probability of $10^{-3}$:
+
+| Network | ET | O4 |
+|---|---|---|
+| PI-ResNet | 36.8% | 16.1% |
+| Early fusion, same encoders and input | 22.5% | 5.8% |
+| CQT--DeiT, same input | 17.2% | 10.2% |
+| PI-ResNet with the time-delay statistic | 51.0% | 64.5% |
+
+Release tag `apjs-revision-v3.0.0`; code, trained networks and per-pair scores are archived at
+[doi:10.5281/zenodo.24049483](https://doi.org/10.5281/zenodo.24049483) (MIT license) and the simulated
+strain catalogs at [doi:10.5281/zenodo.24049603](https://doi.org/10.5281/zenodo.24049603) (CC BY 4.0).
+
+The sections below document the earlier release (v2.2.2: single-detector input, SIS and point-mass
+catalogs), which remains reproducible from this repository and is included in the Zenodo record.
+
+## Main results of the earlier release (v2.2.2)
 
 All headline values use an independently generated held-out catalog, a calibration
 partition that is separate from final evaluation, and source-block uncertainty
@@ -98,9 +123,10 @@ not validate glitches or a catalog-level false-alarm rate. See
 
 ## Citation and archival release
 
-The frozen reproducibility release is archived on Zenodo under the concept DOI
+The releases are archived on Zenodo under the concept DOI
 [10.5281/zenodo.21311077](https://doi.org/10.5281/zenodo.21311077), which always
-resolves to the latest version (CC BY 4.0). Version v2.2.2 contains the four trained network checkpoints, the sixteen additional
+resolves to the latest version (v3.0.0, MIT license; it also carries the complete v2.2.2 archive).
+Version v2.2.2 contains the four trained network checkpoints, the sixteen additional
 instances of the variability study, the pinned DeiT initialization weights, the five CQT
 caches, and all derived result files: **399 hash-verified payload files**. The
 authoritative inventory --- every path, size and checksum, and the payload total ---

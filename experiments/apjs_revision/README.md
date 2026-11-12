@@ -1,6 +1,6 @@
 # ApJS revision: realistic populations
 
-Scripts added for the revision requested by the ApJS reviewer (report of November 2026):
+Scripts added for the November 2026 revision of the paper:
 the uniform-prior simulations are replaced by an astrophysical population drawn with
 `ler`, at O4 and at ET sensitivity, and the frozen workflow of
 `experiments/reproducibility/` is rerun on it unchanged.

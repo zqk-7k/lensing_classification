@@ -45,7 +45,7 @@ COL, TXT = 3.39, 7.06          # AASTeX twocolumn column and text widths, inches
 NETS = [  # variant, label, colour
     ("pi", "PI-ResNet", "#1f5fa8"),
     ("early", "Early fusion", "#d9822b"),
-    ("cqt", "CQT--DeiT, same input", "#3a8f5c"),
+    ("cqt", "CQT\u2013DeiT, same input", "#3a8f5c"),
     ("v2info", "PI-ResNet, reduced input", "#8a6bb0"),
 ]
 CFG = {  # work dir, data dir, time-delay suffix used in the manuscript tables, label

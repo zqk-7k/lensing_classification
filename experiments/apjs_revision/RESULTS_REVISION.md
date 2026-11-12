@@ -175,7 +175,7 @@ lenses, power-law + peak masses, detection = network S/N 8 with two detectors ab
 images detected). The paper quotes no measured per-pair run time: Sec. I speaks of "the
 promise of ... evaluation times of a few minutes", Appendix C of a veto that removes about
 40% of unlensed pairs within a second, and Appendix D.4 of about half a CPU-hour of parameter
-estimation per injection. The reviewer's "54% at 1e-6 in under a second" is not in that
+estimation per injection. An efficiency of "54% at 1e-6 in under a second" is not in that
 paper, and arXiv:2605.10333 (Barsode, "BB plot") is a Bayes-factor diagnostic with no
 lensed-pair efficiency. The cost model (`gw-catalog/paper_pi_resnet/experiments/cost_model.py`,
 inputs and sources in `cost_model_inputs.json`) now uses these values plus a per-event PE
@@ -184,7 +184,7 @@ term amortised over the pairs each event enters. With the realistic ET efficienc
 - PI-ResNet alone at P_f = 1e-3 recovers 5.3% of lensed pairs and sends 1e-3 of all pairs to
   joint PE, so its compute per recovered lensed pair (1.6e3 CPU-s at one CPU-day of PE) is
   far above the overlap statistic's (30-490 CPU-s depending on the assumed 1-300 s per pair).
-  The reviewer's objection to "PI-ResNet instead of the overlap statistic" stands.
+  "PI-ResNet instead of the overlap statistic" is therefore not supported.
 - As a pre-filter in front of the overlap statistic the chain costs 10x (P_f = 1e-1) to
   1000x (1e-3) less compute per candidate pair than the overlap statistic alone, but at a
   combined efficiency of 0.23 (1e-1) to 0.035 (1e-3) against 0.65. The compute saving is
@@ -203,7 +203,7 @@ figures `fig_cost_model_{ET,O4}.pdf`.
 
 - Posterior-overlap statistic on the same pairs (needs per-event PE for 10,000 events).
 - Population-mismatch test (second `ler` draw with another mass model or VDF).
-- Zenodo redeposit (token), LICENSE, AI disclosure, response letter.
+- Zenodo redeposit and LICENSE.
 
 ## 9. Later finding (2026-11-08), superseded by v3
 
