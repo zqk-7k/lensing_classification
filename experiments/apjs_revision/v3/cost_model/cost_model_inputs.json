@@ -1,0 +1,205 @@
+{
+  "_note": "Inputs for cost_model.py. PI-ResNet efficiencies are the frozen 0228 evaluations on the realistic ler populations (experiments/apjs_revision in the lensing_classification repo, branch apjs-revision-20261107; work_<CFG>/results/revision/efficiency_vs_fap.csv). Posterior-overlap numbers are from Barsode, Goyal & Ajith, arXiv:2412.01278 (PO2.0): 65% efficiency at a pairwise FAP of about 2e-6 for galaxy-lensed BBHs at O4 HLV sensitivity (Sec. III.2, abstract); detection = network S/N >= 8 with two detectors above 4, two images detected (App. D.3); the paper quotes no measured per-pair run time, only 'the promise of ... evaluation times of a few minutes' (Sec. I), a veto that removes about 40% of unlensed pairs 'within a second' (App. C), and about half a CPU-hour of parameter estimation per injection (App. D.4). PO2.0 includes the time-delay prior R^L_U (2412.01278 Eq. 11, App. B.4, C.1; Sec. III.2: arrival time and time delay 'add about 20-40% to the detection efficiency'). The reviewer's '54% at 1e-6' is not stated in any text; it matches a reading of the ROC of the superseded implementation in arXiv:2605.10333 (Barsode, 'BB plot'), App. A Fig. 6 (old ~0.55, new ~0.59 at 1e-6). Per-pair cost: 'a few minutes' (2412.01278 Sec. I; Fig. 14: ~10-20 s at 500 posterior samples, ~3 min at 1e4), '~10 CPU seconds' (arXiv:2510.23238 Sec. III.2), 'one to two orders of magnitude less' in the 2605.10333 implementation; none includes single-event PE. C_P_s is the PI-ResNet end-to-end serial cost per pair from the submitted manuscript. Configs ET_v3 / ET_v3_td (and O4_v3 / O4_v3_td once run) are the v3 rerun; their per-pair PI-ResNet cost is the measured CPU cost amortised over the catalogue (key 'cost'), and the per-pair table amortises the overlap's per-event PE over the catalogue named in 'catalogue'. Configs ET / O4 are the v2 rerun with the submitted C_P_s.",
+  "PI": {
+    "ET": {
+      "0.1": {
+        "eff": 0.3526,
+        "ci": [
+          0.336,
+          0.3709
+        ]
+      },
+      "0.01": {
+        "eff": 0.132,
+        "ci": [
+          0.1143,
+          0.1514
+        ]
+      },
+      "0.001": {
+        "eff": 0.0531,
+        "ci": [
+          0.0429,
+          0.0646
+        ]
+      },
+      "0.0001": {
+        "eff": 0.0126,
+        "ci": [
+          0.008,
+          0.0166
+        ]
+      },
+      "source": "work_ET/results/revision/efficiency_vs_fap.csv (2026-11-07)"
+    },
+    "O4": {
+      "0.1": {
+        "eff": 0.2891,
+        "ci": null
+      },
+      "0.01": {
+        "eff": 0.084,
+        "ci": [
+          0.072,
+          0.096
+        ]
+      },
+      "0.001": {
+        "eff": 0.0194,
+        "ci": [
+          0.0149,
+          0.0246
+        ]
+      },
+      "0.0001": {
+        "eff": 0.0034,
+        "ci": [
+          0.0017,
+          0.0051
+        ]
+      },
+      "source": "work_O4_warm/results/{core,revision} (2026-11-07): PI-ResNet initialised from the ET checkpoint (labelled secondary run; the frozen cold-start recipe collapsed to AUC 0.50 in three seeds). Same population and detection rule as Barsode et al. 2024 App. D (O4 HLV, two images at network S/N >= 8)."
+    },
+    "ET_v3": {
+      "0.01": {
+        "eff": 0.868,
+        "ci": [
+          0.857,
+          0.878
+        ]
+      },
+      "0.001": {
+        "eff": 0.368,
+        "ci": [
+          0.351,
+          0.386
+        ]
+      },
+      "0.0001": {
+        "eff": 0.134,
+        "ci": [
+          0.123,
+          0.145
+        ]
+      },
+      "cost": {
+        "event_encoding_cpu_s": 0.27306,
+        "pair_head_cpu_s": 2.5208e-05,
+        "source": "bench_v3.py, Xeon Silver 4314, one thread, fp32 (server apjs_rev/bench/bench_cpu_1thread.json, 2026-11-08); per pair in a catalogue of N events = 2 c_event / (N - 1) + c_head"
+      },
+      "catalogue": "ET year (~1e5 BBH)",
+      "source": "v3 rerun, corrected ET evaluation set (lensing_classification branch apjs-revision-20261107, experiments/apjs_revision/v3/RESULTS_V3.md Sec. 4 and 6; server work_v3_ET2/compare/*/core/core_results.json, 2026-11-08). All three ET-D arms from 5 Hz, seed-42 model."
+    },
+    "ET_v3_td": {
+      "0.01": {
+        "eff": 0.917,
+        "ci": [
+          0.91,
+          0.923
+        ]
+      },
+      "0.001": {
+        "eff": 0.51,
+        "ci": [
+          0.497,
+          0.522
+        ]
+      },
+      "0.0001": {
+        "eff": 0.239,
+        "ci": [
+          0.227,
+          0.251
+        ]
+      },
+      "cost": {
+        "event_encoding_cpu_s": 0.27306,
+        "pair_head_cpu_s": 2.5208e-05,
+        "source": "bench_v3.py, Xeon Silver 4314, one thread, fp32 (server apjs_rev/bench/bench_cpu_1thread.json, 2026-11-08); per pair in a catalogue of N events = 2 c_event / (N - 1) + c_head"
+      },
+      "catalogue": "ET year (~1e5 BBH)",
+      "source": "v3 rerun, corrected ET evaluation set (lensing_classification branch apjs-revision-20261107, experiments/apjs_revision/v3/RESULTS_V3.md Sec. 4 and 6; server work_v3_ET2/compare/*/core/core_results.json, 2026-11-08). All three ET-D arms from 5 Hz, seed-42 model. Network logit plus the pre-registered time-delay log-ratio (combine_td.py)."
+    },
+    "O4_v3": {
+      "0.01": {
+        "eff": 0.4364,
+        "ci": [
+          0.4246,
+          0.4475
+        ]
+      },
+      "0.001": {
+        "eff": 0.1607,
+        "ci": [
+          0.1507,
+          0.1704
+        ]
+      },
+      "0.0001": {
+        "eff": 0.0604,
+        "ci": [
+          0.0539,
+          0.0682
+        ]
+      },
+      "cost": {
+        "event_encoding_cpu_s": 0.27306,
+        "pair_head_cpu_s": 2.5208e-05,
+        "source": "bench_v3.py, Xeon Silver 4314, one thread, fp32 (server apjs_rev/bench/bench_cpu_1thread.json, 2026-11-08); per pair in a catalogue of N events = 2 c_event / (N - 1) + c_head"
+      },
+      "catalogue": "O4-like year (~200 BBH)",
+      "source": "v3 rerun, O4 HLV from 20 Hz (lensing_classification branch apjs-revision-20261107, experiments/apjs_revision/v3/RESULTS_V3.md Sec. 8; server work_v3_O4/collected.json, 2026-11-08). PI-ResNet v3 seed 42, trained from scratch; same population and detection rule as Barsode et al. 2024 App. D (O4 HLV, two images at network S/N >= 8)."
+    },
+    "O4_v3_td": {
+      "0.01": {
+        "eff": 0.8332,
+        "ci": [
+          0.8171,
+          0.8464
+        ]
+      },
+      "0.001": {
+        "eff": 0.645,
+        "ci": [
+          0.6239,
+          0.6664
+        ]
+      },
+      "0.0001": {
+        "eff": 0.4718,
+        "ci": [
+          0.4557,
+          0.4882
+        ]
+      },
+      "cost": {
+        "event_encoding_cpu_s": 0.27306,
+        "pair_head_cpu_s": 2.5208e-05,
+        "source": "bench_v3.py, Xeon Silver 4314, one thread, fp32 (server apjs_rev/bench/bench_cpu_1thread.json, 2026-11-08); per pair in a catalogue of N events = 2 c_event / (N - 1) + c_head"
+      },
+      "catalogue": "O4-like year (~200 BBH)",
+      "source": "v3 rerun, O4 HLV from 20 Hz (lensing_classification branch apjs-revision-20261107, experiments/apjs_revision/v3/RESULTS_V3.md Sec. 8; server work_v3_O4/collected.json, 2026-11-08). PI-ResNet v3 seed 42, trained from scratch; same population and detection rule as Barsode et al. 2024 App. D (O4 HLV, two images at network S/N >= 8). Network logit plus the time-delay log-ratio with the observing span from the searched catalogue (combine_td.py --span-from 0228, protocol addendum 5; the registered span from the training catalogue was defective at O4). work_v3_O4/collected_tdc.json."
+    }
+  },
+  "C_P_s": 0.00124,
+  "overlap": {
+    "eff": 0.65,
+    "fap": 2e-06,
+    "cost_s_grid": [
+      1.0,
+      10.0,
+      60.0,
+      300.0
+    ],
+    "cost_s_nominal": 60.0,
+    "cost_note": "1 s: lower bracket (2605.10333 implementation, 1-2 orders below ~10 s); 10 s: arXiv:2510.23238 Sec. III.2; 60-300 s: 'a few minutes' in Sec. I of 2412.01278",
+    "pe_per_event_s": 1800.0,
+    "pe_note": "App. D.4 of 2412.01278: about half an hour per injection on one CPU core; real-event PE is costlier. Needed once per event before any overlap statistic can be formed; amortised over N-1 partners."
+  },
+  "C_PE_ref_s": 86400.0,
+  "catalogues": {
+    "O4-like year (~200 BBH)": 200,
+    "O5-like year (~1000 BBH)": 1000,
+    "ET year (~1e5 BBH)": 100000
+  }
+}
