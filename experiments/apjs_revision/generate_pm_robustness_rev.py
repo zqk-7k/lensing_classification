@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Point-mass lens-profile robustness catalog on the realistic source population.
 
-Reviewer: point masses with uniform impact parameters are not an astrophysical lens
-population. Decision memo (response draft, Sec. 2b): keep the point-mass class only as a
+Point masses with uniform impact parameters are not an astrophysical lens
+population. The point-mass class is kept only as a
 *lens-profile robustness test* on the same realistic BBH sources, with p(y) proportional to y,
 evaluated by the galaxy-trained network.
 

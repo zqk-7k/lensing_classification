@@ -1,6 +1,6 @@
 """Realistic lensed and unlensed BBH populations with ``ler`` (ApJS revision, server run).
 
-Derived from the cloud session's ler_realistic_population.py. Differences:
+Derived from an earlier script, ler_realistic_population.py. Differences:
   * explicit numpy seed, recorded in the meta file;
   * draws one large sample per configuration and writes the full ler JSON; the
     split into the two catalogues (training/"0222" role and

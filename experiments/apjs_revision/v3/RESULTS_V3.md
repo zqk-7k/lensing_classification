@@ -409,7 +409,7 @@ were taken with the other GPUs training (load average 6.5 on 64 cores).
 
 ### Staged-search cost with the v3 numbers (corrected 2026-11-08 evening)
 
-`gw-catalog/paper_pi_resnet/experiments/cost_model.py`, configs `ET_v3`, `O4_v3` (inputs and sources in
+`experiments/apjs_revision/v3/cost_model/cost_model.py`, configs `ET_v3`, `O4_v3` (inputs and sources in
 `cost_model_inputs.json`; PI-ResNet cost per pair = 2 c_event / (N - 1) + c_head from the one-thread CPU
 benchmark above; PO2.0 (Barsode et al. 2024) at 65 % for a false-alarm probability of 2e-6, half a
 CPU-hour of PE per event, one CPU-day of joint PE per pair surviving the overlap stage). CPU-years:

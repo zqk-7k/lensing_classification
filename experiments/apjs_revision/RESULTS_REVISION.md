@@ -145,14 +145,13 @@ same background:
 | 1e-4 | 0.8% [0.6, 1.0] | 1.3% |
 
 At the galaxy thresholds the point-mass set gives 8.7% / 2.5% / 0.5% with achieved P_f
-1.2e-2 / 9.6e-4 / 9e-5, so the thresholds transfer. This supports the response draft's
+1.2e-2 / 9.6e-4 / 9e-5, so the thresholds transfer. This supports the
 recommendation to keep point masses only as a robustness test.
 
 ## 6. Catalogue context with O4a (GWTC-4.0) added
 
-`gw-catalog` script 05 rerun with the GWTC-4.0 candidate release (Zenodo record 17602502;
-85 O4a BBHs with p_BBH > 0.5 and FAR < 1/yr), output `runs/gwtc_catalog_context_with_o4a/`
-(local copy in `/home/dev/work/gw-catalog`, not committed):
+A catalogue-context script rerun with the GWTC-4.0 candidate release (Zenodo record 17602502;
+85 O4a BBHs with p_BBH > 0.5 and FAR < 1/yr), (outputs not committed):
 
 | | O1-O3 | O4a | O4b | combined (253 events) |
 |---|---|---|---|---|
@@ -177,7 +176,7 @@ promise of ... evaluation times of a few minutes", Appendix C of a veto that rem
 40% of unlensed pairs within a second, and Appendix D.4 of about half a CPU-hour of parameter
 estimation per injection. An efficiency of "54% at 1e-6 in under a second" is not in that
 paper, and arXiv:2605.10333 (Barsode, "BB plot") is a Bayes-factor diagnostic with no
-lensed-pair efficiency. The cost model (`gw-catalog/paper_pi_resnet/experiments/cost_model.py`,
+lensed-pair efficiency. The cost model (`experiments/apjs_revision/v3/cost_model/cost_model.py`,
 inputs and sources in `cost_model_inputs.json`) now uses these values plus a per-event PE
 term amortised over the pairs each event enters. With the realistic ET efficiencies:
 

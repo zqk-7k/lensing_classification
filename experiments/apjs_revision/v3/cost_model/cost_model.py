@@ -1,6 +1,6 @@
 """Cost-benefit model for a staged lensed-pair search.
 
-Answers the reviewer's objection that a per-pair method must be judged by the
+A per-pair method must be judged by the
 combination of efficiency, false-alarm probability per pair, per-pair cost and
 the cost of the downstream analysis it feeds, not by speed or efficiency alone.
 
