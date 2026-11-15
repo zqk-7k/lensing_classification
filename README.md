@@ -38,7 +38,9 @@ Release tag `apjs-revision-v3.0.0`; code, trained networks and per-pair scores a
 strain catalogs at [doi:10.5281/zenodo.24049603](https://doi.org/10.5281/zenodo.24049603) (CC BY 4.0).
 
 The sections below document the earlier release (v2.2.2: single-detector input, SIS and point-mass
-catalogs), which remains reproducible from this repository and is included in the Zenodo record.
+catalogs), which is included in the Zenodo record. Its statistical analysis reruns from the stored
+predictions in `results/`; its strain catalogs were made with server-side generators that are not in
+this repository (see `docs/ARTIFACTS.md`).
 
 ## Main results of the earlier release (v2.2.2)
 
